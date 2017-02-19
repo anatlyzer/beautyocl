@@ -1,0 +1,47 @@
+-- @path OP=/beautyocl.catalogue.simplifications/metamodels/operators.ecore
+
+module simplify;
+create OUT : OP refining IN : OP;
+
+helper def : relationalOps : Set(String) = Set { '<', '<=', '>', '>=', '=' };
+helper def : arithmeticOps : Set(String) = Set { '+', '-', '*', '/' };
+
+
+--
+-- A binary, relational operation with two integers operands
+-- can be simplified to a boolean value
+--
+rule binaryIntegerRelational {
+	from o : OP!BinaryOperatorCallExp (
+		o.source.oclIsKindOf(OP!IntegerExp) and
+		o.argument.oclIsKindOf(OP!IntegerExp) and
+		thisModule.relationalOps->includes(o.name)
+	)
+	to r : OP!BooleanExp (
+		booleanSymbol <- 
+			if o.name = '<' then o.source.integerSymbol < o.argument.integerSymbol
+			else if o.name = '<=' then o.source.integerSymbol <= o.argument.integerSymbol 
+			else if o.name = '>' then o.source.integerSymbol > o.argument.integerSymbol 
+			else if o.name = '>=' then o.source.integerSymbol >= o.argument.integerSymbol
+			else o.source.integerSymbol = o.argument.integerSymbol endif endif endif  endif
+	)
+}
+
+--
+-- A binary, relational operation with two integers operands
+-- can be simplified to a boolean value
+--
+rule binaryIntegerArithmetic {
+	from o : OP!BinaryOperatorCallExp (
+		o.source.oclIsKindOf(OP!IntegerExp) and
+		o.argument.oclIsKindOf(OP!IntegerExp) and
+		thisModule.arithmeticOps->includes(o.name)
+	)
+	to r : OP!BooleanExp (
+		booleanSymbol <- 
+			if o.name = '+' then o.source.integerSymbol + o.argument.integerSymbol
+			else if o.name = '-' then o.source.integerSymbol - o.argument.integerSymbol 
+			else if o.name = '*' then o.source.integerSymbol * o.argument.integerSymbol 
+			else o.source.integerSymbol / o.argument.integerSymbol endif endif endif  
+	)
+}

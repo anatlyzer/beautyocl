@@ -1,0 +1,16 @@
+composite component beautyocl.atl {
+	// uses "bento:/beautyocl.simplifications.integer"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification.bento"
+	                          
+	binding bindOperators   = "operators2atl.gbind"
+			
+	source concept ATLs : "ATLStatic.ecore"
+	target concept ATLt : "ATLStatic.ecore"
+	source model in  : ATLs 
+	target model out : ATLt
+	
+	compose  
+		apply integer(bindOperators(in)) -> (out)
+		
+}
+

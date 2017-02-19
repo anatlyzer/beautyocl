@@ -1,0 +1,45 @@
+@namespace(uri="http://beautyocl/operators", prefix="operators")
+package operators;
+
+@merge(with="OclExpression")
+abstract class OclExpression {
+}
+
+/* Operators */
+
+abstract class OperatorCallExp extends OclExpression {
+	attr String[1] name;	
+}
+
+class BinaryOperatorCallExp extends OperatorCallExp {
+	val OclExpression[1] source;
+	val OclExpression[1] argument;
+}
+
+class UnaryOperatorCallExp extends OperatorCallExp {
+	val OclExpression[1] source;	
+}
+
+/* Literals (similar to ATL/OCL) */
+
+abstract class PrimitiveExp extends OclExpression {
+}
+
+class StringExp extends PrimitiveExp {
+  attr String[1] stringSymbol;
+}
+
+class BooleanExp extends PrimitiveExp {
+  attr Boolean[1] booleanSymbol;
+}
+
+abstract class NumericExp extends PrimitiveExp {
+}
+
+class RealExp extends NumericExp {
+  attr Double[1] realSymbol;
+}
+
+class IntegerExp extends NumericExp {
+  attr Integer[1] integerSymbol;
+}

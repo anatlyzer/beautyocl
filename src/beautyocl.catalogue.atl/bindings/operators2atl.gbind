@@ -1,0 +1,17 @@
+binding oo2ecore {  
+	concept   OP  : "bento:/beautyocl.catalogue.simplifications/operators.ecore"
+	metamodel ATL : "ATLStatic.ecore"
+
+	class BinaryOperatorCallExp to OperatorCallExp when self.arguments.size()->notEmpty() 
+	class UnaryOperatorCallExp to OperatorCallExp when self.arguments.size()->isEmpty() 
+     
+    -- feature OperatorCallExp.name  is name
+    
+    feature BinaryOperatorCallExp.name  is name
+    feature UnaryOperatorCallExp.name   is name
+
+	feature BinaryOperatorCallExp.source  is source
+	feature BinaryOperatorCallExp.argument = self.arguments->first()
+
+	feature UnaryOperatorCallExp.source  is source
+}
