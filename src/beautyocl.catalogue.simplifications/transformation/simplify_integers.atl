@@ -1,6 +1,7 @@
+-- @atlcompiler emftvm
 -- @path OP=/beautyocl.catalogue.simplifications/metamodels/operators.ecore
 
-module simplify;
+module "simplify_integers";
 create OUT : OP refining IN : OP;
 
 helper def : relationalOps : Set(String) = Set { '<', '<=', '>', '>=', '=' };
@@ -45,3 +46,4 @@ rule binaryIntegerArithmetic {
 			else o.source.integerSymbol / o.argument.integerSymbol endif endif endif  
 	)
 }
+

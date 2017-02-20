@@ -1,8 +1,11 @@
+-- -- @atlcompiler emftvm
 -- -- @path ATL=/beautyocl.catalogue.atl/metamodels/ATLStatic.ecore
 module simplify;
 create OUT : ATL refining IN : ATL;
 
 helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
 
 helper  def: relationalOps : Set(String) = Set {'<', '<=', '>', '>=', '=' };
 
@@ -52,7 +55,7 @@ rule binaryIntegerArithmetic {
 
 }
 
-helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments.size()->notEmpty();
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
 
-helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments.size()->isEmpty();
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
 

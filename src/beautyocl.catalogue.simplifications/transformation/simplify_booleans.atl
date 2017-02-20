@@ -1,0 +1,39 @@
+-- @atlcompiler emftvm
+-- @path OP=/beautyocl.catalogue.simplifications/metamodels/operators.ecore
+
+module "simplify_booleans";
+create OUT : OP refining IN : OP;
+
+helper def : relationalOps : Set(String) = Set { '=', '<>', 'implies' };
+
+--
+-- A binary, relational operation with two boolean operands
+-- can be simplified to a boolean value
+--
+rule binaryBooleanRelational {
+	from o : OP!BinaryOperatorCallExp (
+		o.source.oclIsKindOf(OP!BooleanExp) and
+		o.argument.oclIsKindOf(OP!BooleanExp) and
+		thisModule.relationalOps->includes(o.name)
+	)
+	to r : OP!BooleanExp (
+		booleanSymbol <- 
+			if o.name = 'implies' then o.source.booleanSymbol implies o.argument.booleanSymbol 
+			else if o.name = '<>' then o.source.booleanSymbol <> o.argument.booleanSymbol
+			else o.source.booleanSymbol = o.argument.booleanSymbol endif endif 
+	)
+}
+
+--
+-- A unary operation with a boolean literal
+-- can be simplified to a boolean value
+--
+rule unaryBoolean {
+	from o : OP!UnaryOperatorCallExp (
+		o.source.oclIsKindOf(OP!BooleanExp) and
+		o.name = 'not'
+	)
+	to r : OP!BooleanExp (
+		booleanSymbol <- not o.source.booleanSymbol 
+	)
+}

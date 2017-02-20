@@ -1,0 +1,14 @@
+transformation component beautyocl.simplifications.integer {
+	source concept OPS : "operators.ecore"
+	target concept OPT : "operators.ecore"
+	
+	source model in : OPS
+	target model out : OPS
+	
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/simplify_booleans.atl" with
+		IN : OP = in,
+		OUT : OP = out
+		
+	tags "ocl", "simplification"
+	
+}
