@@ -1,0 +1,11 @@
+@namespace(uri="http://beautyocl/actions", prefix="actions")
+package actions;
+
+abstract class InPlaceAction {
+	
+}
+
+class Replace extends InPlaceAction {
+	ref EObject[1] source;
+	ref EObject[1] target;
+}

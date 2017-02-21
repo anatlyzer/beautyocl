@@ -1,0 +1,27 @@
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/conditionals.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+
+-- @pre OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
+
+module "simplify_if_kindof";
+create OUT : ACT from IN : OCL; 
+
+helper context OCL!OclExpression def: isKindOf() : Boolean = false;
+
+helper context OCL!OperationCallExp def: isKindOf() : Boolean = 
+	if self.name = 'oclIsKindOf' then
+		self.source.type_.isSameType( self.arguments->first().type_ )
+	else
+		false
+	endif;
+
+rule removeIf {
+	from o : OCL!IfExp (
+		o.condition.isKindOf()
+	)
+	to a : ACT!Replace (
+		source <:= o,
+		target <:= o.condition 
+	)
+}
+

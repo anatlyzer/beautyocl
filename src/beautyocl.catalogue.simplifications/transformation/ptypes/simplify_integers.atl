@@ -38,8 +38,8 @@ rule binaryIntegerArithmetic {
 		o.argument.oclIsKindOf(OP!IntegerExp) and
 		thisModule.arithmeticOps->includes(o.name)
 	)
-	to r : OP!BooleanExp (
-		booleanSymbol <- 
+	to r : OP!IntegerExp (
+		integerSymbol <- 
 			if o.name = '+' then o.source.integerSymbol + o.argument.integerSymbol
 			else if o.name = '-' then o.source.integerSymbol - o.argument.integerSymbol 
 			else if o.name = '*' then o.source.integerSymbol * o.argument.integerSymbol 

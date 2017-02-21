@@ -1,0 +1,13 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+module ifkindof;
+create OUT : WXYZ from IN : ABCD;
+
+rule model2model {
+	from m1 : ABCD!Model
+	to   m2 : WXYZ!Model (
+		name <- if m1.oclIsKindOf(ABCD!Model) then 'pepito' else 'juanito' endif
+	)
+}

@@ -1,0 +1,46 @@
+-- @atlcompiler emftvm
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/conditionals.ecore
+-- @path CTX=/beautyocl.catalogue.simplifications/metamodels/ctx.ecore
+
+-- @pre OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
+
+module "simplify_if_kindof";
+create OUT : OCL refining IN : OCL;  -- , IN2 : CTX
+
+helper context OCL!OclExpression def: isKindOf(receptor : OCL!Type) : Boolean = false;
+
+helper context OCL!OperationCallExp def: isKindOf(receptor : OCL!Type) : Boolean = 
+	if self.name = 'oclIsKindOf' then
+		receptor.isSameType( self.arguments->first().type_ )
+	else
+		false
+	endif;
+
+--rule ctx {
+--	from ctx : CTX!Context ( ctx.oclIsKindOf() )
+--	to output_name : output_element (
+--			
+--		)
+--}
+
+rule removeIf {
+	from o : OCL!IfExp (
+		o.condition.isKindOf(o.type_)
+	) 
+	do {
+		o.condition.debug('xx');	
+	}
+}
+
+--rule removeIf {
+--   from o : ATL!IfExp( true )
+--   using {
+--   	  f : OclAny = o.refInvokeOperation('eContainingFeature', Sequence { });
+--	  
+--   }
+--do {
+--	o.refImmediateComposite().refSetValue(f.name, o.condition);
+--}
+--}
+
+

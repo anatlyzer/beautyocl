@@ -1,0 +1,25 @@
+binding kindof2atl {  
+	concept   OP  : "bento:/beautyocl.catalogue.simplifications/conditionals.ecore"
+	metamodel ATL : "merged.ecore"
+
+	class IfExp to IfExp
+    class OclExpression to OclExpression
+    class Type to TypedElement
+    class OperationCallExp to OperationCallExp
+    
+    feature OperationCallExp.name is operationName
+    
+	feature IfExp.condition      is condition
+	feature IfExp.thenExpression is thenExpression
+	feature IfExp.elseExpression is elseExpression
+	
+	feature OclExpression.type_ = self
+	
+	helper TypedElement.isSameType(t : ATL!TypedElement) : Boolean =
+		if self.inferredType.oclType().name = 'Metaclass' then 
+			self.inferredType.klass = t.inferredType.klass 
+		else
+			false
+		endif
+	-- op boolean isSuperTypeOf(Type t);  
+}

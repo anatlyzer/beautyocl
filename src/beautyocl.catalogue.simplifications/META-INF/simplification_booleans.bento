@@ -6,7 +6,7 @@ transformation component beautyocl.simplifications.integer {
 	target model out : OPS
 	
 	// definition atl "simplify.atl" with 
-	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/simplify_integers.atl" with
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/ptypes/simplify_integers.atl" with
 		IN : OP = in,
 		OUT : OP = out
 		

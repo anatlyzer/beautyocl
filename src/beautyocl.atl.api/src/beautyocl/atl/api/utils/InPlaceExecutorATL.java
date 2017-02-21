@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.eclipse.m2m.atl.core.IModel;
 import org.eclipse.m2m.atl.core.IReferenceModel;
@@ -27,9 +28,14 @@ public class InPlaceExecutorATL {
 		// injector.inject(loadedMetamodel, FileUtils.getFileURL("ATLmodified.ecore").openStream(), null);
 		injector.inject(loadedMetamodel, "http://anatlyzer/atl/ext/OCL");
 		
+		IReferenceModel actionsMetamodel = factory.newReferenceModel();		
+		injector.inject(actionsMetamodel, "http://beautyocl/actions");
+
+		
 		EMFModel loadedModel = (EMFModel) factory.newModel(loadedMetamodel);
 		injector.inject(loadedModel, exp.getResource());
-
+	
+		EMFModel newModel = (EMFModel) factory.newModel(actionsMetamodel);
 		
 		ILauncher launcher = new EMFVMLauncher();
 		Map<String, Object> launcherOptions = new HashMap<String, Object>();
@@ -37,25 +43,21 @@ public class InPlaceExecutorATL {
 		launcherOptions.put("allowInterModelReferences", true); 
 		launcher.initialize(launcherOptions);
 
-		launcher.addInOutModel(loadedModel, "IN", "ATL");
+		launcher.addInModel(loadedModel, "IN", "ATL");
+		launcher.addOutModel(newModel, "OUT", "ACT");
 		
-		IReferenceModel refiningTraceMetamodel = factory.getBuiltInResource("RefiningTrace.ecore");
-		launcher.addInModel(refiningTraceMetamodel, "RefiningTrace", "RefiningTrace");
-
-		IModel refiningTraceModel = factory.newModel(refiningTraceMetamodel);
-		launcher.addOutModel(refiningTraceModel, "refiningTrace", "RefiningTrace");
-
 		
 		System.out.println("Pre");
 		System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
 
 		launcher.launch("run", null, launcherOptions, asmFile);
 
-		loadedModel.commitToResource();
+		Resource r = newModel.getResource();
+		if ( r == null ) {
+			// No actions, thus nothing matched
+		}
+		newModel.getResource().getAllContents().forEachRemaining(o -> System.out.println(o));
 		
-		System.out.println("Post");
-		System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
-
 		
 	}
 

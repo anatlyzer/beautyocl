@@ -1,16 +1,23 @@
 composite component beautyocl.atl {
 	// uses "bento:/beautyocl.simplifications.integer"
-	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_kind_of.bento"
 	                          
-	binding bindOperators   = "operators2atl.gbind"
+	binding bindOperators = "operators2atl.gbind"
+	binding bindKindOf    = "kindof2atl.gbind"
 			
 	source concept ATLs : "ATLStatic.ecore"
 	target concept ATLt : "ATLStatic.ecore"
+	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
+	
 	source model in  : ATLs 
 	target model out : ATLt
+	target model act : ACT
 	
 	compose  
-		apply integer(bindOperators(in)) -> (out)
+		// apply integer(bindOperators(in)) -> (out)
+		apply ifKindOf(bindKindOf(in)) -> (act)
 		
 }
 

@@ -1,0 +1,29 @@
+@namespace(uri="http://beautyocl/conditionals", prefix="conditionals")
+package conditionals;
+
+@merge(with="OclExpression")
+abstract class OclExpression {
+	val Type[0..1] type_;
+}
+
+class Type {
+	op boolean isSameType(Type t);
+	op boolean isSuperTypeOf(Type t);
+}
+
+class OperationCallExp extends OclExpression {
+	attr String[1] name;	
+
+	val OclExpression[1] source;
+	val OclExpression[*] arguments;	
+}
+
+class IfExp extends OclExpression {
+  val OclExpression[1] thenExpression;
+  val OclExpression[1] condition;
+  val OclExpression[1] elseExpression;
+}
+
+class OclType extends OclExpression {
+	
+}

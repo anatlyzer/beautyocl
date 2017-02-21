@@ -1,0 +1,14 @@
+transformation component beautyocl.simplifications.ifKindOf {
+	source concept OCL : "conditionals.ecore"
+	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
+	
+	source model in : OCL
+	target model out : ACT
+	
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/kindof/simplify_if_kindof.atl" with
+		IN : OCL = in,
+		OUT : ACT = out
+		
+	tags "ocl", "simplification"
+	
+}
