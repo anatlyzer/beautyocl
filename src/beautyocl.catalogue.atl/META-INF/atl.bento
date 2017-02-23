@@ -6,18 +6,21 @@ composite component beautyocl.atl {
 	                          
 	binding bindOperators = "operators2atl.gbind"
 	binding bindKindOf    = "kindof2atl.gbind"
+	binding bindTyping    = "typing2atl.gbind"
 			
 	source concept ATLs : "ATLStatic.ecore"
+	source concept TYPW : "typing_wrapper.ecore"
 	target concept ATLt : "ATLStatic.ecore"
 	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
 	
-	source model in  : ATLs 
+	source model in  : ATLs
+	source model in2  : TYPW  
 	target model out : ATLt
 	target model act : ACT
 	
 	compose  
 		// apply integer(bindOperators(in)) -> (out)
-		apply ifKindOf(bindKindOf(in)) -> (act)
+		apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
 		
 }
 

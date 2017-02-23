@@ -1,0 +1,10 @@
+binding typ2wrap {  
+	concept   TYP  : "bento:/beautyocl.catalogue.simplifications/typing.ecore"
+	metamodel WRAP : "typing_wrapper.ecore"
+	
+	-- What about mapping the op parameters?
+
+	class ExprTyping to TypWrapper
+
+	
+}

@@ -11,26 +11,62 @@ import beautyocl.actions.ActionsPackage;
 import beautyocl.atl.api.Beautyfier;
 import beautyocl.atl.api.TransformationRepository;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
+import beautyocl.atl.typwrapper.TypwrapperPackage;
 
 public class TestKindOf {
-
-	public void standalone() {
-		EPackage.Registry.INSTANCE.put(ActionsPackage.eNS_URI, ActionsPackage.eINSTANCE);
+	static {
+		standalone();
 	}
 	
-	@Test
-	public void test() throws ATLCoreException {
-		standalone();
-		
+	public static void standalone() {
+		EPackage.Registry.INSTANCE.put(ActionsPackage.eNS_URI, ActionsPackage.eINSTANCE);
+		EPackage.Registry.INSTANCE.put(TypwrapperPackage.eNS_URI, TypwrapperPackage.eINSTANCE);
+	}
+	
+	public TransformationRepository configureRepo()  {
 		TransformationRepository rep = new TransformationRepository();
 		rep.addStd("beautyocl.simplifications.ifKindOf.atl");
-	
+		return rep;
+	}
+
+	private UglyAnATLyzerExpression loadExpression(String trafo) throws ATLCoreException {
 		AnalysisLoader.setStandaloneMode();
-		Resource r = AtlLoader.load("files/kindof/if_kind_of.atl");
+		Resource r = AtlLoader.load(trafo);
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/ABCD.ecore", "metamodels/WXYZ.ecore"}, new String[] { "ABCD", "WXYZ"} ); 
 		loader.analyse();
 		
 		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation());
+		return exp;
+	}
+	
+
+	private UglyAnATLyzerExpression loadExpressionPNML(String trafo) throws ATLCoreException {
+		AnalysisLoader.setStandaloneMode();
+		Resource r = AtlLoader.load(trafo);
+		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
+		loader.analyse();
+		
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation());
+		return exp;
+	}
+
+//	@Test
+	public void testKindOf() throws ATLCoreException {	
+		String trafo = "files/kindof/if_kind_of.atl";
+		TransformationRepository rep = configureRepo();
+		
+		UglyAnATLyzerExpression exp = loadExpression(trafo);
+		
+		Beautyfier beauty = new Beautyfier(rep);
+		beauty.applyAll(exp);
+	}
+
+	@Test
+	public void testKindOf_PNML2PetriNet() throws ATLCoreException {	
+		String trafo = "files/kindof/if_kind_of_pnml2petrinet.atl";
+		TransformationRepository rep = configureRepo();
+		
+		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
 		
 		Beautyfier beauty = new Beautyfier(rep);
 		beauty.applyAll(exp);

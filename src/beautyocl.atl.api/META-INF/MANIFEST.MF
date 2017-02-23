@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.m2m.atl.common,
  org.eclipse.m2m.atl.engine,
  org.eclipse.m2m.atl.emftvm.launcher;bundle-version="3.6.0";resolution:=optional,
- org.eclipse.m2m.atl.emftvm.compiler;bundle-version="3.6.0";resolution:=optional
+ org.eclipse.m2m.atl.emftvm.compiler;bundle-version="3.6.0";resolution:=optional,
+ beautyocl.actions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: beautyocl.atl.api

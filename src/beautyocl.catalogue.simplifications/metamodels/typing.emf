@@ -1,0 +1,10 @@
+@namespace(uri="http://beautyocl/typing", prefix="typing")
+package typ;
+
+import "platform:/resource/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore";
+
+@singleton
+class ExprTyping {
+  op boolean isSameType(superimposed.OclExpression e1, superimposed.OclExpression e2);
+  op boolean isSuperType(superimposed.OclExpression e1_subtype, superimposed.OclExpression e2_supertype);
+}
