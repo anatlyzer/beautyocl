@@ -12,7 +12,7 @@ binding oo2ecore {
     --feature UnaryOperatorCallExp.name   is operationName
 
 	feature BinaryOperatorCallExp.source  is source
-	feature BinaryOperatorCallExp.argument = self.arguments->first()
+	feature BinaryOperatorCallExp.argument = self.argument->first()
 
 	feature UnaryOperatorCallExp.source  is source
 }

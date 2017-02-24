@@ -1,0 +1,26 @@
+composite component beautyocl.atl {
+	// uses "bento:/beautyocl.simplifications.integer"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_kind_of.bento"
+	                          
+//	binding bindOperators = "operators2atl.gbind"
+//	binding bindKindOf    = "kindof2atl.gbind"
+//	binding bindTyping    = "typing2atl.gbind"
+			
+	binding bindOperators = "operators2emfocl.gbind"
+	
+	source concept EMFs : "OCLEcore.ecore"
+	source concept TYPW : "emfocl_typing_wrapper.ecore"
+	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
+	
+	source model in  : EMFs
+	source model in2 : TYPW  
+	target model act : ACT
+	
+	compose  
+		// apply integer(bindOperators(in)) -> (out)
+		apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
+		
+}
+

@@ -1,0 +1,19 @@
+binding operators2emfocl {  
+	concept   OCL : "bento:/beautyocl.catalogue.simplifications/superimposed.ecore"
+	metamodel EMF : "OCLEcore.ecore"
+
+	class OperatorCallExp to OperationCallExp when Set { 'not', 'and', 'or', '<', '>', '>=', '<=', '+', '-', '*'}->includes(self.name)
+	class BinaryOperatorCallExp to OperationCallExp when 
+		Set { 'not', 'and', 'or', '<', '>', '>=', '<=', '+', '-', '*'}->includes(self.name) and
+		self.arguments->notEmpty() 
+	class UnaryOperatorCallExp to OperationCallExp when
+		Set { 'not', 'and', 'or', '<', '>', '>=', '<=', '+', '-', '*'}->includes(self.name) and 
+		self.arguments->isEmpty() 
+     
+    feature OperatorCallExp.name  is name
+    
+	feature BinaryOperatorCallExp.source  is source
+	feature BinaryOperatorCallExp.argument = self.arguments->first()
+
+	feature UnaryOperatorCallExp.source  is source
+}
