@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BeautyOCL Common Api
+Bundle-SymbolicName: beautyocl.api.common
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: beautyocl.api.common.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.m2m.atl.core,
+ org.eclipse.m2m.atl.core.emf,
+ org.eclipse.m2m.atl.engine.emfvm.launch,
+ org.eclipse.m2m.atl.common,
+ org.eclipse.m2m.atl.engine,
+ org.eclipse.m2m.atl.emftvm.launcher;bundle-version="3.6.0";resolution:=optional,
+ org.eclipse.m2m.atl.emftvm.compiler;bundle-version="3.6.0";resolution:=optional,
+ org.eclipse.m2m.atl.emftvm;bundle-version="3.6.0";resolution:=optional,
+ beautyocl.actions;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: beautyocl.api.common

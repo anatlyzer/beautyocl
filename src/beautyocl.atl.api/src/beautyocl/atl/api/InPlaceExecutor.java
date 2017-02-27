@@ -1,4 +1,4 @@
-package beautyocl.atl.api.utils;
+package beautyocl.atl.api;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import org.eclipse.m2m.atl.emftvm.util.TimingData;
 
 import anatlyzer.atl.util.ATLSerializer;
 import anatlyzer.atlext.OCL.OCLPackage;
-import beautyocl.atl.api.UglyExpression;
+import beautyocl.api.common.UglyExpression;
 
 public class InPlaceExecutor {
 

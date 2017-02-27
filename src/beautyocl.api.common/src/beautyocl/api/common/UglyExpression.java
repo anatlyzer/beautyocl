@@ -1,4 +1,4 @@
-package beautyocl.atl.api;
+package beautyocl.api.common;
 
 import org.eclipse.emf.ecore.resource.Resource;
 

@@ -1,4 +1,4 @@
-package beautyocl.atl.api.utils;
+package beautyocl.api.common;
 
 import java.io.File;
 import java.io.FileInputStream;

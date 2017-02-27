@@ -8,8 +8,10 @@ import org.junit.Test;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
 import beautyocl.actions.ActionsPackage;
-import beautyocl.atl.api.Beautyfier;
-import beautyocl.atl.api.TransformationRepository;
+import beautyocl.api.common.Beautyfier;
+import beautyocl.api.common.TransformationRepository;
+import beautyocl.atl.api.ATLTransformation;
+import beautyocl.atl.api.ATLTransformation.VM;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
@@ -25,7 +27,7 @@ public class TestKindOf {
 	
 	public TransformationRepository configureRepo()  {
 		TransformationRepository rep = new TransformationRepository();
-		rep.addStd("beautyocl.simplifications.ifKindOf.atl");
+		rep.add(new ATLTransformation("beautyocl.simplifications.ifKindOf.atl", VM.STANDARD));
 		return rep;
 	}
 

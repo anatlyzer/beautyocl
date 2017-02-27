@@ -1,0 +1,13 @@
+@namespace(
+	uri="http://beautyocl/atl/emfocl_typing_wrapper",
+	prefix="emfocl_typing_wrapper")
+package typwrapper;
+
+//import "http://www.eclipse.org/ocl/1.1.0/Ecore";
+import "platform:/resource/beautyocl.catalogue.emfocl/metamodels/OCLEcore.ecore";
+
+class TypWrapper {
+  op boolean isSameType(ocl.ecore.OCLExpression e1, ocl.ecore.OCLExpression e2);
+  op boolean isSuperType(ocl.ecore.OCLExpression e1_subtype, ocl.ecore.OCLExpression e2_supertype);	
+}
+

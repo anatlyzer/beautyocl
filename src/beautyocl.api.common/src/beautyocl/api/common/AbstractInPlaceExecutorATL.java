@@ -1,4 +1,4 @@
-package beautyocl.atl.api.utils;
+package beautyocl.api.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,35 +17,39 @@ import org.eclipse.m2m.atl.core.emf.EMFModelFactory;
 import org.eclipse.m2m.atl.core.launch.ILauncher;
 import org.eclipse.m2m.atl.engine.emfvm.launch.EMFVMLauncher;
 
-import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ActionsEngine;
 import beautyocl.actions.InPlaceAction;
-import beautyocl.atl.api.UglyExpression;
+import beautyocl.api.common.UglyExpression;
 
-public class InPlaceExecutorATL {
+public abstract class AbstractInPlaceExecutorATL {
 
-	public void apply(InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
+
+	protected abstract ModelDef initOCLVariant(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
+	protected abstract ModelDef initTypingWrapper(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
+	
+	public Resource apply(InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
 		EMFModelFactory factory = new EMFModelFactory();
 		EMFInjector injector = new EMFInjector();
 
-		IReferenceModel loadedMetamodel = factory.newReferenceModel();		
-		// injector.inject(loadedMetamodel, FileUtils.getFileURL("ATLmodified.ecore").openStream(), null);
-		injector.inject(loadedMetamodel, "http://anatlyzer/atl/ext/OCL");
+//		IReferenceModel loadedMetamodel = factory.newReferenceModel();		
+//		// injector.inject(loadedMetamodel, FileUtils.getFileURL("ATLmodified.ecore").openStream(), null);
+//		injector.inject(loadedMetamodel, "http://anatlyzer/atl/ext/OCL");
 		
-		IReferenceModel typWrapperMetamodel = factory.newReferenceModel();
-		injector.inject(typWrapperMetamodel, "http://beautyocl/atl/typing_wrapper");
+		ModelDef ocl = initOCLVariant(factory, injector);
+		ModelDef typ = initTypingWrapper(factory, injector);
+		
+//		IReferenceModel loadedMetamodel = ocl.metamodel;
+//		IReferenceModel typWrapperMetamodel = typ.metamodel;
+		
+//		IReferenceModel typWrapperMetamodel = factory.newReferenceModel();
+//		injector.inject(typWrapperMetamodel, "http://beautyocl/atl/typing_wrapper");
 		
 		IReferenceModel actionsMetamodel = factory.newReferenceModel();		
 		injector.inject(actionsMetamodel, "http://beautyocl/actions");
 
+		IModel loadedModel = ocl.model;
+		IModel typWrapperModel = typ.model;
 		
-		EMFModel loadedModel = (EMFModel) factory.newModel(loadedMetamodel);
-		injector.inject(loadedModel, exp.getResource());
-	
-		// Create the typing model in-line
-		EMFModel typWrapperModel = (EMFModel) factory.newModel(typWrapperMetamodel);
-		typWrapperModel.newElement(typWrapperMetamodel.getMetaElementByName("TypWrapper"));
-		typWrapperModel.commitToResource();
 		
 		EMFModel newModel = (EMFModel) factory.newModel(actionsMetamodel);
 		
@@ -55,16 +59,14 @@ public class InPlaceExecutorATL {
 		launcherOptions.put("allowInterModelReferences", true); 
 		launcher.initialize(launcherOptions);
 
-		launcher.addInModel(loadedModel, "IN", "ATL");
-		launcher.addInModel(typWrapperModel, "IN2", "WRAP");
+		launcher.addInModel(loadedModel, "IN", ocl.mmName);
+		launcher.addInModel(typWrapperModel, "IN2", typ.mmName);
 		launcher.addOutModel(newModel, "OUT", "ACT");
-		
-		
-		System.out.println("Pre");
-		System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
-
+			
+		// Execute!
 		launcher.launch("run", null, launcherOptions, asmFile);
 
+		
 		Resource r = newModel.getResource();
 		if ( r == null ) {
 			// No actions, thus nothing matched
@@ -83,13 +85,21 @@ public class InPlaceExecutorATL {
 			
 		}
 
-		System.out.println("Post");
-		System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
-
+		return exp.getResource();
 	}
 
 	
-	
+	public static class ModelDef {
+		private IReferenceModel metamodel;
+		private IModel model;
+		private String mmName;
+
+		public ModelDef(IReferenceModel ref, IModel m, String mmName) {
+			this.metamodel = ref;
+			this.model = m;
+			this.mmName = mmName;
+		}
+	}
 
 	
 	

@@ -6,7 +6,7 @@ composite component beautyocl.atl {
 	                          
 //	binding bindOperators = "operators2atl.gbind"
 //	binding bindKindOf    = "kindof2atl.gbind"
-//	binding bindTyping    = "typing2atl.gbind"
+	binding bindTyping    = "typing2emfocl.gbind"
 			
 	binding bindOperators = "operators2emfocl.gbind"
 	
@@ -20,7 +20,7 @@ composite component beautyocl.atl {
 	
 	compose  
 		// apply integer(bindOperators(in)) -> (out)
-		apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
+		apply ifKindOf(bindOperators(in), bindTyping(in2)) -> (act)
 		
 }
 

@@ -1,4 +1,4 @@
-package beautyocl.atl.api;
+package beautyocl.api.common;
 
 /**
  * This class applies the beautification rules (i.e., ATL in-place transformations) 
@@ -17,7 +17,7 @@ public class Beautyfier {
 	
 	public void applyAll(UglyExpression exp) {
 		
-		for (ATLTransformation t : repo.getTransformations()) {
+		for (IATLTransformation t : repo.getTransformations()) {
 			t.exec(exp);
 		
 			
