@@ -18,9 +18,36 @@ create OUT : ACT from IN : OCL, IN2 : TYP;
 
 helper def : typ : TYP!ExprTyping = TYP!ExprTyping.allInstances()->first();
 
+-- helper def : subclasses : Map(TYP!CClass, Set(TYP!CClass)) =
+helper def : subclassesMap : Map(OclAny, Set(TYP!CClass)) =
+	TYP!CClass.allInstances()->iterate(it; tmp: Map(TYP!CClass, Set(TYP!CClass)) = Map {} |
+		tmp.including(it, TYP!CClass.allInstances()->select(maySubclass | maySubclass.superClasses->includes(it) )->asSet())
+	);
 
-helper  def: findSuperType(param : Set(OCL!"OclType")) : OclAny = OclUndefined;
-	
+helper context TYP!CClass def: subclasses : Set(TYP!CClass) = thisModule.subclassesMap.get(self);
+helper context TYP!CClass def: allSubclasses : Set(TYP!CClass) = self.superClasses->collect(c | c.subclasses)->flatten();
+
+helper context TYP!CClass def: isCoveredBy(types : Set(TYP!CClass)) : Boolean = 
+	types->includes(self) or self.subclasses->forAll(c | c.isCoveredBy(types))
+	;
+
+helper  def: findSuperType(param : Set(OCL!"OclType")) : OclAny = 
+	-- Sort all classes by number of subclasses
+	let  types: Set(TYP!CClass) = param->collect(t | thisModule.typ.typeOf(t))->asSet() in -- assume is a CClass...
+	let sorted:  OclAny = TYP!CClass.allInstances()->sortedBy(c | c.allSubclasses->size())
+	in sorted->iterate(it; res: TYP!CClass = OclUndefined | 
+		if res.oclIsUndefined() then
+			if it.isCoveredBy(types) then
+				it
+			else
+				OclUndefined
+			endif
+		else
+			res
+		endif
+	)
+;
+
 
 -- @force-declared-return-type
 -- @ignore found-in-subtype 
@@ -46,10 +73,15 @@ rule removeIf {
 			false
 		endif
 	)
-	to a : ACT!Replace
+	to a : ACT!Replace,
+	  op : OCL!OperationCallExp (
+		name <- 'oclIsKindOf'
+	  p  : OCL!OclType
+	)
 	do {
 		a.source <- o;
 		a.target <- o.thenExpression;
 	}
+ 
 }
 

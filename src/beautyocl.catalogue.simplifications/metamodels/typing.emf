@@ -7,4 +7,23 @@ import "platform:/resource/beautyocl.catalogue.simplifications/metamodels/superi
 class ExprTyping {
   op boolean isSameType(superimposed.OclExpression e1, superimposed.OclExpression e2);
   op boolean isSuperType(superimposed.OclExpression e1_subtype, superimposed.OclExpression e2_supertype);
+
+    
+  op CType typeOf(superimposed.OclExpression e);
+}
+
+abstract class CType {
+	 
+}
+
+class CClass extends CType {
+	attr String[1] name;
+	
+	ref CClass[*] superClasses;
+	// Could be computed by the template, but also given here as an optimization
+	ref CClass[*] allSuperClasses;
+}
+
+class CDataType extends CType {
+	
 }
