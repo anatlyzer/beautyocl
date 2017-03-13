@@ -1,4 +1,5 @@
 -- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCL2=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
 -- @path TYP=/beautyocl.catalogue.simplifications/metamodels/typing.ecore
 -- @path ACT=/beautyocl.actions/model/actions.ecore
 
@@ -14,7 +15,7 @@
 -- @pre OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
 --
 module "simplify_full_type_comparison";
-create OUT : ACT from IN : OCL, IN2 : TYP; 
+create OUT : ACT, OUT2 : OCL2 from IN : OCL, IN2 : TYP; 
 
 helper def : typ : TYP!ExprTyping = TYP!ExprTyping.allInstances()->first();
 
@@ -31,7 +32,7 @@ helper context TYP!CClass def: isCoveredBy(types : Set(TYP!CClass)) : Boolean =
 	types->includes(self) or self.subclasses->forAll(c | c.isCoveredBy(types))
 	;
 
-helper  def: findSuperType(param : Set(OCL!"OclType")) : OclAny = 
+helper  def: findSuperType(param : Set(OCL!"OclType")) : TYP!CClass = 
 	-- Sort all classes by number of subclasses
 	let  types: Set(TYP!CClass) = param->collect(t | thisModule.typ.typeOf(t))->asSet() in -- assume is a CClass...
 	let sorted:  OclAny = TYP!CClass.allInstances()->sortedBy(c | c.allSubclasses->size())
@@ -66,7 +67,8 @@ helper context OCL!BinaryOperatorCallExp def: isOrKindOf : Boolean =
 	self.name = 'or' and self.source.isOrKindOf and self.argument.isOrKindOf;
 	
 rule removeIf {
-	from o : OCL!BinaryOperatorCallExp ( 
+	from o : OCL!BinaryOperatorCallExp (
+		-- TODO: Check they all have the same source expression
 		if o.isOrKindOf and not o.refImmediateComposite().isOrKindOf then
 			thisModule.findSuperType(o.orKindOfCheckedTypes) <> OclUndefined
 		else
@@ -74,10 +76,14 @@ rule removeIf {
 		endif
 	)
 	to a : ACT!Replace,
-	  op : OCL!OperationCallExp (
+	  op : OCL2!OperationCallExp (
 		name <- 'oclIsKindOf'
-	  p  : OCL!OclType
-	)
+		
+	  )
+	  ,
+	  p : OCL2!"OclType" (
+			  	
+	  )	  
 	do {
 		a.source <- o;
 		a.target <- o.thenExpression;

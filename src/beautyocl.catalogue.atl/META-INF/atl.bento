@@ -3,10 +3,12 @@ composite component beautyocl.atl {
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_kind_of.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplify_full_type_comparison.bento"
 	                          
 	binding bindOperators = "operators2atl.gbind"
 	binding bindKindOf    = "kindof2atl.gbind"
 	binding bindTyping    = "typing2atl.gbind"
+	binding bindAll    = "superimposed2atl.gbind"
 			
 	source concept ATLs : "ATLStatic.ecore"
 	source concept TYPW : "typing_wrapper.ecore"
@@ -20,7 +22,8 @@ composite component beautyocl.atl {
 	
 	compose  
 		// apply integer(bindOperators(in)) -> (out)
-		apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
+		// apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
+		apply fullTypeComparison(bindAll(in), bindTyping(in2)) -> (act)
 		
 }
 
