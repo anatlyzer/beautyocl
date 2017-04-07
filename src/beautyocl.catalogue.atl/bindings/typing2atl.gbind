@@ -1,10 +1,16 @@
 binding typ2wrap {  
 	concept   TYP  : "bento:/beautyocl.catalogue.simplifications/typing.ecore"
-	metamodel WRAP : "typing_wrapper.ecore"
+	metamodel WRAP : "typing_wrapper.ecore"	
+	metamodel ECORE : "http://www.eclipse.org/emf/2002/Ecore"
 	
 	-- What about mapping the op parameters?
 
 	class ExprTyping to TypWrapper
 
+	class CClass to EClass
+	class CDataType to EDataType
 	
+	feature CClass.name is name
+	feature CClass.superClasses is eSuperTypes
+	feature CClass.allSuperClasses is eAllSuperTypes
 }

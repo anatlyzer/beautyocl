@@ -1,18 +1,21 @@
 transformation component beautyocl.simplifications.fullTypeComparison {
 	source concept OCL : "superimposed.ecore"
+	source concept OCL2 : "superimposed.ecore"
 	source concept TYP : "typing.ecore"
 	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
 	
+	// There is currently a limitation which requires to declare models
+	// with the same name as the ATL definition below. Should be fixed in "ComponentInterpreter#applyTransformationComponent" 
 	source model in : OCL
 	source model in2 : TYP
 	target model out : ACT
-	target model out2 : OCL
+	target model out2 : OCL2
 	
 	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/kindof/simplify_full_type_comparison.atl" with
 		IN : OCL = in,
 		IN2 : TYP = in2,
 		OUT : ACT = out,
-		OUT2 : OCL = out2
+		OUT2 : OCL2 = out2
 		
 	tags "ocl", "simplification"
 	

@@ -3,12 +3,15 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="typwrapper" nsURI="http://beautyocl/atl/typing_wrapper" nsPrefix="typing_wrapper">
   <eClassifiers xsi:type="ecore:EClass" name="TypWrapper">
     <eOperations name="isSameType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eParameters name="e1" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
-      <eParameters name="e2" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+      <eParameters name="e1" eType="ecore:EClass platform:/plugin/anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+      <eParameters name="e2" eType="ecore:EClass platform:/plugin/anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
     </eOperations>
     <eOperations name="isSuperType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eParameters name="e1_subtype" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
-      <eParameters name="e2_supertype" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+      <eParameters name="e1_subtype" eType="ecore:EClass platform:/plugin/anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+      <eParameters name="e2_supertype" eType="ecore:EClass platform:/plugin/anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+    </eOperations>
+    <eOperations name="typeOf" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClassifier">
+      <eParameters name="e" eType="ecore:EClass platform:/plugin/anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
     </eOperations>
   </eClassifiers>
 </ecore:EPackage>

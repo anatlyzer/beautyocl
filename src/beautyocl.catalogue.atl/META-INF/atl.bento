@@ -9,6 +9,7 @@ composite component beautyocl.atl {
 	binding bindKindOf    = "kindof2atl.gbind"
 	binding bindTyping    = "typing2atl.gbind"
 	binding bindAll    = "superimposed2atl.gbind"
+	binding bindAllTgt    = "superimposed2atl_tgt.gbind"
 			
 	source concept ATLs : "ATLStatic.ecore"
 	source concept TYPW : "typing_wrapper.ecore"
@@ -23,7 +24,8 @@ composite component beautyocl.atl {
 	compose  
 		// apply integer(bindOperators(in)) -> (out)
 		// apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
-		apply fullTypeComparison(bindAll(in), bindTyping(in2)) -> (act)
+		apply fullTypeComparison(bindAll(in), bindTyping(in2)) -> (act, bindAllTgt(out))
+		// apply fullTypeComparison(in, bindTyping(in2)) -> (act, out)
 		
 }
 

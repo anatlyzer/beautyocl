@@ -1,6 +1,6 @@
-binding oo2ecore {  
-	concept   OP  : "bento:/beautyocl.catalogue.simplifications/operators.ecore"
-	metamodel ATL : "ATLStatic.ecore"
+binding superimposed2atl {  
+	concept   OCL : "bento:/beautyocl.catalogue.simplifications/superimposed.ecore"
+	metamodel ATL : "merged.ecore"
 
 	class OperatorCallExp to OperatorCallExp
 	class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 
@@ -12,7 +12,9 @@ binding oo2ecore {
     --feature UnaryOperatorCallExp.name   is operationName
 
 	feature BinaryOperatorCallExp.source  is source
-	feature BinaryOperatorCallExp.argument = self.argument->first()
+	feature BinaryOperatorCallExp.argument = self.arguments->first()
 
 	feature UnaryOperatorCallExp.source  is source
+	
+	
 }

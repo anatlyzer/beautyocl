@@ -6,13 +6,12 @@
 -- This simplification identifies a chain of "or" expressions
 -- checking the type of same source variable with oclIsKindOf.
 -- If the chain covers all the subtypes of a type, it is substituted by the type.
--- 
+-- <pre>
 --    v.oclIsKindOf(A) or v.oclIsKindOf(B) or v.oclIsKindOf(C) => or v.oclIsKindOf(SuperTypeOfABC)
--- 
+-- </pre>
 --
--- The following pre-conditions hold:
---
--- @pre OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
+-- The following pre-conditions holds:
+-- 		OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
 --
 module "simplify_full_type_comparison";
 create OUT : ACT, OUT2 : OCL2 from IN : OCL, IN2 : TYP; 
@@ -65,28 +64,74 @@ helper context OCL!OperationCallExp      def: isOrKindOf : Boolean =
 	self.name = 'oclIsKindOf';
 helper context OCL!BinaryOperatorCallExp def: isOrKindOf : Boolean =
 	self.name = 'or' and self.source.isOrKindOf and self.argument.isOrKindOf;
+	--	if self.name = 'or' then
+--		self.source.isOrKindOf and self.argument.isOrKindOf
+--	else
+--		false
+--	endif;
 	
+-- sameSource
+helper context OCL!OclExpression def: getSameSource(exp : OCL!OclExpression) : OCL!VariableDeclaration = OclUndefined;
+
+helper context OCL!VariableExp def: getSameSource(exp : OCL!OclExpression) : OCL!VariableDeclaration =
+	if exp.oclIsKindOf(OCL!VariableExp) then 
+		if self.varDcl = exp.varDcl then
+			self.varDcl
+		else
+			OclUndefined
+		endif
+	else
+		exp.getSameSource(self)
+	endif;
+	
+helper context OCL!OperationCallExp def: getSameSource(exp : OCL!OclExpression) : OCL!VariableDeclaration =
+	if self.name = 'oclIsKindOf' then
+		self.source.getSameSource(exp)
+	else
+		OclUndefined
+	endif;
+
+helper context OCL!BinaryOperatorCallExp def: getSameSource(exp : OCL!OclExpression) : OCL!VariableDeclaration =
+	self.source.getSameSource(exp);
+	
+helper context OCL!BinaryOperatorCallExp def: commonVar : OCL!VariableDeclaration =
+	self.source.getSameSource(self.argument);
+
+
 rule removeIf {
 	from o : OCL!BinaryOperatorCallExp (
 		-- TODO: Check they all have the same source expression
-		if o.isOrKindOf and not o.refImmediateComposite().isOrKindOf then
+		if o.isOrKindOf and o.commonVar <> OclUndefined and not o.refImmediateComposite().isOrKindOf then
 			thisModule.findSuperType(o.orKindOfCheckedTypes) <> OclUndefined
 		else
 			false
 		endif
 	)
+	using {
+		sup : TYP!CClass = thisModule.findSuperType(o.orKindOfCheckedTypes);
+	}
 	to a : ACT!Replace,
 	  op : OCL2!OperationCallExp (
-		name <- 'oclIsKindOf'
-		
+		name <- 'oclIsKindOf',
+		source <- vref,
+		arguments <- p
+	  ),
+	  vref : OCL2!VariableExp (
+	  	varDcl <- o.commonVar
 	  )
 	  ,
-	  p : OCL2!"OclType" (
-			  	
-	  )	  
+	  p : OCL2!OclModelElement (
+		name <- sup.name,
+		model <- m
+	  )
+	  ,
+	  m : OCL2!OclModel (
+		name <- o.commonVar.type.model.name
+	)
+	  
 	do {
 		a.source <- o;
-		a.target <- o.thenExpression;
+		a.target <- op;
 	}
  
 }

@@ -5,6 +5,16 @@ abstract class OclExpression {
 
 }
 
+class VariableDeclaration {
+	attr String[1] name;
+    
+    ref OclType[1] type;
+}
+
+class VariableExp extends OclExpression {
+	ref VariableDeclaration[1] varDcl;
+}
+
 class OperationCallExp extends OclExpression {
 	attr String[1] name;	
 
@@ -57,4 +67,14 @@ class IntegerExp extends NumericExp {
 
 class OclType extends OclExpression {
 	
+}
+
+class OclModelElement extends OclType {
+	@optional
+	ref OclModel[1] model;
+	attr String[1] name;	
+}
+
+class OclModel {
+	attr String[1] name;
 }
