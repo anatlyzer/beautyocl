@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     8/12/2017 22:38:34                                                        
+
+     project    
+     description
+                   
+     jesus                                                                
+     ====================================================================== -->
+<project name="project" default="default">
+    <description>
+            description
+    </description>
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" depends="depends" description="description">
+    	<copy todir="resources/beautyocl/atl/api/">
+	        <fileset dir="../beautyocl.catalogue.atl/adaptations" id="id">
+	    		<include name="*.asm"/>
+			</fileset>
+    	</copy>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>
