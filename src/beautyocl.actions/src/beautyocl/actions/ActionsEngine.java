@@ -14,11 +14,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 public class ActionsEngine {
 
-	public void apply(Resource r, List<InPlaceAction> actions) {
+	public void apply(Resource originalResource, Resource newElementsResource, List<InPlaceAction> actions) {
 		
 		for (InPlaceAction a : actions) {
 			if ( a instanceof Replace ) {
-				replace(r, (Replace) a);
+				replace(originalResource, newElementsResource, (Replace) a);
 			} else {
 				throw new IllegalStateException("Action not supported: " + a);
 			}
@@ -26,17 +26,18 @@ public class ActionsEngine {
 		
 	}
 
-	private void replace(Resource r, Replace a) {
+	private void replace(Resource r, Resource newElementsResource, Replace a) {
 		// TODO: Sanity check, elements poined by a should belong to r	
-		checkInResource(r, a.getSource(), a.getTarget());
+		checkInResource(r, null, a.getSource());
+		checkInResource(r, newElementsResource, a.getTarget());
 		
 		
 		EcoreUtil.replace(a.getSource(), a.getTarget());
 	}
 
-	private void checkInResource(Resource r, EObject... objs) {
+	private void checkInResource(Resource r, Resource newElementsResource, EObject... objs) {
 		for (EObject eObject : objs) {
-			if ( eObject.eResource() != r ) {
+			if ( eObject.eResource() != r && eObject.eResource() != newElementsResource) {
 				throw new IllegalStateException("Object " + eObject + " does not belong to resource: " + r);
 			}
 		}

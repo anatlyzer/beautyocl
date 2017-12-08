@@ -17,7 +17,6 @@ Require-Bundle: org.junit,
  beautyocl.api.common,
  org.eclipse.ocl.ecore,
  org.eclipse.ocl,
- beautyocl.api.emfocl,
  org.eclipse.emf.ecore.xmi,
  beautyocl.catalogue.emfocl
 Bundle-ClassPath: lib/org.objectweb.asm_3.3.1.v201105211655.jar,

@@ -1,8 +1,9 @@
--- @atlcompiler emftvm
--- @path OP=/beautyocl.catalogue.simplifications/metamodels/operators.ecore
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
 
 module "simplify_booleans";
-create OUT : OP refining IN : OP;
+create OUT : ACT, OUT2 : OCLt from IN : OCL; 
 
 helper def : relationalOps : Set(String) = Set { '=', '<>', 'implies' };
 
@@ -11,17 +12,22 @@ helper def : relationalOps : Set(String) = Set { '=', '<>', 'implies' };
 -- can be simplified to a boolean value
 --
 rule binaryBooleanRelational {
-	from o : OP!BinaryOperatorCallExp (
-		o.source.oclIsKindOf(OP!BooleanExp) and
-		o.argument.oclIsKindOf(OP!BooleanExp) and
+	from o : OCL!BinaryOperatorCallExp (
+		o.source.oclIsKindOf(OCL!BooleanExp) and
+		o.argument.oclIsKindOf(OCL!BooleanExp) and
 		thisModule.relationalOps->includes(o.name)
 	)
-	to r : OP!BooleanExp (
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
 		booleanSymbol <- 
 			if o.name = 'implies' then o.source.booleanSymbol implies o.argument.booleanSymbol 
 			else if o.name = '<>' then o.source.booleanSymbol <> o.argument.booleanSymbol
 			else o.source.booleanSymbol = o.argument.booleanSymbol endif endif 
-	)
+		)
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
 }
 
 --
@@ -29,11 +35,16 @@ rule binaryBooleanRelational {
 -- can be simplified to a boolean value
 --
 rule unaryBoolean {
-	from o : OP!UnaryOperatorCallExp (
-		o.source.oclIsKindOf(OP!BooleanExp) and
+	from o : OCL!UnaryOperatorCallExp (
+		o.source.oclIsKindOf(OCL!BooleanExp) and
 		o.name = 'not'
 	)
-	to r : OP!BooleanExp (
-		booleanSymbol <- not o.source.booleanSymbol 
-	)
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
+		  booleanSymbol <- not o.source.booleanSymbol 
+	   )
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
 }

@@ -15,15 +15,7 @@ import beautyocl.atl.api.ATLTransformation.VM;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
-public class TestKindOf {
-	static {
-		standalone();
-	}
-	
-	public static void standalone() {
-		EPackage.Registry.INSTANCE.put(ActionsPackage.eNS_URI, ActionsPackage.eINSTANCE);
-		EPackage.Registry.INSTANCE.put(TypwrapperPackage.eNS_URI, TypwrapperPackage.eINSTANCE);
-	}
+public class TestKindOf extends Tester {
 	
 	public TransformationRepository configureRepo()  {
 		TransformationRepository rep = new TransformationRepository();

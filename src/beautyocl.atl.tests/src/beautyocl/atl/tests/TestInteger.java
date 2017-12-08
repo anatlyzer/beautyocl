@@ -12,13 +12,13 @@ import beautyocl.atl.api.ATLTransformation;
 import beautyocl.atl.api.ATLTransformation.VM;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 
-public class TestInteger {
+public class TestInteger extends Tester {
 
 	@Test
 	public void test() throws ATLCoreException {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
-		rep.add(new ATLTransformation("beautyocl.simplifications.integer.atl", VM.EMFTVM));
+		rep.add(new ATLTransformation("beautyocl.simplifications.integers.atl", VM.STANDARD));
 	
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load("files/integer/integer_relational.atl");

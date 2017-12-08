@@ -1,14 +1,15 @@
-transformation component beautyocl.simplifications.integer {
-	source concept OPS : "operators.ecore"
-	target concept OPT : "operators.ecore"
+transformation component beautyocl.simplifications.integers {
+	source concept OCL : "superimposed.ecore"
+	source concept OCL2 : "superimposed.ecore"
+	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
 	
-	source model in : OPS
-	target model out : OPS
+	source model in : OCL
+	target model out : ACT
+	target model out2 : OCL2
 	
-	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/ptypes/simplify_booleans.atl" with
-		IN : OP = in,
-		OUT : OP = out
-		
-	tags "ocl", "simplification"
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/ptypes/simplify_integers.atl" with
+		IN : OCL = in,
+		OUT : ACT = out,
+		OUT2 : OCLt = out2
 	
 }

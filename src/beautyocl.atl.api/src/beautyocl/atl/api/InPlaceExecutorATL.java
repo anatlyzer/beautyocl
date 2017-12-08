@@ -47,6 +47,7 @@ public class InPlaceExecutorATL {
 		typWrapperModel.commitToResource();
 		
 		EMFModel newModel = (EMFModel) factory.newModel(actionsMetamodel);
+		EMFModel newModelATL = (EMFModel) factory.newModel(loadedMetamodel);
 		
 		ILauncher launcher = new EMFVMLauncher();
 		Map<String, Object> launcherOptions = new HashMap<String, Object>();
@@ -57,6 +58,7 @@ public class InPlaceExecutorATL {
 		launcher.addInModel(loadedModel, "IN", "ATL");
 		launcher.addInModel(typWrapperModel, "IN2", "WRAP");
 		launcher.addOutModel(newModel, "OUT", "ACT");
+		launcher.addOutModel(newModelATL, "OUT2", "ATL");
 		
 		
 		System.out.println("Pre");
@@ -78,7 +80,7 @@ public class InPlaceExecutorATL {
 				}
 			});
 			
-			new ActionsEngine().apply(exp.getResource(), actions);
+			new ActionsEngine().apply(exp.getResource(), newModelATL.getResource(), actions);
 			
 		}
 

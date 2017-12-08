@@ -1,24 +1,23 @@
--- @atlcompiler emftvm
--- @path OP=/beautyocl.catalogue.simplifications/metamodels/operators.ecore
-
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
 module "simplify_integers";
-create OUT : OP refining IN : OP;
+create OUT : ACT, OUT2 : OCLt from IN : OCL; 
 
 helper def : relationalOps : Set(String) = Set { '<', '<=', '>', '>=', '=' };
 helper def : arithmeticOps : Set(String) = Set { '+', '-', '*', '/' };
 
-
---
 -- A binary, relational operation with two integers operands
 -- can be simplified to a boolean value
 --
 rule binaryIntegerRelational {
-	from o : OP!BinaryOperatorCallExp (
-		o.source.oclIsKindOf(OP!IntegerExp) and
-		o.argument.oclIsKindOf(OP!IntegerExp) and
+	from o : OCL!BinaryOperatorCallExp (
+		o.source.oclIsKindOf(OCL!IntegerExp) and
+		o.argument.oclIsKindOf(OCL!IntegerExp) and
 		thisModule.relationalOps->includes(o.name)
 	)
-	to r : OP!BooleanExp (
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
 		booleanSymbol <- 
 			if o.name = '<' then o.source.integerSymbol < o.argument.integerSymbol
 			else if o.name = '<=' then o.source.integerSymbol <= o.argument.integerSymbol 
@@ -26,6 +25,10 @@ rule binaryIntegerRelational {
 			else if o.name = '>=' then o.source.integerSymbol >= o.argument.integerSymbol
 			else o.source.integerSymbol = o.argument.integerSymbol endif endif endif  endif
 	)
+	do {
+		a.source <- o;
+		a.target <- r;
+	}	
 }
 
 --
@@ -33,17 +36,22 @@ rule binaryIntegerRelational {
 -- can be simplified to a boolean value
 --
 rule binaryIntegerArithmetic {
-	from o : OP!BinaryOperatorCallExp (
-		o.source.oclIsKindOf(OP!IntegerExp) and
-		o.argument.oclIsKindOf(OP!IntegerExp) and
+	from o : OCL!BinaryOperatorCallExp (
+		o.source.oclIsKindOf(OCL!IntegerExp) and
+		o.argument.oclIsKindOf(OCL!IntegerExp) and
 		thisModule.arithmeticOps->includes(o.name)
 	)
-	to r : OP!IntegerExp (
+	to a : ACT!Replace,
+	   r : OCLt!IntegerExp (
 		integerSymbol <- 
 			if o.name = '+' then o.source.integerSymbol + o.argument.integerSymbol
 			else if o.name = '-' then o.source.integerSymbol - o.argument.integerSymbol 
 			else if o.name = '*' then o.source.integerSymbol * o.argument.integerSymbol 
 			else o.source.integerSymbol / o.argument.integerSymbol endif endif endif  
 	)
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
 }
 
