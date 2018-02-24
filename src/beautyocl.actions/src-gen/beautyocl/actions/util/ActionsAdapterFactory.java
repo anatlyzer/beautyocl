@@ -76,6 +76,10 @@ public class ActionsAdapterFactory extends AdapterFactoryImpl {
 				return createReplaceAdapter();
 			}
 			@Override
+			public Adapter caseDeleteMoveChildren(DeleteMoveChildren object) {
+				return createDeleteMoveChildrenAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -120,6 +124,20 @@ public class ActionsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createReplaceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link beautyocl.actions.DeleteMoveChildren <em>Delete Move Children</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see beautyocl.actions.DeleteMoveChildren
+	 * @generated
+	 */
+	public Adapter createDeleteMoveChildrenAdapter() {
 		return null;
 	}
 

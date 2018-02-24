@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Beauty OCL API for ATL
-Bundle-SymbolicName: beautyocl.api.atl
+Bundle-SymbolicName: beautyocl.atl.api
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: beautyocl.atl.api.Activator
 Require-Bundle: org.eclipse.core.runtime,
@@ -14,4 +14,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.m2m.atl.engine.emfvm.launch
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: beautyocl.atl.api
+Export-Package: beautyocl.atl.api,
+ beautyocl.atl.api.utils

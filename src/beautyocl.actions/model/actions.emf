@@ -2,10 +2,16 @@
 package actions;
 
 abstract class InPlaceAction {
-	
+	attr String[0..1] transformation;
+	ref EObject[1] source;
 }
 
 class Replace extends InPlaceAction {
-	ref EObject[1] source;
 	ref EObject[1] target;
+}
+
+/* Deletes the source object and it is replaced in the tree by
+   one of its children */
+class DeleteMoveChildren extends InPlaceAction {
+	ref EObject[1] children;
 }

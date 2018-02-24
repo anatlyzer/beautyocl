@@ -57,6 +57,7 @@ public class ActionsFactoryImpl extends EFactoryImpl implements ActionsFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case ActionsPackage.REPLACE: return createReplace();
+			case ActionsPackage.DELETE_MOVE_CHILDREN: return createDeleteMoveChildren();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -70,6 +71,16 @@ public class ActionsFactoryImpl extends EFactoryImpl implements ActionsFactory {
 	public Replace createReplace() {
 		ReplaceImpl replace = new ReplaceImpl();
 		return replace;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DeleteMoveChildren createDeleteMoveChildren() {
+		DeleteMoveChildrenImpl deleteMoveChildren = new DeleteMoveChildrenImpl();
+		return deleteMoveChildren;
 	}
 
 	/**

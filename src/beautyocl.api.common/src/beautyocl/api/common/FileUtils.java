@@ -30,12 +30,13 @@ public class FileUtils {
 	public URL getFileURL(String fileName) throws IOException {
 		final URL fileURL;
 		if (isEclipseRunning()) {
-			URL resourceURL = Activator.class.getResource(fileName);
-			if (resourceURL != null) {
-				fileURL = FileLocator.toFileURL(resourceURL);
-			} else {
-				fileURL = null;
-			}
+//			URL resourceURL = Activator.class.getResource(fileName);
+//			if (resourceURL != null) {
+//				fileURL = FileLocator.toFileURL(resourceURL);
+//			} else {
+//				fileURL = null;
+//			}
+			fileURL = FileLocator.find(new URL(fileName));
 		} else {
 			fileURL = context.getResource(fileName);
 		}

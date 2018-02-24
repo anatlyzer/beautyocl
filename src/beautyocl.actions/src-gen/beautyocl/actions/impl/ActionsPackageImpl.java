@@ -4,9 +4,11 @@ package beautyocl.actions.impl;
 
 import beautyocl.actions.ActionsFactory;
 import beautyocl.actions.ActionsPackage;
+import beautyocl.actions.DeleteMoveChildren;
 import beautyocl.actions.InPlaceAction;
 import beautyocl.actions.Replace;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -33,6 +35,13 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * @generated
 	 */
 	private EClass replaceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass deleteMoveChildrenEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -109,6 +118,24 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getInPlaceAction_Transformation() {
+		return (EAttribute)inPlaceActionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInPlaceAction_Source() {
+		return (EReference)inPlaceActionEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getReplace() {
 		return replaceEClass;
 	}
@@ -118,7 +145,7 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getReplace_Source() {
+	public EReference getReplace_Target() {
 		return (EReference)replaceEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -127,8 +154,17 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getReplace_Target() {
-		return (EReference)replaceEClass.getEStructuralFeatures().get(1);
+	public EClass getDeleteMoveChildren() {
+		return deleteMoveChildrenEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDeleteMoveChildren_Children() {
+		return (EReference)deleteMoveChildrenEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -160,10 +196,14 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		// Create classes and their features
 		inPlaceActionEClass = createEClass(IN_PLACE_ACTION);
+		createEAttribute(inPlaceActionEClass, IN_PLACE_ACTION__TRANSFORMATION);
+		createEReference(inPlaceActionEClass, IN_PLACE_ACTION__SOURCE);
 
 		replaceEClass = createEClass(REPLACE);
-		createEReference(replaceEClass, REPLACE__SOURCE);
 		createEReference(replaceEClass, REPLACE__TARGET);
+
+		deleteMoveChildrenEClass = createEClass(DELETE_MOVE_CHILDREN);
+		createEReference(deleteMoveChildrenEClass, DELETE_MOVE_CHILDREN__CHILDREN);
 	}
 
 	/**
@@ -195,13 +235,18 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		// Add supertypes to classes
 		replaceEClass.getESuperTypes().add(this.getInPlaceAction());
+		deleteMoveChildrenEClass.getESuperTypes().add(this.getInPlaceAction());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(inPlaceActionEClass, InPlaceAction.class, "InPlaceAction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getInPlaceAction_Transformation(), ecorePackage.getEString(), "transformation", null, 0, 1, InPlaceAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInPlaceAction_Source(), ecorePackage.getEObject(), null, "source", null, 1, 1, InPlaceAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(replaceEClass, Replace.class, "Replace", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getReplace_Source(), ecorePackage.getEObject(), null, "source", null, 1, 1, Replace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getReplace_Target(), ecorePackage.getEObject(), null, "target", null, 1, 1, Replace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(deleteMoveChildrenEClass, DeleteMoveChildren.class, "DeleteMoveChildren", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDeleteMoveChildren_Children(), ecorePackage.getEObject(), null, "children", null, 1, 1, DeleteMoveChildren.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

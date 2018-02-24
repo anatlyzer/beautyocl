@@ -3,6 +3,7 @@ package beautyocl.atl.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,12 @@ import org.eclipse.m2m.atl.engine.emfvm.launch.EMFVMLauncher;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ActionsEngine;
 import beautyocl.actions.InPlaceAction;
+import beautyocl.actions.MatchPhase;
 import beautyocl.api.common.UglyExpression;
 
 public class InPlaceExecutorATL {
 
-	public void apply(InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
+	public MatchPhase apply(String transformationName, InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
 		EMFModelFactory factory = new EMFModelFactory();
 		EMFInjector injector = new EMFInjector();
 
@@ -74,18 +76,21 @@ public class InPlaceExecutorATL {
 			List<InPlaceAction> actions = new ArrayList<>();
 			newModel.getResource().getAllContents().forEachRemaining(o -> {
 				if ( o instanceof InPlaceAction ) {
+					((InPlaceAction) o).setTransformation(transformationName);
 					actions.add((InPlaceAction) o);
 				} else {
 					throw new IllegalStateException("No action! " + o);
 				}
 			});
-			
-			new ActionsEngine().apply(exp.getResource(), newModelATL.getResource(), actions);
+
+			return new MatchPhase(exp.getResource(), exp.getScope(), actions);
+			// new ActionsEngine().apply(exp.getResource(), exp.getScope(), newModelATL.getResource(), actions);
 			
 		}
 
-		System.out.println("Post");
-		System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
+		return new MatchPhase(exp.getResource(), exp.getScope(), Collections.emptyList());
+		//System.out.println("Post");
+		//System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
 
 	}
 

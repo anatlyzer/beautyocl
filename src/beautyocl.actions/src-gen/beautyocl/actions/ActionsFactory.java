@@ -31,6 +31,15 @@ public interface ActionsFactory extends EFactory {
 	Replace createReplace();
 
 	/**
+	 * Returns a new object of class '<em>Delete Move Children</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Delete Move Children</em>'.
+	 * @generated
+	 */
+	DeleteMoveChildren createDeleteMoveChildren();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

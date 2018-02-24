@@ -7,10 +7,15 @@
   <foreignModel>actions.ecore</foreignModel>
   <genPackages prefix="Actions" basePackage="beautyocl" disposableProviderFactory="true"
       ecorePackage="actions.ecore#/">
-    <genClasses image="false" ecoreClass="actions.ecore#//InPlaceAction"/>
+    <genClasses image="false" ecoreClass="actions.ecore#//InPlaceAction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute actions.ecore#//InPlaceAction/transformation"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//InPlaceAction/source"/>
+    </genClasses>
     <genClasses ecoreClass="actions.ecore#//Replace">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//Replace/source"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//Replace/target"/>
+    </genClasses>
+    <genClasses ecoreClass="actions.ecore#//DeleteMoveChildren">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//DeleteMoveChildren/children"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

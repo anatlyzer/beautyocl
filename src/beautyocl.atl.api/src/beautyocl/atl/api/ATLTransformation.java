@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.eclipse.m2m.atl.core.ATLCoreException;
 
+import beautyocl.actions.MatchPhase;
 import beautyocl.api.common.FileUtils;
 import beautyocl.api.common.IATLTransformation;
 import beautyocl.api.common.UglyExpression;
@@ -18,24 +19,25 @@ public class ATLTransformation implements IATLTransformation {
 	public enum VM {
 		STANDARD {
 			final String ext = ".asm";
-			public void execute(String fname, UglyExpression exp) throws IOException, ATLCoreException {
-				InputStream asmFile = futils.getFileURL( fname.replace(".atl", ext) ).openStream();
+			public MatchPhase execute(String fname, UglyExpression exp) throws IOException, ATLCoreException {
+				InputStream asmFile = futils.getFileURL( fname ).openStream();
 				InPlaceExecutorATL exec = new InPlaceExecutorATL();
-				exec.apply(asmFile, exp);				
+				return exec.apply(fname, asmFile, exp);				
 			}
 		},
 		EMFTVM {
 			final String ext = ".emftvm";
 			
 			@Override
-			public void execute(String fname, UglyExpression exp) throws IOException, ATLCoreException {
-				InputStream asmFile = futils.getFileURL( fname.replace(".atl", ext) ).openStream();
+			public MatchPhase execute(String fname, UglyExpression exp) throws IOException, ATLCoreException {
+				InputStream asmFile = futils.getFileURL( fname ).openStream();
 				InPlaceExecutor exec = new InPlaceExecutor();
-				exec.apply(asmFile, exp);	
+				exec.apply(asmFile, exp);
+				throw new UnsupportedOperationException("TODO: Implement match-phase at the EMFTVM level");
 			}
 		};
 
-		public abstract void execute(String fname, UglyExpression exp) throws IOException, ATLCoreException;
+		public abstract MatchPhase execute(String fname, UglyExpression exp) throws IOException, ATLCoreException;
 	}
 	
 	public ATLTransformation(String fname, VM vm) {
@@ -43,12 +45,13 @@ public class ATLTransformation implements IATLTransformation {
 		this.vm = vm;
 	}
 
-	public void exec(UglyExpression exp) {
+	public MatchPhase exec(UglyExpression exp) {
 		try {
-			vm.execute(fname, exp);
+			return vm.execute(fname, exp);
 		} catch (IOException | ATLCoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

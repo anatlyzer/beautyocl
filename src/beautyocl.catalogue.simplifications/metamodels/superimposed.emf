@@ -41,6 +41,26 @@ class UnaryOperatorCallExp extends OperatorCallExp {
 	val OclExpression[1] source;	
 }
 
+
+abstract class PropertyCallExp extends OclExpression {
+	val OclExpression[1] source;
+}
+  
+abstract class LoopExp extends PropertyCallExp {
+	val OclExpression[1]#loopExp body;
+	/* !ordered val Iterator[+]#loopExpr iterators; */
+}
+
+/*
+class IterateExp extends LoopExp {
+	val VariableDeclaration[1]#baseExp result;
+}
+*/
+
+class IteratorExp extends LoopExp {
+	attr String[1] name;
+}
+
 /* Literals (similar to ATL/OCL) */
 
 abstract class PrimitiveExp extends OclExpression {

@@ -1,5 +1,7 @@
 package beautyocl.api.common;
 
+import beautyocl.actions.MatchPhase;
+
 public interface IATLTransformation {
-	public void exec(UglyExpression exp);
+	public MatchPhase exec(UglyExpression exp);
 }
