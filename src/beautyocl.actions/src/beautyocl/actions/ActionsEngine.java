@@ -17,41 +17,40 @@ import beautyocl.actions.MatchPhase.Match;
  */
 public class ActionsEngine {
 
-	public void apply(Match match) {
-		apply(match.getResource(), null, Collections.singletonList(match.getAction()));	
+	public EObject apply(Match match) {
+		return apply(match.getResource(), null, match.getAction());	
 	}
 
 	
-	private void apply(Resource originalResource, Resource newElementsResource, List<InPlaceAction> actions) {
-		
-		for (InPlaceAction a : actions) {
-			if ( a instanceof Replace ) {
-				replace(originalResource, newElementsResource, (Replace) a);
-			} else if ( a instanceof DeleteMoveChildren ) {
-				deleteMoveChildren(originalResource, newElementsResource, (DeleteMoveChildren) a);
-			} else {
-				throw new IllegalStateException("Action not supported: " + a);
-			}
+	private EObject apply(Resource originalResource, Resource newElementsResource, InPlaceAction a) {
+		if ( a instanceof Replace ) {
+			return replace(originalResource, newElementsResource, (Replace) a);
+		} else if ( a instanceof DeleteMoveChildren ) {
+			return deleteMoveChildren(originalResource, newElementsResource, (DeleteMoveChildren) a);
+		} else {
+			throw new IllegalStateException("Action not supported: " + a);
 		}
-		
 	}
 
-	private void replace(Resource r, Resource newElementsResource, Replace a) {		
+	private EObject replace(Resource r, Resource newElementsResource, Replace a) {		
 		// TODO: Sanity check, elements poined by a should belong to r	
 		checkInResource(r, null, a.getSource());
 		
 		if ( newElementsResource != null )
 			checkInResource(r, newElementsResource, a.getTarget());
-		
-		
+				
 		EcoreUtil.replace(a.getSource(), a.getTarget());
+		
+		return a.getTarget();
 	}
 
-	private void deleteMoveChildren(Resource r, Resource newElementsResource, DeleteMoveChildren a) {		
+	private EObject deleteMoveChildren(Resource r, Resource newElementsResource, DeleteMoveChildren a) {		
 		checkInResource(r, null, a.getSource());
 		checkInResource(r, null, a.getChildren());
 			
 		EcoreUtil.replace(a.getSource(), a.getChildren());
+		
+		return a.getChildren();
 	}
 	
 	private void checkInResource(Resource r, Resource newElementsResource, EObject... objs) {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.eclipse.emf.ecore.EObject;
+
 import beautyocl.actions.MatchPhase.Match;
 
 public class Scheduler {
@@ -38,9 +40,9 @@ public class Scheduler {
 					findFirst().
 					map(m -> {
 						tracer.preApply(m, m.getAction().getSource());
-						engine.apply(m);
+						EObject result = engine.apply(m);
 						// TODO: Apply should return the generated object, which is then passed to postApply
-						tracer.postApply(m, m.getAction().getSource());
+						tracer.postApply(m, result);
 						return true;
 					}).orElse(false);
 		

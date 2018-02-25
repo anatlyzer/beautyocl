@@ -17,7 +17,10 @@ public class BETransformation {
 	
 	@ElementList(name="problems")
 	protected List<BEProblem> problems = new ArrayList<BEProblem>();
-	
+
+	@ElementList(name="invariants")
+	protected List<BEInvariant> invariants = new ArrayList<BEInvariant>();
+
 	public List<BEProblem> getProblems() {
 		return problems;
 	}
@@ -42,5 +45,12 @@ public class BETransformation {
 		this.problems.add(p);
 	}
 
+	public List<BEInvariant> getInvariants() {
+		return invariants;
+	}
+	
+	public void addInvariant(BEInvariant inv) {
+		this.invariants.add(inv);
+	}
 
 }

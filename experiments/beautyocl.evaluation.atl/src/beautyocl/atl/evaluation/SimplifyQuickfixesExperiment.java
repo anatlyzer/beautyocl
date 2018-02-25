@@ -45,7 +45,7 @@ import beautyocl.atl.evaluation.raw.BEQuickfix;
 import beautyocl.atl.evaluation.raw.BESimplification;
 import beautyocl.atl.evaluation.raw.BETransformation;
 
-public class SimplifyQuickfixesExperiment extends AbstractATLExperiment implements IExperiment {
+public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 
 	protected static final String ORIGINAL_RESOURCE = "ORIGINAL_RESOURCE";
 	
@@ -181,14 +181,16 @@ public class SimplifyQuickfixesExperiment extends AbstractATLExperiment implemen
 			EObject targetExpression = actualAction.getTgt();
 			
 			expQfx.setOriginalExpression(ATLSerializer.serialize(targetExpression));
+			expQfx.setOriginalNumNodes(countNodes(targetExpression));
 			
 			BeautyOCLAnatlyzer simplifier = new BeautyOCLAnatlyzer();
-			if ( simplifier != null ) {
-				System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression)+"\n");
-				ExecutionInfo result = simplifier.simplify(null, targetExpression, new ExperimentTracer(expQfx));
-				System.out.println("After:\n" + ATLSerializer.serialize(result.getResult())+"\n");
-			}	
-			// TODO: Get information about the applied simplifications 
+			System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression)+"\n");
+			ExecutionInfo result = simplifier.simplify(null, targetExpression, new ExperimentTracer(expQfx));
+			System.out.println("After:\n" + ATLSerializer.serialize(result.getResult())+"\n");
+			
+			// TODO: Poner solo si se ha simplificado algo!
+			expQfx.setFinalExpression(ATLSerializer.serialize(result.getResult()));
+			expQfx.setSimplifiedNumNodes(countNodes(result.getResult()));
 		});
 		
 		return null;
@@ -229,47 +231,9 @@ public class SimplifyQuickfixesExperiment extends AbstractATLExperiment implemen
 		messages.add(msg);
 	}
 	
-	public class ExperimentTracer implements IExecutionTracer {
-
-		private BEQuickfix qfx;
-		private BESimplification currentSimplification;
-
-		public ExperimentTracer(BEQuickfix expQfx) {
-			this.qfx = expQfx;
-		}
-
-		@Override
-		public void preApply(Match m, EObject original) {
-			this.currentSimplification = new BESimplification();
-			this.currentSimplification.setName(m.getAction().getTransformation());
-			this.currentSimplification.setOriginalExp(ATLSerializer.serialize(original));
-			this.currentSimplification.setOriginalNumNodes(countNodes(original));
-		}
-
-		@Override
-		public void postApply(Match m, EObject transformed) {
-			this.currentSimplification.setOriginalExp(ATLSerializer.serialize(transformed));
-			this.currentSimplification.setOriginalNumNodes(countNodes(transformed));
-			this.qfx.addSimplification(currentSimplification);
-		}
-
-		private int countNodes(EObject obj) {
-			int i = 1;
-			TreeIterator<EObject> it = obj.eAllContents();
-			while ( it.hasNext() ) {
-				it.next();
-				i++;
-			}
-			return i;
-		}
-
-
-	}
-
-
 	@Override
 	public void saveData(IFile expFile) {	
-        String fname = createDataFileName(expFile, "data", "data");
+        String fname = createDataFileName(expFile, "qfx-data", "data");
         
 		// http://www.ibm.com/developerworks/library/x-simplexobjs/
 		// http://simple.sourceforge.net/download/stream/doc/examples/examples.php

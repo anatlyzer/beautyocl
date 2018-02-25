@@ -1,0 +1,8 @@
+name: Invariant simplifications
+extensionID: simplification.experiment.invariants
+options: {
+ timeout : 10000
+}
+projects: 
+-  name: anatlyzer.evaluation.preconditions
+

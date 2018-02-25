@@ -1,15 +1,16 @@
 package beautyocl.atl.evaluation.raw;
 
 import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 public class BESimplification {
 	@Attribute
 	protected String name;
 	
-	@Attribute
+	@Element
 	protected String originalExp;
 	
-	@Attribute
+	@Element
 	protected String simplifiedExp;
 
 	@Attribute

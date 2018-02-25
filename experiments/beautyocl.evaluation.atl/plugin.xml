@@ -9,5 +9,13 @@
             resourceType="file:atl">
       </experiment>
    </extension>
+   <extension
+         id="simplification.experiment.invariants"
+         point="anatlyzer.experiments.newExperiment">
+      <experiment
+            delegate="beautyocl.atl.evaluation.SimplifyInvariantsExperiment"
+            resourceType="file:atl">
+      </experiment>
+   </extension>
 
 </plugin>
