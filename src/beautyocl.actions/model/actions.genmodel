@@ -17,5 +17,12 @@
     <genClasses ecoreClass="actions.ecore#//DeleteMoveChildren">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//DeleteMoveChildren/children"/>
     </genClasses>
+    <genClasses ecoreClass="actions.ecore#//Clone">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute actions.ecore#//Clone/ignoredProperties"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//Clone/values"/>
+    </genClasses>
+    <genClasses ecoreClass="actions.ecore#//CompositeAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference actions.ecore#//CompositeAction/actions"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

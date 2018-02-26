@@ -63,32 +63,35 @@ public class InPlaceExecutorATL {
 		launcher.addOutModel(newModelATL, "OUT2", "ATL");
 		
 		
-		System.out.println("Pre");
-		System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
+		//System.out.println("Pre");
+		//System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
 
 		launcher.launch("run", null, launcherOptions, asmFile);
 
 		Resource r = newModel.getResource();
 		if ( r == null ) {
 			// No actions, thus nothing matched
-			System.out.println("Nothing applied!");
+			System.out.println("Nothing applied! " + transformationName);
 		} else {
 			List<InPlaceAction> actions = new ArrayList<>();
 			newModel.getResource().getAllContents().forEachRemaining(o -> {
 				if ( o instanceof InPlaceAction ) {
 					((InPlaceAction) o).setTransformation(transformationName);
-					actions.add((InPlaceAction) o);
+					
+					// It is not a subordinate action
+					if ( o.eContainer() == null )
+						actions.add((InPlaceAction) o);
 				} else {
 					throw new IllegalStateException("No action! " + o);
 				}
 			});
 
-			return new MatchPhase(exp.getResource(), exp.getScope(), actions);
+			return new MatchPhase(exp.getResource(), exp, actions);
 			// new ActionsEngine().apply(exp.getResource(), exp.getScope(), newModelATL.getResource(), actions);
 			
 		}
 
-		return new MatchPhase(exp.getResource(), exp.getScope(), Collections.emptyList());
+		return new MatchPhase(exp.getResource(), exp, Collections.emptyList());
 		//System.out.println("Post");
 		//System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
 

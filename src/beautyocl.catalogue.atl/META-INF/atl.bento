@@ -7,8 +7,14 @@ composite component beautyocl.atl {
 	// Type comparisons
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_kind_of.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplify_full_type_comparison.bento"
+	
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_kindof_true.bento"
+	
 	// Iterators
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_remove_iterator.bento"
+	// If	                          	
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_else.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_introduce_call.bento"
 	                          
 	binding bindTyping    = "typing2atl.gbind"
 	binding bindAll    = "superimposed2atl.gbind"
@@ -28,6 +34,9 @@ composite component beautyocl.atl {
 		apply booleans(bindAll(in)) -> (act, bindAllTgt(out))
 		apply integers(bindAll(in)) -> (act, bindAllTgt(out))
 		apply iterator(bindAll(in)) -> (act, bindAllTgt(out))
+		apply ifelse(bindAll(in)) -> (act, bindAllTgt(out))
+		apply ifintrocall(bindAll(in)) -> (act, bindAllTgt(out))
+		apply kindoftrue(bindAll(in), bindTyping(in2)) -> (act, bindAllTgt(out))
 		
 		// apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)
 		apply fullTypeComparison(bindAll(in), bindTyping(in2)) -> (act, bindAllTgt(out))

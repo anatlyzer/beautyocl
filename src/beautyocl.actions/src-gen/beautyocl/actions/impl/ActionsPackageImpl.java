@@ -4,6 +4,8 @@ package beautyocl.actions.impl;
 
 import beautyocl.actions.ActionsFactory;
 import beautyocl.actions.ActionsPackage;
+import beautyocl.actions.Clone;
+import beautyocl.actions.CompositeAction;
 import beautyocl.actions.DeleteMoveChildren;
 import beautyocl.actions.InPlaceAction;
 import beautyocl.actions.Replace;
@@ -42,6 +44,20 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * @generated
 	 */
 	private EClass deleteMoveChildrenEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass cloneEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass compositeActionEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -172,6 +188,51 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getClone() {
+		return cloneEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getClone_IgnoredProperties() {
+		return (EAttribute)cloneEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getClone_Values() {
+		return (EReference)cloneEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getCompositeAction() {
+		return compositeActionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCompositeAction_Actions() {
+		return (EReference)compositeActionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ActionsFactory getActionsFactory() {
 		return (ActionsFactory)getEFactoryInstance();
 	}
@@ -204,6 +265,13 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		deleteMoveChildrenEClass = createEClass(DELETE_MOVE_CHILDREN);
 		createEReference(deleteMoveChildrenEClass, DELETE_MOVE_CHILDREN__CHILDREN);
+
+		cloneEClass = createEClass(CLONE);
+		createEAttribute(cloneEClass, CLONE__IGNORED_PROPERTIES);
+		createEReference(cloneEClass, CLONE__VALUES);
+
+		compositeActionEClass = createEClass(COMPOSITE_ACTION);
+		createEReference(compositeActionEClass, COMPOSITE_ACTION__ACTIONS);
 	}
 
 	/**
@@ -236,6 +304,8 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 		// Add supertypes to classes
 		replaceEClass.getESuperTypes().add(this.getInPlaceAction());
 		deleteMoveChildrenEClass.getESuperTypes().add(this.getInPlaceAction());
+		cloneEClass.getESuperTypes().add(this.getInPlaceAction());
+		compositeActionEClass.getESuperTypes().add(this.getInPlaceAction());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(inPlaceActionEClass, InPlaceAction.class, "InPlaceAction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -247,6 +317,13 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		initEClass(deleteMoveChildrenEClass, DeleteMoveChildren.class, "DeleteMoveChildren", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDeleteMoveChildren_Children(), ecorePackage.getEObject(), null, "children", null, 1, 1, DeleteMoveChildren.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(cloneEClass, Clone.class, "Clone", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getClone_IgnoredProperties(), ecorePackage.getEString(), "ignoredProperties", null, 0, -1, Clone.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getClone_Values(), ecorePackage.getEObject(), null, "values", null, 0, -1, Clone.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(compositeActionEClass, CompositeAction.class, "CompositeAction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getCompositeAction_Actions(), this.getInPlaceAction(), null, "actions", null, 0, -1, CompositeAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

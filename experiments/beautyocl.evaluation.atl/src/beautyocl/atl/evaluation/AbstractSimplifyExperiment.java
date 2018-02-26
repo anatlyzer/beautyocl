@@ -32,6 +32,10 @@ public abstract class AbstractSimplifyExperiment extends AbstractATLExperiment {
 
 		@Override
 		public void postApply(Match m, EObject transformed) {
+			if ( transformed == null ) {				
+				throw new IllegalStateException("Cannot be null: " + m.getAction().getTransformation());
+			}
+			System.out.println(this.currentSimplification.getOriginalExp());
 			this.currentSimplification.setSimplifiedExp(ATLSerializer.serialize(transformed));
 			this.currentSimplification.setSimplifiedNumNodes(countNodes(transformed));
 			this.simp.addSimplification(currentSimplification);

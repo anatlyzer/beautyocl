@@ -17,17 +17,21 @@ public class MatchPhase {
 
 	private List<InPlaceAction> actions;
 	private Resource resource;
-	private EObject scope;
+	private IExpressionHolder exp;
 
-	public MatchPhase(Resource r, EObject scope, List<InPlaceAction> actions) {
+	public MatchPhase(Resource r, IExpressionHolder exp, List<InPlaceAction> actions) {
 		this.actions = actions;
 		this.resource = r;
-		this.scope = scope;
+		this.exp = exp;
 	}
 	
 	public List<Match> getMatches() {
 		return this.actions.stream().map(a -> new Match(a)).collect(Collectors.toList());
 	
+	}
+	
+	public IExpressionHolder getExpression() {
+		return exp;
 	}
 	
 	public class Match {
@@ -45,7 +49,11 @@ public class MatchPhase {
 		public Resource getResource() {
 			return resource;
 		}
-				
+		
+		public IExpressionHolder getExpression() {
+			return exp;
+		}
+		
 		/**
 		 * Checks whether an object to be replaced is within the scope provided by another object
 		 * Everythin "outside" cannot be transformed 
@@ -54,7 +62,7 @@ public class MatchPhase {
 		 * @return
 		 */
 		public boolean isWithinScope(EObject source) {
-			return scope == source || EcoreUtil.isAncestor(scope, source);
+			return exp.getRoot() == source || EcoreUtil.isAncestor(exp.getRoot(), source);
 		}
 	}
 	

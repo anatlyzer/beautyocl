@@ -23,7 +23,7 @@ public class Beautyfier {
 	}
 	
 	public ExecutionInfo applyAll(UglyExpression exp) {
-		Scheduler scheduler = new Scheduler(tracer);
+		Scheduler scheduler = new Scheduler(tracer, exp);
 
 		return scheduler.apply(s -> {
 			for (IATLTransformation t : repo.getTransformations()) {

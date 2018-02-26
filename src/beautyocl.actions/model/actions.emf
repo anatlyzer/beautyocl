@@ -15,3 +15,12 @@ class Replace extends InPlaceAction {
 class DeleteMoveChildren extends InPlaceAction {
 	ref EObject[1] children;
 }
+
+class Clone extends InPlaceAction {
+	attr String[*] ignoredProperties;
+	ref EObject[*] values;
+}
+
+class CompositeAction extends InPlaceAction {
+	val InPlaceAction[*] actions;	
+}

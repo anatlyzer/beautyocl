@@ -23,4 +23,13 @@ public class UglyATLExpression implements UglyExpression {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public EObject getRoot() {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void setRoot(EObject tgt) {
+		throw new UnsupportedOperationException();	
+	}
 }

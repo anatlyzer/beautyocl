@@ -29,10 +29,6 @@ public class BeautyOCLAnatlyzer implements IOclSimplifier {
 		Beautyfier beauty = new Beautyfier(rep, tracer);
 		ExecutionInfo info = beauty.applyAll(exp);
 		
-		// This should be changed by the object returned by applyAll
-		// i.e., applyAll should be able to properly fill info.setResult
-		info.setResult(obj);		
-		
 		return info;
 	}
 

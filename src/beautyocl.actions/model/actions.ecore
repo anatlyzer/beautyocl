@@ -14,4 +14,14 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="children" lowerBound="1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Clone" eSuperTypes="#//InPlaceAction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ignoredProperties" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompositeAction" eSuperTypes="#//InPlaceAction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
+        eType="#//InPlaceAction" containment="true"/>
+  </eClassifiers>
 </ecore:EPackage>

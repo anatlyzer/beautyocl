@@ -34,4 +34,15 @@ public class UglyAnATLyzerExpression implements UglyExpression {
 		return obj;
 	}
 
+	@Override
+	public EObject getRoot() {
+		return obj;
+	}
+
+	@Override
+	public void setRoot(EObject root) {
+		if ( root == null ) throw new IllegalArgumentException();
+		this.obj = root;
+	}
+	
 }

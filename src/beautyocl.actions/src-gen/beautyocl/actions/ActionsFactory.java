@@ -40,6 +40,24 @@ public interface ActionsFactory extends EFactory {
 	DeleteMoveChildren createDeleteMoveChildren();
 
 	/**
+	 * Returns a new object of class '<em>Clone</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Clone</em>'.
+	 * @generated
+	 */
+	Clone createClone();
+
+	/**
+	 * Returns a new object of class '<em>Composite Action</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Composite Action</em>'.
+	 * @generated
+	 */
+	CompositeAction createCompositeAction();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

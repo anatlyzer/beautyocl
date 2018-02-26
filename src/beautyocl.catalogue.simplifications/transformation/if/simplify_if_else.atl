@@ -9,13 +9,27 @@ create OUT : ACT, OUT2 : OCL2 from IN : OCL;
 helper context OCL!BooleanExp    def: isTrue() : Boolean = self.booleanSymbol;
 helper context OCL!OclExpression def: isTrue() : Boolean = false;
 
-rule removeIf {
+helper context OCL!BooleanExp    def: isFalse() : Boolean = self.booleanSymbol;
+helper context OCL!OclExpression def: isFalse() : Boolean = false;
+
+rule removeIfThen {
 	from o : OCL!IfExp (
 		o.condition.isTrue()
 	)
-	to a : ACT!Replace
+	to a : ACT!DeleteMoveChildren
 	do {
 		a.source <- o;
-		a.target <- o.thenExpression;
+		a.children <- o.thenExpression;
+	}
+}
+
+rule removeIfElse {
+	from o : OCL!IfExp (
+		o.condition.isFalse()
+	)
+	to a : ACT!DeleteMoveChildren
+	do {
+		a.source <- o;
+		a.children <- o.elseExpression;
 	}
 }

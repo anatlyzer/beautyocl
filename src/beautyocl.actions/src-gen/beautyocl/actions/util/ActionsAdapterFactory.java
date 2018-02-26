@@ -80,6 +80,14 @@ public class ActionsAdapterFactory extends AdapterFactoryImpl {
 				return createDeleteMoveChildrenAdapter();
 			}
 			@Override
+			public Adapter caseClone(Clone object) {
+				return createCloneAdapter();
+			}
+			@Override
+			public Adapter caseCompositeAction(CompositeAction object) {
+				return createCompositeActionAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -138,6 +146,34 @@ public class ActionsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDeleteMoveChildrenAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link beautyocl.actions.Clone <em>Clone</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see beautyocl.actions.Clone
+	 * @generated
+	 */
+	public Adapter createCloneAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link beautyocl.actions.CompositeAction <em>Composite Action</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see beautyocl.actions.CompositeAction
+	 * @generated
+	 */
+	public Adapter createCompositeActionAdapter() {
 		return null;
 	}
 

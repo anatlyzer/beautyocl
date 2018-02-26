@@ -1,2 +1,4 @@
 /simplify_if_kindof2.emftvm
 /simplify_if_else.emftvm
+/simplify_if_else.asm
+/introduce_call.asm

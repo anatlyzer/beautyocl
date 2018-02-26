@@ -6,15 +6,15 @@ import java.util.function.Consumer;
 
 import org.eclipse.emf.ecore.EObject;
 
-import beautyocl.actions.MatchPhase.Match;
-
 public class Scheduler {
 
 	public List<MatchPhase> matches = new ArrayList<>();
-	private IExecutionTracer tracer; 
+	private IExecutionTracer tracer;
+	private IExpressionHolder exp; 
 	
-	public Scheduler(IExecutionTracer tracer) {
+	public Scheduler(IExecutionTracer tracer, IExpressionHolder exp) {
 		this.tracer = tracer;
+		this.exp = exp;
 	}
 
 	// TODO: Organise matches according to overlappings
@@ -49,7 +49,8 @@ public class Scheduler {
 			if ( ! applied )
 				break;
 		}
-		
+
+		info.setResult(exp.getRoot());
 		return info;
 	}
 

@@ -86,6 +86,20 @@ public class ActionsSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ActionsPackage.CLONE: {
+				Clone clone = (Clone)theEObject;
+				T result = caseClone(clone);
+				if (result == null) result = caseInPlaceAction(clone);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ActionsPackage.COMPOSITE_ACTION: {
+				CompositeAction compositeAction = (CompositeAction)theEObject;
+				T result = caseCompositeAction(compositeAction);
+				if (result == null) result = caseInPlaceAction(compositeAction);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -132,6 +146,36 @@ public class ActionsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDeleteMoveChildren(DeleteMoveChildren object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Clone</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Clone</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseClone(Clone object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Composite Action</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Composite Action</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCompositeAction(CompositeAction object) {
 		return null;
 	}
 
