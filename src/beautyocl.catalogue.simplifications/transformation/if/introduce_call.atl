@@ -3,9 +3,6 @@
 -- @path OCL2=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
 -- @path ACT=/beautyocl.actions/model/actions.ecore
 
--- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
-
-
 -- Given:
 --  if x then y else z endif > 0 => if x then y > 0 else z > 0
 --

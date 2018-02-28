@@ -201,17 +201,19 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		List<Problem> originalProblems = r.getProblems();
 		ArrayList<Problem> allProblems = new ArrayList<Problem>();
 		for (Problem p : originalProblems) {
-			if ( AnalyserUtils.isWitnessRequred(p) ) { 
-				ProblemStatus result = createFinder().find(p, r);
-				p.setStatus(result);
-				
-				if ( AnalyserUtils.isConfirmed(p)) {
-					allProblems.add(p);
-				}
-			} else {
-				allProblems.add(p);
-			}
-		
+//			if ( AnalyserUtils.isWitnessRequred(p) ) { 
+//				ProblemStatus result = createFinder().find(p, r);
+//				p.setStatus(result);
+//				
+//				if ( AnalyserUtils.isConfirmed(p)) {
+//					allProblems.add(p);
+//				}
+//			} else {
+//				allProblems.add(p);
+//			}
+
+			allProblems.add(p);
+			
 		}
 		return allProblems;
 	}

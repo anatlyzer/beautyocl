@@ -11,4 +11,9 @@ public interface UglyExpression extends IExpressionHolder {
 	
 	EObject getScope();
 
+	/**
+	 * @return A resource with the ecore elements used to type the expression.
+	 */
+	Resource getEcoreTypesResource();
+	
 }

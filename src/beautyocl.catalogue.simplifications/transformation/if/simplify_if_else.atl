@@ -6,30 +6,34 @@
 module "simplify_if_else";
 create OUT : ACT, OUT2 : OCL2 from IN : OCL; 
 
-helper context OCL!BooleanExp    def: isTrue() : Boolean = self.booleanSymbol;
-helper context OCL!OclExpression def: isTrue() : Boolean = false;
+--helper context OCL!BooleanExp    def: isTrue() : Boolean = self.booleanSymbol;
+--helper context OCL!OclExpression def: isTrue() : Boolean = false;
+--
+--helper context OCL!BooleanExp    def: isFalse() : Boolean = self.booleanSymbol;
+--helper context OCL!OclExpression def: isFalse() : Boolean = false;
 
-helper context OCL!BooleanExp    def: isFalse() : Boolean = self.booleanSymbol;
-helper context OCL!OclExpression def: isFalse() : Boolean = false;
+helper context OCL!BooleanExp    def: isLiteral() : Boolean = true;
+helper context OCL!OclExpression def: isLiteral() : Boolean = false;
 
+-- @ignore found-in-subtype
 rule removeIfThen {
 	from o : OCL!IfExp (
-		o.condition.isTrue()
+		o.condition.isLiteral()
 	)
 	to a : ACT!DeleteMoveChildren
 	do {
 		a.source <- o;
-		a.children <- o.thenExpression;
+		a.children <- if o.condition.booleanSymbol then o.thenExpression else o.elseExpression endif;
 	}
 }
 
-rule removeIfElse {
-	from o : OCL!IfExp (
-		o.condition.isFalse()
-	)
-	to a : ACT!DeleteMoveChildren
-	do {
-		a.source <- o;
-		a.children <- o.elseExpression;
-	}
-}
+--rule removeIfElse {
+--	from o : OCL!IfExp (
+--		o.condition.isFalse()
+--	)
+--	to a : ACT!DeleteMoveChildren
+--	do {
+--		a.source <- o;
+--		a.children <- o.elseExpression;
+--	}
+--}

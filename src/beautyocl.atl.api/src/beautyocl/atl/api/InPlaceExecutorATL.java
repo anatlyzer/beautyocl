@@ -35,7 +35,10 @@ public class InPlaceExecutorATL {
 		
 		IReferenceModel typWrapperMetamodel = factory.newReferenceModel();
 		injector.inject(typWrapperMetamodel, "http://beautyocl/atl/typing_wrapper");
-		
+
+		IReferenceModel ecoreMetamodel = factory.newReferenceModel();
+		injector.inject(ecoreMetamodel, "http://www.eclipse.org/emf/2002/Ecore");
+
 		IReferenceModel actionsMetamodel = factory.newReferenceModel();		
 		injector.inject(actionsMetamodel, "http://beautyocl/actions");
 
@@ -48,6 +51,9 @@ public class InPlaceExecutorATL {
 		typWrapperModel.newElement(typWrapperMetamodel.getMetaElementByName("TypWrapper"));
 		typWrapperModel.commitToResource();
 		
+		EMFModel ecoreModel = (EMFModel) factory.newModel(ecoreMetamodel);
+		injector.inject(ecoreModel, exp.getEcoreTypesResource());
+				
 		EMFModel newModel = (EMFModel) factory.newModel(actionsMetamodel);
 		EMFModel newModelATL = (EMFModel) factory.newModel(loadedMetamodel);
 		
@@ -59,13 +65,14 @@ public class InPlaceExecutorATL {
 
 		launcher.addInModel(loadedModel, "IN", "ATL");
 		launcher.addInModel(typWrapperModel, "IN2", "WRAP");
+		launcher.addInModel(ecoreModel, "IN_ECORE", "ECORE");
 		launcher.addOutModel(newModel, "OUT", "ACT");
 		launcher.addOutModel(newModelATL, "OUT2", "ATL");
 		
 		
 		//System.out.println("Pre");
 		//System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
-
+		System.out.println("Executing: " + transformationName);
 		launcher.launch("run", null, launcherOptions, asmFile);
 
 		Resource r = newModel.getResource();

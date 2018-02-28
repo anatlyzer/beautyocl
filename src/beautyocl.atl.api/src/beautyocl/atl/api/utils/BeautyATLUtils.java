@@ -13,6 +13,7 @@ public class BeautyATLUtils {
 		rep.add(new ATLTransformation(pathTo("beautyocl.simplifications.iterator.asm"), VM.STANDARD));
 		rep.add(new ATLTransformation(pathTo("beautyocl.simplifications.ifelse.asm"), VM.STANDARD));
 		rep.add(new ATLTransformation(pathTo("beautyocl.simplifications.ifintrocall.asm"), VM.STANDARD));
+		rep.add(new ATLTransformation(pathTo("beautyocl.simplifications.kindoftrue.asm"), VM.STANDARD));
 		
 		return rep;
 	}

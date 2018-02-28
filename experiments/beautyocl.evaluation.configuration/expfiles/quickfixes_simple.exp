@@ -1,0 +1,10 @@
+name: Quickfix simplifications
+extensionID: simplification.experiment.quickfixes
+options: {
+ only_trafos_with_qfxs : true,
+ timeout : 10000
+}
+projects: 
+-  name: Bibtex2Docbook
+-  name: Book2Publication
+

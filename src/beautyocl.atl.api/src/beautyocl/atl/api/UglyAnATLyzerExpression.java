@@ -2,6 +2,7 @@ package beautyocl.atl.api;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
 import anatlyzer.atl.model.ATLModel;
 import beautyocl.api.common.UglyExpression;
@@ -43,6 +44,12 @@ public class UglyAnATLyzerExpression implements UglyExpression {
 	public void setRoot(EObject root) {
 		if ( root == null ) throw new IllegalArgumentException();
 		this.obj = root;
+	}
+
+	@Override
+	public Resource getEcoreTypesResource() {
+		return new ResourceImpl(); 
+		// TODO: Should gather the types somehow...
 	}
 	
 }

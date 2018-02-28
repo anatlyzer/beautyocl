@@ -32,4 +32,9 @@ public class UglyATLExpression implements UglyExpression {
 	public void setRoot(EObject tgt) {
 		throw new UnsupportedOperationException();	
 	}
+	
+	@Override
+	public Resource getEcoreTypesResource() {
+		throw new UnsupportedOperationException();	
+	}
 }
