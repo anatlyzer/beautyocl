@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -22,6 +23,7 @@ import anatlyzer.atlext.OCL.OclExpression;
 import anatlyzer.experiments.extensions.IExperiment;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.atl.anatlyzer.simplifier.BeautyOCLAnatlyzer;
+import beautyocl.atl.evaluation.export.ExportToExcel;
 import beautyocl.atl.evaluation.raw.BEData;
 import beautyocl.atl.evaluation.raw.BEInvariant;
 import beautyocl.atl.evaluation.raw.BETransformation;
@@ -38,14 +40,7 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
 
 	@Override
 	public boolean canExportToExcel() {
-		// TODO Auto-generated method stub
 		return true;
-	}
-
-	@Override
-	public void exportToExcel(String fileName) throws IOException {
-		// TODO Auto-generated method stub
-		System.out.println("Export to " + fileName);
 	}
 
  	List<AnalyserData> allData = new ArrayList<AnalyserData>();
@@ -150,5 +145,10 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
 		}
 	};
 
+	@Override
+	public void exportToExcel(String fileName) throws IOException {
+		IFolder folder = experimentFile.getProject().getFolder("inv-data");
+		new ExportToExcel(expData).exportToExcel(folder, experimentFile); 
+	}
 
 }

@@ -7,8 +7,11 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
-public class AbstractSimplificable {
+public abstract class AbstractSimplificable {
 
+	@Attribute
+	protected int expId;	
+	
 	@Element(name="baseExpression")
 	private String originalExpression;
 
@@ -24,6 +27,19 @@ public class AbstractSimplificable {
 	@Attribute
 	protected int simplifiedNumNodes;
 
+	private static int idCounter = 0;
+	
+	public AbstractSimplificable() {
+		expId = ++idCounter;
+	}
+	
+	public int getExpId() {
+		return expId;
+	}
+	
+	public void setExpId(int expId) {
+		this.expId = expId;
+	}
 	
 	public List<BESimplification> getSimplifications() {
 		return simplifications;

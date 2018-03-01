@@ -25,7 +25,7 @@ public abstract class AbstractSimplifyExperiment extends AbstractATLExperiment {
 		@Override
 		public void preApply(Match m, EObject original) {
 			this.currentSimplification = new BESimplification();
-			this.currentSimplification.setName(m.getAction().getTransformation());
+			this.currentSimplification.setName(m.getTransformationName());
 			this.currentSimplification.setOriginalExp(ATLSerializer.serialize(original));
 			this.currentSimplification.setOriginalNumNodes(countNodes(original));
 		}

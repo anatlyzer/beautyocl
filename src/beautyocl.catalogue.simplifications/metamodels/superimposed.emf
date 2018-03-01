@@ -59,6 +59,7 @@ class IterateExp extends LoopExp {
 
 class IteratorExp extends LoopExp {
 	attr String[1] name;
+	val VariableDeclaration[1] iteratorVar;
 }
 
 /* Literals (similar to ATL/OCL) */

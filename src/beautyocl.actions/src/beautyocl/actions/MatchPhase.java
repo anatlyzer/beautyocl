@@ -18,6 +18,7 @@ public class MatchPhase {
 	private List<InPlaceAction> actions;
 	private Resource resource;
 	private IExpressionHolder exp;
+	private String trafoName;
 
 	public MatchPhase(Resource r, IExpressionHolder exp, List<InPlaceAction> actions) {
 		this.actions = actions;
@@ -26,9 +27,13 @@ public class MatchPhase {
 	}
 	
 	public List<Match> getMatches() {
-		return this.actions.stream().map(a -> new Match(a)).collect(Collectors.toList());
-	
+		return this.actions.stream().map(a -> new Match(a)).collect(Collectors.toList());	
 	}
+	
+	public void setTransformation(String name) {
+		this.trafoName = name;
+	}
+	
 	
 	public IExpressionHolder getExpression() {
 		return exp;
@@ -63,6 +68,10 @@ public class MatchPhase {
 		 */
 		public boolean isWithinScope(EObject source) {
 			return exp.getRoot() == source || EcoreUtil.isAncestor(exp.getRoot(), source);
+		}
+
+		public String getTransformationName() {
+			return trafoName;
 		}
 	}
 	

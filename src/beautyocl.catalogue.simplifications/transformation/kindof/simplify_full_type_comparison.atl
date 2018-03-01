@@ -55,6 +55,10 @@ helper  def: findSuperType(param : Set(OCL!"OclType")) : TYP!CClass =
 helper context OCL!BinaryOperatorCallExp def: orKindOfCheckedTypes : Set(OCL!"OclType") =
 	self.source.orKindOfCheckedTypes->union(self.argument.orKindOfCheckedTypes);
 
+-- Needed to avoid runtime problems...
+helper context OCL!OclExpression def: orKindOfCheckedTypes : Set(OCL!"OclType") = Set { };
+
+
 helper context OCL!OperationCallExp def: isKindOf() : Set(OCL!"OclType") =
 	Set { self.arguments->first().oclAsType(OCL!"OclType") };
 
@@ -63,7 +67,15 @@ helper context OCL!OclExpression         def: isOrKindOf : Boolean = false;
 helper context OCL!OperationCallExp      def: isOrKindOf : Boolean =
 	self.name = 'oclIsKindOf';
 helper context OCL!BinaryOperatorCallExp def: isOrKindOf : Boolean =
-	self.name = 'or' and self.source.isOrKindOf and self.argument.isOrKindOf;
+	-- This check is needed because there is a bug in the adaptation
+	-- e.g. for ATL o.BinaryOperatorCallExp__filter__ is not called in the
+	-- corresponding rule filter (should not assume short-circuit)
+	if self.argument.oclIsUndefined() then 
+		false
+	else 
+		self.name = 'or' and self.source.isOrKindOf and self.argument.isOrKindOf
+	endif
+	;
 	--	if self.name = 'or' then
 --		self.source.isOrKindOf and self.argument.isOrKindOf
 --	else
@@ -97,11 +109,20 @@ helper context OCL!BinaryOperatorCallExp def: getSameSource(exp : OCL!OclExpress
 helper context OCL!BinaryOperatorCallExp def: commonVar : OCL!VariableDeclaration =
 	self.source.getSameSource(self.argument);
 
+helper context OCL!BinaryOperatorCallExp def: parentIsNotOrKindOf : Boolean =
+	if self.refImmediateComposite().oclIsKindOf(OCL!OclExpression) then
+		not self.refImmediateComposite().isOrKindOf
+	else
+		true
+	endif;
+
 
 rule removeIf {
 	from o : OCL!BinaryOperatorCallExp (
 		-- TODO: Check they all have the same source expression
-		if o.isOrKindOf and o.commonVar <> OclUndefined and not o.refImmediateComposite().isOrKindOf then
+		if o.isOrKindOf and o.commonVar <> OclUndefined and o.parentIsNotOrKindOf then
+			o.commonVar.type <> OclUndefined -- Not sure about this condition... type is always <> null??? 
+			and
 			thisModule.findSuperType(o.orKindOfCheckedTypes) <> OclUndefined
 		else
 			false

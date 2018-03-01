@@ -18,3 +18,19 @@ rule trueSelect {
 		a.children <- it.source;
 	}
 }
+
+
+rule unnededCollect {
+	from it : OCL!IteratorExp (
+		if it.name = 'collect' and it.body.oclIsKindOf(OCL!VariableExp) then
+			it.body.varDcl = it.iteratorVar
+		else
+			false
+		endif
+	)
+	to a : ACT!DeleteMoveChildren
+	do {
+		a.source <- it;
+		a.children <- it.source;
+	}
+}

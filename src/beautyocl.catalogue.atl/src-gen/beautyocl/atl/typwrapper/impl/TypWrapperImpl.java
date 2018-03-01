@@ -50,6 +50,8 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 	 * @generated NOT
 	 */
 	public boolean isSameType(OclExpression e1, OclExpression e2) {
+		if ( e1.getInferredType() == null || e2.getInferredType() == null )
+			return false;
 		return TypingModel.equalTypes(e1.getInferredType(), e2.getInferredType());
 	}
 

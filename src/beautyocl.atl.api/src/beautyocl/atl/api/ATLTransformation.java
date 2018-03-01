@@ -14,7 +14,13 @@ public class ATLTransformation implements IATLTransformation {
 
 	private String fname;
 	private VM vm;
+	private String name;
 	private static FileUtils futils = new FileUtils(Activator.class);
+	
+	@Override
+	public String getName() {
+		return name;
+	}
 	
 	public enum VM {
 		STANDARD {
@@ -40,14 +46,17 @@ public class ATLTransformation implements IATLTransformation {
 		public abstract MatchPhase execute(String fname, UglyExpression exp) throws IOException, ATLCoreException;
 	}
 	
-	public ATLTransformation(String fname, VM vm) {
+	public ATLTransformation(String name, String fname, VM vm) {
+		this.name = name;
 		this.fname = fname;
 		this.vm = vm;
 	}
 
 	public MatchPhase exec(UglyExpression exp) {
 		try {
-			return vm.execute(fname, exp);
+			MatchPhase phase = vm.execute(fname, exp);
+			phase.setTransformation(name);
+			return phase;
 		} catch (IOException | ATLCoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

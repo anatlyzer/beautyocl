@@ -5,7 +5,6 @@ composite component beautyocl.atl {
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
 	// Type comparisons
-	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_kind_of.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplify_full_type_comparison.bento"
 	
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_kindof_true.bento"

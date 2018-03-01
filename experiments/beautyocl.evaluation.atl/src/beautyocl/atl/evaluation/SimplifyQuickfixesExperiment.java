@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,6 +40,7 @@ import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
 import beautyocl.actions.MatchPhase.Match;
 import beautyocl.atl.anatlyzer.simplifier.BeautyOCLAnatlyzer;
+import beautyocl.atl.evaluation.export.ExportToExcel;
 import beautyocl.atl.evaluation.raw.BEData;
 import beautyocl.atl.evaluation.raw.BEProblem;
 import beautyocl.atl.evaluation.raw.BEQuickfix;
@@ -57,15 +59,9 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 
 	@Override
 	public boolean canExportToExcel() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
-	@Override
-	public void exportToExcel(String fileName) throws IOException {
-		// TODO Auto-generated method stub
-		System.out.println("Export to " + fileName);
-	}
 
  	List<AnalyserData> allData = new ArrayList<AnalyserData>();
  	BEData expData = new BEData();
@@ -120,16 +116,18 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 					} catch ( Exception e ) { 
 						expQfx.setDescription(e.getMessage());
 					}
-					expProblem.addQuickfix(expQfx);
 					
 					try {
 						applyQuickfix(quickfix, resource, p, data, expQfx);
 					} catch ( Exception e ) {
 						e.printStackTrace();
 						printMessage("ERROR when applying qfx: " + quickfix.getClass().getSimpleName() + " . File: " + resource.getName() + e.getMessage());
+						// TODO: Register the error in the raw experiment DOM
 						continue;
 					}
-					
+
+					expProblem.addQuickfix(expQfx);
+
 				}
 				
 				if ( getOnlyRelevantTransformations() == false || expProblem.getQuickfixes().size() > 0 )
@@ -248,6 +246,13 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		}
 	};
 
+
+	@Override
+	public void exportToExcel(String fileName) throws IOException {
+		IFolder folder = experimentFile.getProject().getFolder("qfx-data");
+		new ExportToExcel(expData).exportToExcel(folder, experimentFile); 
+	}
+	
 	public boolean getOnlyRelevantTransformations() {
 		return this.options.getOrDefault("only_trafos_with_qfxs", "true").equals("true");
 	}

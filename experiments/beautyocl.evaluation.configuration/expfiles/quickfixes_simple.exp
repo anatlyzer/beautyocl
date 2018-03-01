@@ -5,6 +5,4 @@ options: {
  timeout : 10000
 }
 projects: 
--  name: Bibtex2Docbook
--  name: Book2Publication
-
+-  name: Measure2XHTML
