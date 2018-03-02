@@ -1,0 +1,13 @@
+@namespace(
+	uri="http://beautyocl/atl/comparison_wrapper",
+	prefix="comparison_wrapper")
+package comparisonwrapper;
+
+import "platform:/plugin/anatlyzer.atl.typing/model/generated/merged.ecore";
+
+// http://anatlyzer/atl/ext/OCL";
+
+class ComparisonWrapper {
+  op boolean isSameExpr(atlext.OCL.OclExpression e1, atlext.OCL.OclExpression e2);
+}
+

@@ -14,4 +14,12 @@
             genModel="metamodels/typing_wrapper.genmodel"/>
    </extension>
 
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated comparison_wrapper -->
+      <package
+            uri="http://beautyocl/atl/comparison_wrapper"
+            class="beautyocl.atl.comparisonwrapper.ComparisonwrapperPackage"
+            genModel="metamodels/comparison_wrapper.genmodel"/>
+   </extension>
+
 </plugin>

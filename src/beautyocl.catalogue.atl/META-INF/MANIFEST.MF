@@ -9,7 +9,10 @@ Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: beautyocl.atl.typwrapper,
  beautyocl.atl.typwrapper.impl,
- beautyocl.atl.typwrapper.util
+ beautyocl.atl.typwrapper.util,
+ beautyocl.atl.comparisonwrapper,
+ beautyocl.atl.comparisonwrapper.impl,
+ beautyocl.atl.comparisonwrapper.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  anatlyzer.atl.typing;visibility:=reexport

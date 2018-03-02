@@ -1,0 +1,10 @@
+@namespace(uri="http://beautyocl/comparison", prefix="comparison")
+package comp;
+
+import "platform:/resource/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore";
+
+@singleton
+class ExprComparator {
+  op boolean isSameExpr(superimposed.OclExpression e1, superimposed.OclExpression e2);
+}
+

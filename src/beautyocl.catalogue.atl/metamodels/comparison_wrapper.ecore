@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="comparisonwrapper" nsURI="http://beautyocl/atl/comparison_wrapper"
+    nsPrefix="comparison_wrapper">
+  <eClassifiers xsi:type="ecore:EClass" name="ComparisonWrapper">
+    <eOperations name="isSameExpr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="e1" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+      <eParameters name="e2" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+    </eOperations>
+  </eClassifiers>
+</ecore:EPackage>

@@ -14,18 +14,22 @@ composite component beautyocl.atl {
 	// If	                          	
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_else.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_introduce_call.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_same_expr.bento"
 	                          
 	binding bindTyping    = "typing2atl.gbind"
+	binding bindComparison= "comparison2atl.gbind"
 	binding bindAll    = "superimposed2atl.gbind"
 	binding bindAllTgt    = "superimposed2atl_tgt.gbind"
 			
 	source concept ATLs : "ATLStatic.ecore"
 	source concept TYPW : "typing_wrapper.ecore"
+	source concept COMPW: "comparison_wrapper.ecore"	
 	target concept ATLt : "ATLStatic.ecore"
 	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
 	
 	source model in  : ATLs
 	source model in2  : TYPW  
+	source model in3  : COMPW
 	target model out : ATLt
 	target model act : ACT
 	
@@ -35,6 +39,8 @@ composite component beautyocl.atl {
 		apply iterator(bindAll(in)) -> (act, bindAllTgt(out))
 		apply ifelse(bindAll(in)) -> (act, bindAllTgt(out))
 		apply ifintrocall(bindAll(in)) -> (act, bindAllTgt(out))
+		apply ifsameexpr(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
+				
 		apply kindoftrue(bindAll(in), bindTyping(in2)) -> (act, bindAllTgt(out))
 		
 		// apply ifKindOf(bindKindOf(in), bindTyping(in2)) -> (act)

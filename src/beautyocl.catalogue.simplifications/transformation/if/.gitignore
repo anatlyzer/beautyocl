@@ -2,3 +2,4 @@
 /simplify_if_else.emftvm
 /simplify_if_else.asm
 /introduce_call.asm
+/if_same_expr.asm

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/beautyocl.catalogue.atl/src-gen" modelPluginID="beautyocl.catalogue.atl"
+    modelName="Comparison_wrapper" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    usedGenPackages="../../anatlyzer.atl.typing/model/generated/merged.genmodel#//atlext ../../anatlyzer.atl.typing/model/types.genmodel#//types"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>comparison_wrapper.ecore</foreignModel>
+  <genPackages prefix="Comparisonwrapper" basePackage="beautyocl.atl" disposableProviderFactory="true"
+      ecorePackage="comparison_wrapper.ecore#/">
+    <genClasses ecoreClass="comparison_wrapper.ecore#//ComparisonWrapper">
+      <genOperations ecoreOperation="comparison_wrapper.ecore#//ComparisonWrapper/isSameExpr">
+        <genParameters ecoreParameter="comparison_wrapper.ecore#//ComparisonWrapper/isSameExpr/e1"/>
+        <genParameters ecoreParameter="comparison_wrapper.ecore#//ComparisonWrapper/isSameExpr/e2"/>
+      </genOperations>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

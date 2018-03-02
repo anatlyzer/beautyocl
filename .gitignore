@@ -57,3 +57,8 @@ local.properties
 
 # End of https://www.gitignore.io/api/eclipse
 
+*.asm
+transml.properties
+src/beautyocl.catalogue.atl/adaptations/
+experiments/beautyocl.evaluation.configuration/inv-data/
+experiments/beautyocl.evaluation.configuration/qfx-data/

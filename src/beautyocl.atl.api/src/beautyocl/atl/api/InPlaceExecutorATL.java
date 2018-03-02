@@ -17,8 +17,6 @@ import org.eclipse.m2m.atl.core.emf.EMFModelFactory;
 import org.eclipse.m2m.atl.core.launch.ILauncher;
 import org.eclipse.m2m.atl.engine.emfvm.launch.EMFVMLauncher;
 
-import anatlyzer.atl.util.ATLSerializer;
-import beautyocl.actions.ActionsEngine;
 import beautyocl.actions.InPlaceAction;
 import beautyocl.actions.MatchPhase;
 import beautyocl.api.common.UglyExpression;
@@ -36,6 +34,9 @@ public class InPlaceExecutorATL {
 		IReferenceModel typWrapperMetamodel = factory.newReferenceModel();
 		injector.inject(typWrapperMetamodel, "http://beautyocl/atl/typing_wrapper");
 
+		IReferenceModel comparisonWrapperMetamodel = factory.newReferenceModel();
+		injector.inject(comparisonWrapperMetamodel, "http://beautyocl/atl/comparison_wrapper");
+
 		IReferenceModel ecoreMetamodel = factory.newReferenceModel();
 		injector.inject(ecoreMetamodel, "http://www.eclipse.org/emf/2002/Ecore");
 
@@ -50,7 +51,12 @@ public class InPlaceExecutorATL {
 		EMFModel typWrapperModel = (EMFModel) factory.newModel(typWrapperMetamodel);
 		typWrapperModel.newElement(typWrapperMetamodel.getMetaElementByName("TypWrapper"));
 		typWrapperModel.commitToResource();
-		
+
+		// Create the comparison model in-line
+		EMFModel comparisonWrapperModel = (EMFModel) factory.newModel(comparisonWrapperMetamodel);
+		comparisonWrapperModel.newElement(comparisonWrapperMetamodel.getMetaElementByName("ComparisonWrapper"));
+		comparisonWrapperModel.commitToResource();
+
 		EMFModel ecoreModel = (EMFModel) factory.newModel(ecoreMetamodel);
 		injector.inject(ecoreModel, exp.getEcoreTypesResource());
 				
@@ -65,6 +71,7 @@ public class InPlaceExecutorATL {
 
 		launcher.addInModel(loadedModel, "IN", "ATL");
 		launcher.addInModel(typWrapperModel, "IN2", "WRAP");
+		launcher.addInModel(comparisonWrapperModel, "IN3", "CWRAP");		
 		launcher.addInModel(ecoreModel, "IN_ECORE", "ECORE");
 		launcher.addOutModel(newModel, "OUT", "ACT");
 		launcher.addOutModel(newModelATL, "OUT2", "ATL");
