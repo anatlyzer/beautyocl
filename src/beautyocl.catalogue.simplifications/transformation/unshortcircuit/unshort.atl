@@ -16,10 +16,20 @@ helper context OclAny def: oclAsType(t : OCL!"OclType") : OclAny = self;
 helper context OCL!BooleanExp    def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
 helper context OCL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
 
+-- CHECK FOR <> OclUndefined
+helper context OCL!OclExpression def: hasShortThing() : Boolean = false;
+helper context OCL!PropertyCallExp def: hasShortThing() : Boolean = self.source.hasShortThing();
+helper context OCL!OperationCallExp def: hasShortThing() : Boolean = 
+	if self.name = 'oclIsKindOf' or self.name = 'oclIsUndefined' then
+		true
+	else
+		self.source.hasShortThing()
+	endif;
+
 
 helper context OCL!OclExpression def: kindOfType() : TupleType(source : OCL!OclExpression, type : TYP!CClass) =
 	if self.oclIsKindOf(OCL!OperationCallExp) then
-		if self.name = 'isOclKindOf' then -- TODO: Check typeOf
+		if self.name = 'oclIsKindOf' then -- TODO: Check typeOf
 			Tuple { source = self.source, type = thisModule.typ.typeOf(self.arguments->first()).oclAsType(TYP!CClass) }
 		else 
 			OclUndefined	
@@ -28,12 +38,28 @@ helper context OCL!OclExpression def: kindOfType() : TupleType(source : OCL!OclE
 		OclUndefined
 	endif;
 
-helper context OCL!OclExpression def: allUsages(o : OCL!OclExpression, c : TYP!CClass) : Set(TYP!CClass) = Set { };
-
+-- Computes all ocurrences of a given sub-expr in the current expression, and for each of these
+-- subexpressions returns its type.
+--
+-- TODO: Consider more subtypes of Expression!
+helper context OCL!OclExpression def: allUsages(subExpr : OCL!OclExpression) : Set(TYP!CClass) = 
+	Set { };
+helper context OCL!PropertyCallExp def: allUsages(subExpr : OCL!OclExpression) : Set(TYP!CClass) = 
+	if thisModule.comp.isSameExpr(self.source, subExpr) then
+		let c : TYP!CClass = thisModule.typ.accessType(self) in
+		if c <> OclUndefined then
+			Set { c }
+		else
+			Set { }
+		endif	
+	else
+		Set { }
+	endif;
+	
 helper def: checkUnshortCondition(outerExp : OCL!OclExpression, inner : OCL!OclExpression) : Boolean = 
 	let outer: TupleType(source : OCL!OclExpression, type : TYP!CClass) = outerExp.kindOfType() 
 	in if outer <> OclUndefined then
-		let innerUsages : Set(TYP!CClass) = inner.allUsages(outer.source, outer.type) 
+		let innerUsages : Set(TYP!CClass) = inner.allUsages(outer.source) 
 		in innerUsages->forAll(c | c.superClasses->includes(outer.type) )
 	   else false endif	
 	;
@@ -45,14 +71,17 @@ helper def: checkUnshortCondition(outerExp : OCL!OclExpression, inner : OCL!OclE
 rule unshortCircuit {
 	from i : OCL!IfExp (
 		if i.thenExpression.oclIsKindOf(OCL!IfExp) then
-			if thisModule.checkUnshortCondition(i.condition, i.thenExpression.condition) then
+			if thisModule.checkUnshortCondition(i.condition, i.thenExpression.condition) 
+				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+				or (not i.condition.hasShortThing())
+			then
 				thisModule.comp.isSameExpr(i.elseExpression, i.thenExpression.elseExpression)
 			else
 				false
 			endif
 		else
 			false
-		endif
+		endif 
 	)
 	to a : ACT!Replace,
 		-- Should be BinaryOperator??
@@ -71,3 +100,4 @@ rule unshortCircuit {
 		a.target <- newIf;
 	}
 }
+

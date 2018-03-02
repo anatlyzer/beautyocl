@@ -57,17 +57,17 @@ public class TestEMFOclKindOf {
 		return rep;
 	}
 
-	@Test
-	public void test() {
-		UglyEMFOclExpression exp = loadExpression();
-		
-		Beautyfier beauty = new Beautyfier(configureRepo());
-		beauty.applyAll(exp);
-		
-		exp.getResource().getContents().forEach(o -> {
-			System.out.println(o);
-		});
-	}
+//	@Test
+//	public void test() {
+//		UglyEMFOclExpression exp = loadExpression();
+//		
+//		Beautyfier beauty = new Beautyfier(configureRepo());
+//		beauty.applyAll(exp);
+//		
+//		exp.getResource().getContents().forEach(o -> {
+//			System.out.println(o);
+//		});
+//	}
 	
 	private UglyEMFOclExpression loadExpression() {
 		AnalysisLoader.setStandaloneMode();

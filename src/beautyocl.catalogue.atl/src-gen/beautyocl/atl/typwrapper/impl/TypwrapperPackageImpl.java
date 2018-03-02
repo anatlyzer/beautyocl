@@ -2,6 +2,7 @@
  */
 package beautyocl.atl.typwrapper.impl;
 
+import anatlyzer.atl.types.TypesPackage;
 import anatlyzer.atlext.ATL.ATLPackage;
 
 import anatlyzer.atlext.OCL.OCLPackage;
@@ -82,6 +83,7 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		ATLPackage.eINSTANCE.eClass();
 		OCLPackage.eINSTANCE.eClass();
 		PrimitiveTypesPackage.eINSTANCE.eClass();
+		TypesPackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theTypwrapperPackage.createPackageContents();
@@ -130,6 +132,24 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getTypWrapper__AccessType__PropertyCallExp() {
+		return typWrapperEClass.getEOperations().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getTypWrapper__TypeOf__OclExpression() {
+		return typWrapperEClass.getEOperations().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public TypwrapperFactory getTypwrapperFactory() {
 		return (TypwrapperFactory)getEFactoryInstance();
 	}
@@ -156,6 +176,8 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		typWrapperEClass = createEClass(TYP_WRAPPER);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SAME_TYPE__OCLEXPRESSION_OCLEXPRESSION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION);
+		createEOperation(typWrapperEClass, TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP);
+		createEOperation(typWrapperEClass, TYP_WRAPPER___TYPE_OF__OCLEXPRESSION);
 	}
 
 	/**
@@ -200,6 +222,12 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		op = initEOperation(getTypWrapper__IsSuperType__OclExpression_OclExpression(), ecorePackage.getEBoolean(), "isSuperType", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getOclExpression(), "e1_subtype", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getOclExpression(), "e2_supertype", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getTypWrapper__AccessType__PropertyCallExp(), ecorePackage.getEClass(), "accessType", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theOCLPackage.getPropertyCallExp(), "exp", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getTypWrapper__TypeOf__OclExpression(), ecorePackage.getEClassifier(), "typeOf", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theOCLPackage.getOclExpression(), "e", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

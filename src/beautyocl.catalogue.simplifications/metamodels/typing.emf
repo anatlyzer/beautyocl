@@ -8,6 +8,7 @@ class ExprTyping {
   op boolean isSameType(superimposed.OclExpression e1, superimposed.OclExpression e2);
   op boolean isSuperType(superimposed.OclExpression e1_subtype, superimposed.OclExpression e2_supertype);
 
+  op CClass accessType(superimposed.PropertyCallExp exp);
     
   op CType typeOf(superimposed.OclExpression e);
 }

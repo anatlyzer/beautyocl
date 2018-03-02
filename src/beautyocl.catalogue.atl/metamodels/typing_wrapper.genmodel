@@ -17,6 +17,12 @@
         <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/isSuperType/e1_subtype"/>
         <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/isSuperType/e2_supertype"/>
       </genOperations>
+      <genOperations ecoreOperation="typing_wrapper.ecore#//TypWrapper/accessType">
+        <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/accessType/exp"/>
+      </genOperations>
+      <genOperations ecoreOperation="typing_wrapper.ecore#//TypWrapper/typeOf">
+        <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/typeOf/e"/>
+      </genOperations>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

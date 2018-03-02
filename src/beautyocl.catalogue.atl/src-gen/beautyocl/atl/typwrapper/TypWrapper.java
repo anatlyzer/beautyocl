@@ -4,6 +4,9 @@ package beautyocl.atl.typwrapper;
 
 import anatlyzer.atlext.OCL.OclExpression;
 
+import anatlyzer.atlext.OCL.PropertyCallExp;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -32,5 +35,21 @@ public interface TypWrapper extends EObject {
 	 * @generated
 	 */
 	boolean isSuperType(OclExpression e1_subtype, OclExpression e2_supertype);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	EClass accessType(PropertyCallExp exp);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	EClassifier typeOf(OclExpression e);
 
 } // TypWrapper

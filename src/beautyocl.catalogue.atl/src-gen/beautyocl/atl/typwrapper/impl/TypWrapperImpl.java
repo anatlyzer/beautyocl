@@ -2,10 +2,12 @@
  */
 package beautyocl.atl.typwrapper.impl;
 
-import anatlyzer.atl.model.TypeUtils;
 import anatlyzer.atl.model.TypingModel;
+import anatlyzer.atl.types.Metaclass;
+import anatlyzer.atl.types.Type;
 import anatlyzer.atlext.OCL.OclExpression;
 
+import anatlyzer.atlext.OCL.PropertyCallExp;
 import beautyocl.atl.typwrapper.TypWrapper;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
@@ -15,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
@@ -67,6 +70,37 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated NOT
+	 */
+	public EClass accessType(PropertyCallExp exp) {
+		Type t = exp.getNoCastedType();
+		if ( t instanceof Metaclass ) {
+			return ((Metaclass) t).getKlass();
+		}
+		return null;
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		//throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated NOT
+	 */
+	public EClassifier typeOf(OclExpression e) {
+		if ( e.getInferredType() instanceof Metaclass ) {
+			return ((Metaclass) e.getInferredType()).getKlass();
+		}
+		
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -76,6 +110,10 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 				return isSameType((OclExpression)arguments.get(0), (OclExpression)arguments.get(1));
 			case TypwrapperPackage.TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION:
 				return isSuperType((OclExpression)arguments.get(0), (OclExpression)arguments.get(1));
+			case TypwrapperPackage.TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP:
+				return accessType((PropertyCallExp)arguments.get(0));
+			case TypwrapperPackage.TYP_WRAPPER___TYPE_OF__OCLEXPRESSION:
+				return typeOf((OclExpression)arguments.get(0));
 		}
 		return super.eInvoke(operationID, arguments);
 	}

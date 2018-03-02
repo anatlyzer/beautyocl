@@ -11,6 +11,9 @@
       <eParameters name="e1_subtype" eType="ecore:EClass superimposed.ecore#//OclExpression"/>
       <eParameters name="e2_supertype" eType="ecore:EClass superimposed.ecore#//OclExpression"/>
     </eOperations>
+    <eOperations name="accessType" eType="#//CClass">
+      <eParameters name="exp" eType="ecore:EClass superimposed.ecore#//PropertyCallExp"/>
+    </eOperations>
     <eOperations name="typeOf" eType="#//CType">
       <eParameters name="e" eType="ecore:EClass superimposed.ecore#//OclExpression"/>
     </eOperations>

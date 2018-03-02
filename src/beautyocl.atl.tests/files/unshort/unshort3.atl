@@ -1,0 +1,20 @@
+-- @path PNML=/beautyocl.atl.tests/metamodels/PNML_simplified.ecore
+-- @path PetriNet=/beautyocl.atl.tests/metamodels/PetriNet.ecore
+
+
+module PNML2PetriNet;
+create OUT : PetriNet from IN : PNML;
+
+helper def : testSimple() : Sequence(String) = 
+ PNML!NetContentElement.allInstances()->collect(v | 
+ 	if 'this-also-should-work'.size() > 0 then
+		if 'stupid-thing-to-be-inlined-above' <> OclUndefined then
+			'plc' + v.name.toString()
+		else
+			'nothing'
+		endif 
+	else
+		'nothing'
+	endif
+ 
+ );

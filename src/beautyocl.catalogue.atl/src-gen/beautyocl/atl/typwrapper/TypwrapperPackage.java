@@ -93,13 +93,31 @@ public interface TypwrapperPackage extends EPackage {
 	int TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION = 1;
 
 	/**
+	 * The operation id for the '<em>Access Type</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP = 2;
+
+	/**
+	 * The operation id for the '<em>Type Of</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYP_WRAPPER___TYPE_OF__OCLEXPRESSION = 3;
+
+	/**
 	 * The number of operations of the '<em>Typ Wrapper</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER_OPERATION_COUNT = 2;
+	int TYP_WRAPPER_OPERATION_COUNT = 4;
 
 
 	/**
@@ -131,6 +149,26 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getTypWrapper__IsSuperType__OclExpression_OclExpression();
+
+	/**
+	 * Returns the meta object for the '{@link beautyocl.atl.typwrapper.TypWrapper#accessType(anatlyzer.atlext.OCL.PropertyCallExp) <em>Access Type</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Access Type</em>' operation.
+	 * @see beautyocl.atl.typwrapper.TypWrapper#accessType(anatlyzer.atlext.OCL.PropertyCallExp)
+	 * @generated
+	 */
+	EOperation getTypWrapper__AccessType__PropertyCallExp();
+
+	/**
+	 * Returns the meta object for the '{@link beautyocl.atl.typwrapper.TypWrapper#typeOf(anatlyzer.atlext.OCL.OclExpression) <em>Type Of</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Type Of</em>' operation.
+	 * @see beautyocl.atl.typwrapper.TypWrapper#typeOf(anatlyzer.atlext.OCL.OclExpression)
+	 * @generated
+	 */
+	EOperation getTypWrapper__TypeOf__OclExpression();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -180,6 +218,22 @@ public interface TypwrapperPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION = eINSTANCE.getTypWrapper__IsSuperType__OclExpression_OclExpression();
+
+		/**
+		 * The meta object literal for the '<em><b>Access Type</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP = eINSTANCE.getTypWrapper__AccessType__PropertyCallExp();
+
+		/**
+		 * The meta object literal for the '<em><b>Type Of</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TYP_WRAPPER___TYPE_OF__OCLEXPRESSION = eINSTANCE.getTypWrapper__TypeOf__OclExpression();
 
 	}
 

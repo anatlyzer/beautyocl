@@ -29,7 +29,8 @@ public class TestUnshortCircuit extends Tester {
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load("files/unshort/unshort1.atl");
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
-
+		loader.analyse();
+		
 		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
 		
 		String before = ATLSerializer.serialize(exp.getRoot());
@@ -45,4 +46,60 @@ public class TestUnshortCircuit extends Tester {
 		System.out.println("After: " + after);
 		
 	}
+
+
+	@Test
+	public void test2() throws ATLCoreException {
+		TransformationRepository rep = new TransformationRepository();
+		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
+		rep.add(BeautyATLUtils.SIMP_UNSHORT_CIRCUIT);
+	
+		AnalysisLoader.setStandaloneMode();
+		Resource r = AtlLoader.load("files/unshort/unshort2.atl");
+		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
+		loader.analyse();
+		
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
+		
+		String before = ATLSerializer.serialize(exp.getRoot());
+		
+		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+		ExecutionInfo result = beauty.applyAll(exp);
+		
+		String after = ATLSerializer.serialize(exp.getRoot());
+		
+		assertNotEquals(before, after);
+		
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+		
+	}
+	
+
+	@Test
+	public void test3() throws ATLCoreException {
+		TransformationRepository rep = new TransformationRepository();
+		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
+		rep.add(BeautyATLUtils.SIMP_UNSHORT_CIRCUIT);
+	
+		AnalysisLoader.setStandaloneMode();
+		Resource r = AtlLoader.load("files/unshort/unshort3.atl");
+		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
+		loader.analyse();
+		
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
+		
+		String before = ATLSerializer.serialize(exp.getRoot());
+		
+		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+		ExecutionInfo result = beauty.applyAll(exp);
+		
+		String after = ATLSerializer.serialize(exp.getRoot());
+		
+		assertNotEquals(before, after);
+		
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+		
+	}	
 }
