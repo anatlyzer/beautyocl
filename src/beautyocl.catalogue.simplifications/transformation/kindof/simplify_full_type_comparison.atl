@@ -16,6 +16,8 @@
 module "simplify_full_type_comparison";
 create OUT : ACT, OUT2 : OCL2 from IN : OCL, IN2 : TYP; 
 
+helper context OclAny def: oclAsType(t : OCL!"OclType") : OclAny = self;
+
 helper def : typ : TYP!ExprTyping = TYP!ExprTyping.allInstances()->first();
 
 -- helper def : subclasses : Map(TYP!CClass, Set(TYP!CClass)) =

@@ -5,12 +5,13 @@
 module "remove_iterator";
 create OUT : ACT, OUT2 : OCLt from IN : OCL; 
 
-helper context OCL!OclExpression def: isTrue() : Boolean = false;
-helper context OCL!BooleanExp    def: isTrue() : Boolean = self.booleanSymbol;
+helper context OCL!BooleanExp    def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+helper context OCL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
 
 rule trueSelect {
 	from it : OCL!IteratorExp (
-		it.name = 'select' and it.body.isTrue()
+		it.name = 'select' and it.body.isBooleanExpr(true)
 	)
 	to a : ACT!DeleteMoveChildren
 	do {
@@ -19,7 +20,7 @@ rule trueSelect {
 	}
 }
 
-
+-- aCol->collect(c | c)  => aCol
 rule unnededCollect {
 	from it : OCL!IteratorExp (
 		if it.name = 'collect' and it.body.oclIsKindOf(OCL!VariableExp) then
@@ -34,3 +35,22 @@ rule unnededCollect {
 		a.children <- it.source;
 	}
 }
+
+-- aCol->forAll(c | true)  => true
+-- aCol->forAll(c | false)  => false
+-- aCol->exists(c | true)  => true
+-- aCol->exists(c | false)  => false
+rule simplifyForAllExists {
+	from it : OCL!IteratorExp (
+		(it.name = 'forAll' or it.name = 'exists') and it.body.oclIsKindOf(OCL!BooleanExp)
+	)
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
+			booleanSymbol <- it.body.booleanSymbol
+	   )
+	do {
+		a.source <- it;
+		a.target <- r;
+	}
+}
+

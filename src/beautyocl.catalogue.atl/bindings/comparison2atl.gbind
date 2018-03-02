@@ -1,7 +1,6 @@
 binding comparison2wrap {  
 	concept   COMP : "bento:/beautyocl.catalogue.simplifications/comparison.ecore"
 	metamodel CWRAP : "comparison_wrapper.ecore"	
-	metamodel ECORE : "http://www.eclipse.org/emf/2002/Ecore"
 	
 	class ExprComparator to ComparisonWrapper
 }

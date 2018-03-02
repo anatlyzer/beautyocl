@@ -1,0 +1,73 @@
+
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path COMP=/beautyocl.catalogue.simplifications/metamodels/comparison.ecore
+-- @path TYP=/beautyocl.catalogue.simplifications/metamodels/typing.ecore
+
+module "unshort";
+create OUT : ACT, OUT2 : OCLt from IN : OCL, IN2 : TYP, IN3 : COMP; 
+
+helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
+helper def : typ  : TYP!ExprTyping = TYP!ExprTyping.allInstances()->first();
+
+helper context OclAny def: oclAsType(t : OCL!"OclType") : OclAny = self;
+
+helper context OCL!BooleanExp    def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+helper context OCL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
+
+helper context OCL!OclExpression def: kindOfType() : TupleType(source : OCL!OclExpression, type : TYP!CClass) =
+	if self.oclIsKindOf(OCL!OperationCallExp) then
+		if self.name = 'isOclKindOf' then -- TODO: Check typeOf
+			Tuple { source = self.source, type = thisModule.typ.typeOf(self.arguments->first()).oclAsType(TYP!CClass) }
+		else 
+			OclUndefined	
+		endif
+	else
+		OclUndefined
+	endif;
+
+helper context OCL!OclExpression def: allUsages(o : OCL!OclExpression, c : TYP!CClass) : Set(TYP!CClass) = Set { };
+
+helper def: checkUnshortCondition(outerExp : OCL!OclExpression, inner : OCL!OclExpression) : Boolean = 
+	let outer: TupleType(source : OCL!OclExpression, type : TYP!CClass) = outerExp.kindOfType() 
+	in if outer <> OclUndefined then
+		let innerUsages : Set(TYP!CClass) = inner.allUsages(outer.source, outer.type) 
+		in innerUsages->forAll(c | c.superClasses->includes(outer.type) )
+	   else false endif	
+	;
+
+
+--
+-- if exp then exp else true endif => true
+--
+rule unshortCircuit {
+	from i : OCL!IfExp (
+		if i.thenExpression.oclIsKindOf(OCL!IfExp) then
+			if thisModule.checkUnshortCondition(i.condition, i.thenExpression.condition) then
+				thisModule.comp.isSameExpr(i.elseExpression, i.thenExpression.elseExpression)
+			else
+				false
+			endif
+		else
+			false
+		endif
+	)
+	to a : ACT!Replace,
+		-- Should be BinaryOperator??
+	   r : OCLt!OperatorCallExp (
+			source <- i.condition,
+			arguments <- i.thenExpression.condition,
+			name <- 'and'
+	   ),
+	   newIf : OCLt!IfExp (
+	   		condition <- r,
+			thenExpression <- i.thenExpression.thenExpression,
+			elseExpression <- i.thenExpression.elseExpression
+	   )
+	do {
+		a.source <- i;
+		a.target <- newIf;
+	}
+}
