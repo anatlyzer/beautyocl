@@ -2,6 +2,7 @@ binding superimposed2atl {
 	concept   OCL : "bento:/beautyocl.catalogue.simplifications/superimposed.ecore"
 	metamodel ATL : "merged.ecore"
 
+	--class PropertyCallExp to PropertyCallExp when not self.oclIsKindOf(OCL!OperatorCallExp)
 	class OperationCallExp to OperationCallExp
 	class OperatorCallExp to OperatorCallExp
 	class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 

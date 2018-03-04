@@ -75,4 +75,38 @@ public class TestIfElse extends Tester {
 		System.out.println("After: " + after);
 		
 	}
+
+	@Test
+	public void testIntroCall() throws ATLCoreException {	
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.SIMP_IF_INTRO_CALL);
+		
+		UglyAnATLyzerExpression exp = loadExpression("files/ifelse/intro_call1.atl");
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
+
+	@Test
+	public void testIntroCall_HSM2FSM() throws ATLCoreException {	
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.SIMP_IF_INTRO_CALL);
+		
+		UglyAnATLyzerExpression exp = loadExpressionHSM2FSM("files/ifelse/intro_call_hsm2fsm_failure.atl");
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
 }

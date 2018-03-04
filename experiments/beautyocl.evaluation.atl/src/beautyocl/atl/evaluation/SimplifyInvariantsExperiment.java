@@ -1,6 +1,7 @@
 package beautyocl.atl.evaluation;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
 
 	protected static final String ORIGINAL_RESOURCE = "ORIGINAL_RESOURCE";
 	
+	
 	@Override
 	public void printResult(PrintStream out) {
 		// TODO Auto-generated method stub
@@ -45,7 +47,8 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
 
  	List<AnalyserData> allData = new ArrayList<AnalyserData>();
  	BEData expData = new BEData();
-
+ 	StringBuilder buffer = new StringBuilder();
+ 	
 	@Override
 	protected void perform(IResource resource) {
 		perform(resource, new NullProgressMonitor());
@@ -94,12 +97,25 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
 				System.out.println("=== Processing: " + postcondition.getInvName());
 				
 				BeautyOCLAnatlyzer simplifier = new BeautyOCLAnatlyzer();
-				System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression) + "\n");
+				
+				String originalText = ATLSerializer.serialize(targetExpression);
+				System.out.println("Before:\n" + originalText + "\n");
+				
 				ExecutionInfo result = simplifier.simplify(data.getAnalyser(), targetExpression, new ExperimentTracer(expInv));
-				System.out.println("After:\n" + ATLSerializer.serialize(result.getResult()) + "\n");
+				
+				String simplifiedText = ATLSerializer.serialize(result.getResult());
+				System.out.println("After:\n" + simplifiedText + "\n");
+				
 				expInv.setFinalExpression(ATLSerializer.serialize(result.getResult()));
 				expInv.setSimplifiedNumNodes(countNodes(result.getResult()));
 				
+				buffer.append("\nOriginal: " + postcondition.getInvName() + "\n");
+				buffer.append(originalText);
+
+				buffer.append("\nSimplified: " + postcondition.getInvName() + "\n");
+				buffer.append(simplifiedText);
+				buffer.append("\n======\n\n");
+								
 				// TODO: Get information about the applied simplifications
 			}
 			
@@ -142,7 +158,10 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
         File result = new File(fname);
         try {
 			serializer.write(expData, result);
-		} catch (Exception e) {
+			FileWriter fw = new FileWriter(new File(fname + ".txt"));
+			fw.append(buffer.toString());
+			fw.close();
+        } catch (Exception e) {
 			e.printStackTrace();
 		}
 	};

@@ -104,8 +104,8 @@ public class ActionsEngine {
 		
 		changeRootIfNeeded(m, a.getSource(), tgt);
 		
-		System.out.println("D: " + a.getSource());
-		EcoreUtil.delete(a.getSource());
+		System.out.println("R: " + a.getSource());
+		//EcoreUtil.delete(a.getSource());
 		
 		return tgt;
 	}
@@ -127,8 +127,10 @@ public class ActionsEngine {
 		EcoreUtil.replace(a.getSource(), tgt);
 		
 		changeRootIfNeeded(m, a.getSource(), tgt);
-		
-		EcoreUtil.delete(a.getSource());
+
+		System.out.println("M: " + a.getSource());
+
+		// EcoreUtil.delete(a.getSource());
 		
 		return a.getChildren();
 	}
