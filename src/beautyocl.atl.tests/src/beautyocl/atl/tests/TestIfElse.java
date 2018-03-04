@@ -6,6 +6,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.junit.Test;
 
+import anatlyzer.atl.analyser.AnalysisResult;
+import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
 import anatlyzer.atl.util.ATLSerializer;
@@ -29,8 +31,9 @@ public class TestIfElse extends Tester {
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load("files/ifelse/if_else_same_expr.atl");
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/ABCD.ecore", "metamodels/WXYZ.ecore"}, new String[] { "ABCD", "WXYZ"} ); 
-
-		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
+		IAnalyserResult analysis = loader.analyse().getAnalyser();
+		
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(analysis, loader.getAtlTransformation().getRoot());
 		
 		String before = ATLSerializer.serialize(exp.getRoot());
 		
@@ -55,8 +58,9 @@ public class TestIfElse extends Tester {
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load("files/ifelse/if_else_same_expr2.atl");
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/ABCD.ecore", "metamodels/WXYZ.ecore"}, new String[] { "ABCD", "WXYZ"} ); 
-
-		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
+		IAnalyserResult analysis = loader.analyse().getAnalyser();
+		
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(analysis, loader.getAtlTransformation().getRoot());
 		
 		String before = ATLSerializer.serialize(exp.getRoot());
 		

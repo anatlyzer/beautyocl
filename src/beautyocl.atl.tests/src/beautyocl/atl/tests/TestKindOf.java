@@ -1,5 +1,7 @@
 package beautyocl.atl.tests;
 
+import static org.junit.Assert.assertNotEquals;
+
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
@@ -7,6 +9,7 @@ import org.junit.Test;
 
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
+import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ActionsPackage;
 import beautyocl.actions.IExecutionTracer;
 import beautyocl.api.common.Beautyfier;
@@ -14,57 +17,72 @@ import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.ATLTransformation;
 import beautyocl.atl.api.ATLTransformation.VM;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
+import beautyocl.atl.api.utils.BeautyATLUtils;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
 public class TestKindOf extends Tester {
 	
-	public TransformationRepository configureRepo()  {
+	public TransformationRepository configureRepoSimpleKindOf()  {
 		TransformationRepository rep = new TransformationRepository();
-		rep.add(new ATLTransformation("kindof", "beautyocl.simplifications.ifKindOf.atl", VM.STANDARD));
+		rep.add(BeautyATLUtils.SIMP_KIND_OF_TRUE);
 		return rep;
 	}
 
-	private UglyAnATLyzerExpression loadExpression(String trafo) throws ATLCoreException {
-		AnalysisLoader.setStandaloneMode();
-		Resource r = AtlLoader.load(trafo);
-		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/ABCD.ecore", "metamodels/WXYZ.ecore"}, new String[] { "ABCD", "WXYZ"} ); 
-		loader.analyse();
-		
-		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
-		return exp;
-	}
-	
-
-	private UglyAnATLyzerExpression loadExpressionPNML(String trafo) throws ATLCoreException {
-		AnalysisLoader.setStandaloneMode();
-		Resource r = AtlLoader.load(trafo);
-		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
-		loader.analyse();
-		
-		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(loader.getAtlTransformation(), loader.getAtlTransformation().getRoot());
-		return exp;
+	public TransformationRepository configureRepoFullKindOf()  {
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.SIMP_KIND_OF_FULL);
+		return rep;
 	}
 
-//	@Test
+	@Test
 	public void testKindOf() throws ATLCoreException {	
 		String trafo = "files/kindof/if_kind_of.atl";
-		TransformationRepository rep = configureRepo();
+		TransformationRepository rep = configureRepoSimpleKindOf();
 		
 		UglyAnATLyzerExpression exp = loadExpression(trafo);
 		
-		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-		beauty.applyAll(exp);
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+			
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
 	}
 
 	@Test
 	public void testKindOf_PNML2PetriNet() throws ATLCoreException {	
 		String trafo = "files/kindof/if_kind_of_pnml2petrinet.atl";
-		TransformationRepository rep = configureRepo();
+		TransformationRepository rep = configureRepoSimpleKindOf();
 		
 		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
+
+	@Test
+	public void testKindOf_Full_PNML2PetriNet() throws ATLCoreException {	
+		String trafo = "files/kindof/if_kind_of_full_pnml2petrinet.atl";
+		TransformationRepository rep = configureRepoFullKindOf();
 		
-		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-		beauty.applyAll(exp);
+		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
 	}
 
 }

@@ -9,6 +9,8 @@ class ExprTyping {
   op boolean isSuperType(superimposed.OclExpression e1_subtype, superimposed.OclExpression e2_supertype);
 
   op CClass accessType(superimposed.PropertyCallExp exp);
+  
+  op String modelName(superimposed.VariableDeclaration exp);  
     
   op CType typeOf(superimposed.OclExpression e);
 }

@@ -11,7 +11,9 @@ public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_ITERATORS = new ATLTransformation("iterators", pathTo("beautyocl.simplifications.iterator.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_SAME_EXPR = new ATLTransformation("if-same-expr", pathTo("beautyocl.simplifications.ifsameexpr.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_UNSHORT_CIRCUIT = new ATLTransformation("unshort", pathTo("beautyocl.simplifications.unshortcircuit.asm"), VM.STANDARD);	
-
+	public static final ATLTransformation SIMP_KIND_OF_TRUE = new ATLTransformation("kind-of-true", pathTo("beautyocl.simplifications.kindoftrue.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_KIND_OF_FULL = new ATLTransformation("kind-of-full", pathTo("beautyocl.simplifications.fullTypeComparison.asm"), VM.STANDARD);
+	
 	public static TransformationRepository getRepository() {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
@@ -22,8 +24,8 @@ public class BeautyATLUtils {
 		rep.add(new ATLTransformation("if-intro-call", pathTo("beautyocl.simplifications.ifintrocall.asm"), VM.STANDARD));
 		rep.add(SIMP_IF_SAME_EXPR);
 		rep.add(SIMP_UNSHORT_CIRCUIT);
-		rep.add(new ATLTransformation("kind-of-true", pathTo("beautyocl.simplifications.kindoftrue.asm"), VM.STANDARD));
-		rep.add(new ATLTransformation("kind-of-full", pathTo("beautyocl.simplifications.fullTypeComparison.asm"), VM.STANDARD));
+		rep.add(SIMP_KIND_OF_TRUE);
+		rep.add(SIMP_KIND_OF_FULL);
 		
 		
 		return rep;

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="HSM" nsURI="http://HSM/1.0" nsPrefix="HSM">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="StateMachine">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="unique_hsm_sm_names"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="unique_hsm_sm_names" value="StateMachine.allInstances()->forAll(s1,s2 | s1&lt;>s2 implies s1.name&lt;>s2.name)"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="_transitions" upperBound="-1"
+        eType="#//Transition" containment="true" eOpposite="#//Transition/stateMachine"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="_states" upperBound="-1"
+        eType="#//AbstractState" containment="true" eOpposite="#//AbstractState/stateMachine"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Transition">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="hsm_transition_multi_lower hsm_transition_multi_upper hsm_transition_src_multi_lower hsm_transition_src_multi_upper hsm_transition_trg_multi_lower hsm_transition_trg_multi_upper hsm_transition_src_contain_sm hsm_transition_trg_contain_sm hsm_transition_contain_sm"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="hsm_transition_multi_lower" value="not stateMachine.oclIsUndefined()"/>
+      <details key="hsm_transition_multi_upper" value="StateMachine.allInstances()->forAll(sm1,sm2 | stateMachine=sm1 and stateMachine=sm2 implies sm1=sm2)"/>
+      <details key="hsm_transition_src_multi_lower" value="not source.oclIsUndefined()"/>
+      <details key="hsm_transition_src_multi_upper" value="AbstractState.allInstances()->forAll(s1,s2 | source=s1 and source=s2 implies s1=s2)"/>
+      <details key="hsm_transition_trg_multi_lower" value="not target.oclIsUndefined()"/>
+      <details key="hsm_transition_trg_multi_upper" value="AbstractState.allInstances()->forAll(s1,s2 | target=s1 and target=s2 implies s1=s2)"/>
+      <details key="hsm_transition_src_contain_sm" value="AbstractState.allInstances()->forAll(s | source=s implies StateMachine.allInstances()->forAll(sm1,sm2 | stateMachine=sm1 and s.stateMachine=sm2 implies sm1=sm2))"/>
+      <details key="hsm_transition_trg_contain_sm" value="AbstractState.allInstances()->forAll(s | target=s implies StateMachine.allInstances()->forAll(sm1,sm2 | stateMachine=sm1 and s.stateMachine=sm2 implies sm1=sm2))"/>
+      <details key="hsm_transition_contain_sm" value="AbstractState.allInstances()->forAll(s1,s2 | source=s1 and target=s2 implies StateMachine.allInstances()->forAll(sm1,sm2 | s1.stateMachine=sm1 and s2.stateMachine=sm2 implies sm1=sm2))"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stateMachine" eType="#//StateMachine"
+        eOpposite="#//StateMachine/_transitions"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//AbstractState"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+        eType="#//AbstractState"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractState" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="unique_hsm_state_names hsm_state_multi_lower hsm_state_multi_upper hsm_transition_composite_upper"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="unique_hsm_state_names" value="AbstractState.allInstances()->forAll(s1,s2 | s1&lt;>s2 implies s1.name&lt;>s2.name)"/>
+      <details key="hsm_state_multi_lower" value="not stateMachine.oclIsUndefined()"/>
+      <details key="hsm_state_multi_upper" value="StateMachine.allInstances()->forAll(sm1,sm2 | stateMachine=sm1 and stateMachine=sm2 implies sm1=sm2)"/>
+      <details key="hsm_transition_composite_upper" value="AbstractState.allInstances()->forAll(c1,c2 | c1.oclIsTypeOf(CompositeState) and c2.oclIsTypeOf(CompositeState) implies c1=c2)"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stateMachine" eType="#//StateMachine"
+        eOpposite="#//StateMachine/_states"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="compositeState" eType="#//CompositeState"
+        eOpposite="#//CompositeState/_states"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InitialState" eSuperTypes="#//AbstractState"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RegularState" eSuperTypes="#//AbstractState"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CompositeState" eSuperTypes="#//AbstractState">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="_states" upperBound="-1"
+        eType="#//AbstractState" eOpposite="#//AbstractState/compositeState"/>
+  </eClassifiers>
+</ecore:EPackage>

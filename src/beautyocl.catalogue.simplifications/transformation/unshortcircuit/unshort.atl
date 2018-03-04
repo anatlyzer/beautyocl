@@ -86,16 +86,20 @@ rule unshortCircuit {
 	to a : ACT!Replace,
 		-- Should be BinaryOperator??
 	   r : OCLt!OperatorCallExp (
-			source <- i.condition,
-			arguments <- i.thenExpression.condition,
 			name <- 'and'
 	   ),
 	   newIf : OCLt!IfExp (
-	   		condition <- r,
-			thenExpression <- i.thenExpression.thenExpression,
-			elseExpression <- i.thenExpression.elseExpression
+	   		condition <- r
+			--, AnATLyzer should raise an invalid assignment error!
+			--thenExpression <- i.thenExpression.thenExpression,
+			--elseExpression <- i.thenExpression.elseExpression
 	   )
 	do {
+		r.source <- i.condition;
+		r.arguments <- i.thenExpression.condition;
+		newIf.thenExpression <- i.thenExpression.thenExpression;
+		newIf.elseExpression <- i.thenExpression.elseExpression;
+		
 		a.source <- i;
 		a.target <- newIf;
 	}

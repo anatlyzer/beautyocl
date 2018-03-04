@@ -60,6 +60,7 @@ public class ActionsFactoryImpl extends EFactoryImpl implements ActionsFactory {
 			case ActionsPackage.DELETE_MOVE_CHILDREN: return createDeleteMoveChildren();
 			case ActionsPackage.CLONE: return createClone();
 			case ActionsPackage.COMPOSITE_ACTION: return createCompositeAction();
+			case ActionsPackage.SET: return createSet();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -103,6 +104,16 @@ public class ActionsFactoryImpl extends EFactoryImpl implements ActionsFactory {
 	public CompositeAction createCompositeAction() {
 		CompositeActionImpl compositeAction = new CompositeActionImpl();
 		return compositeAction;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Set createSet() {
+		SetImpl set = new SetImpl();
+		return set;
 	}
 
 	/**

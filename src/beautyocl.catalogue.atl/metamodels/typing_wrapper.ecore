@@ -13,6 +13,9 @@
     <eOperations name="accessType" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
       <eParameters name="exp" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/PropertyCallExp"/>
     </eOperations>
+    <eOperations name="modelName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="vd" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/VariableDeclaration"/>
+    </eOperations>
     <eOperations name="typeOf" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClassifier">
       <eParameters name="e" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
     </eOperations>

@@ -102,13 +102,22 @@ public interface TypwrapperPackage extends EPackage {
 	int TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP = 2;
 
 	/**
+	 * The operation id for the '<em>Model Name</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION = 3;
+
+	/**
 	 * The operation id for the '<em>Type Of</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER___TYPE_OF__OCLEXPRESSION = 3;
+	int TYP_WRAPPER___TYPE_OF__OCLEXPRESSION = 4;
 
 	/**
 	 * The number of operations of the '<em>Typ Wrapper</em>' class.
@@ -117,7 +126,7 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER_OPERATION_COUNT = 4;
+	int TYP_WRAPPER_OPERATION_COUNT = 5;
 
 
 	/**
@@ -159,6 +168,16 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getTypWrapper__AccessType__PropertyCallExp();
+
+	/**
+	 * Returns the meta object for the '{@link beautyocl.atl.typwrapper.TypWrapper#modelName(anatlyzer.atlext.OCL.VariableDeclaration) <em>Model Name</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Model Name</em>' operation.
+	 * @see beautyocl.atl.typwrapper.TypWrapper#modelName(anatlyzer.atlext.OCL.VariableDeclaration)
+	 * @generated
+	 */
+	EOperation getTypWrapper__ModelName__VariableDeclaration();
 
 	/**
 	 * Returns the meta object for the '{@link beautyocl.atl.typwrapper.TypWrapper#typeOf(anatlyzer.atlext.OCL.OclExpression) <em>Type Of</em>}' operation.
@@ -226,6 +245,14 @@ public interface TypwrapperPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP = eINSTANCE.getTypWrapper__AccessType__PropertyCallExp();
+
+		/**
+		 * The meta object literal for the '<em><b>Model Name</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION = eINSTANCE.getTypWrapper__ModelName__VariableDeclaration();
 
 		/**
 		 * The meta object literal for the '<em><b>Type Of</b></em>' operation.

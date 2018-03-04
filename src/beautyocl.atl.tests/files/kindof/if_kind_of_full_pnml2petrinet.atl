@@ -1,0 +1,11 @@
+-- @path PNML=/beautyocl.atl.tests/metamodels/PNML_simplified.ecore
+-- @path PetriNet=/beautyocl.atl.tests/metamodels/PetriNet.ecore
+
+
+module PNML2PetriNet;
+create OUT : PetriNet from IN : PNML;
+
+helper def : testOrKindOf() : Boolean = 
+	PNML!NetContentElement.allInstances()->forAll(n |
+		n.oclIsKindOf(PNML!Place) or n.oclIsKindOf(PNML!Transition)
+	);

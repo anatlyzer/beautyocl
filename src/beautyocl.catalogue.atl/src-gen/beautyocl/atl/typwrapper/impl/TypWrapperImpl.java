@@ -8,8 +8,10 @@ import anatlyzer.atl.types.Type;
 import anatlyzer.atlext.OCL.OclExpression;
 
 import anatlyzer.atlext.OCL.PropertyCallExp;
+import anatlyzer.atlext.OCL.VariableDeclaration;
 import beautyocl.atl.typwrapper.TypWrapper;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
+
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -88,6 +90,22 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 	 * <!-- end-user-doc -->
 	 * @generated NOT
 	 */
+	public String modelName(VariableDeclaration vd) {
+		Type t = vd.getInferredType();
+		if ( t instanceof Metaclass ) {
+			return ((Metaclass) t).getModel().getName();
+		}
+		
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated NOT
+	 */
 	public EClassifier typeOf(OclExpression e) {
 		if ( e.getInferredType() instanceof Metaclass ) {
 			return ((Metaclass) e.getInferredType()).getKlass();
@@ -112,6 +130,8 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 				return isSuperType((OclExpression)arguments.get(0), (OclExpression)arguments.get(1));
 			case TypwrapperPackage.TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP:
 				return accessType((PropertyCallExp)arguments.get(0));
+			case TypwrapperPackage.TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION:
+				return modelName((VariableDeclaration)arguments.get(0));
 			case TypwrapperPackage.TYP_WRAPPER___TYPE_OF__OCLEXPRESSION:
 				return typeOf((OclExpression)arguments.get(0));
 		}

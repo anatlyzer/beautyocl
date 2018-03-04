@@ -91,9 +91,11 @@ public class SimplifyInvariantsExperiment extends AbstractSimplifyExperiment imp
 				
 				trafo.addInvariant(expInv);
 
+				System.out.println("=== Processing: " + postcondition.getInvName());
+				
 				BeautyOCLAnatlyzer simplifier = new BeautyOCLAnatlyzer();
 				System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression) + "\n");
-				ExecutionInfo result = simplifier.simplify(null, targetExpression, new ExperimentTracer(expInv));
+				ExecutionInfo result = simplifier.simplify(data.getAnalyser(), targetExpression, new ExperimentTracer(expInv));
 				System.out.println("After:\n" + ATLSerializer.serialize(result.getResult()) + "\n");
 				expInv.setFinalExpression(ATLSerializer.serialize(result.getResult()));
 				expInv.setSimplifiedNumNodes(countNodes(result.getResult()));

@@ -20,6 +20,9 @@
       <genOperations ecoreOperation="typing_wrapper.ecore#//TypWrapper/accessType">
         <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/accessType/exp"/>
       </genOperations>
+      <genOperations ecoreOperation="typing_wrapper.ecore#//TypWrapper/modelName">
+        <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/modelName/vd"/>
+      </genOperations>
       <genOperations ecoreOperation="typing_wrapper.ecore#//TypWrapper/typeOf">
         <genParameters ecoreParameter="typing_wrapper.ecore#//TypWrapper/typeOf/e"/>
       </genOperations>

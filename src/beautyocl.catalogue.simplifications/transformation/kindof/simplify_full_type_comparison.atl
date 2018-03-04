@@ -29,14 +29,15 @@ helper def : subclassesMap : Map(OclAny, Set(TYP!CClass)) =
 helper context TYP!CClass def: subclasses : Set(TYP!CClass) = thisModule.subclassesMap.get(self);
 helper context TYP!CClass def: allSubclasses : Set(TYP!CClass) = self.superClasses->collect(c | c.subclasses)->flatten();
 
-helper context TYP!CClass def: isCoveredBy(types : Set(TYP!CClass)) : Boolean = 
+helper context TYP!CClass def: isCoveredBy(types : Set(TYP!CClass)) : Boolean =
 	types->includes(self) or self.subclasses->forAll(c | c.isCoveredBy(types))
 	;
 
 helper  def: findSuperType(param : Set(OCL!"OclType")) : TYP!CClass = 
 	-- Sort all classes by number of subclasses
 	let  types: Set(TYP!CClass) = param->collect(t | thisModule.typ.typeOf(t))->asSet() in -- assume is a CClass...
-	let sorted:  OclAny = TYP!CClass.allInstances()->sortedBy(c | c.allSubclasses->size())
+	-- let sorted:  OclAny = TYP!CClass.allInstances()->sortedBy(c | c.allSubclasses->size())
+	let sorted:  OclAny = types->collect(c | c.superClasses)->flatten()->asSet()->sortedBy(c | c.allSubclasses->size())
 	in sorted->iterate(it; res: TYP!CClass = OclUndefined | 
 		if res.oclIsUndefined() then
 			if it.isCoveredBy(types) then
@@ -57,12 +58,19 @@ helper  def: findSuperType(param : Set(OCL!"OclType")) : TYP!CClass =
 helper context OCL!BinaryOperatorCallExp def: orKindOfCheckedTypes : Set(OCL!"OclType") =
 	self.source.orKindOfCheckedTypes->union(self.argument.orKindOfCheckedTypes);
 
+helper context OCL!OperationCallExp def: orKindOfCheckedTypes : Set(OCL!"OclType") = 
+	if self.name = 'oclIsKindOf' then
+		Set { self.arguments->first().oclAsType(OCL!"OclType") }
+	else
+		Set { }
+	endif;
+	
 -- Needed to avoid runtime problems...
 helper context OCL!OclExpression def: orKindOfCheckedTypes : Set(OCL!"OclType") = Set { };
 
 
-helper context OCL!OperationCallExp def: isKindOf() : Set(OCL!"OclType") =
-	Set { self.arguments->first().oclAsType(OCL!"OclType") };
+--helper context OCL!OperationCallExp def: isKindOf() : Set(OCL!"OclType") =
+--	Set { self.arguments->first().oclAsType(OCL!"OclType") };
 
 -- isOrKindOf
 helper context OCL!OclExpression         def: isOrKindOf : Boolean = false;
@@ -123,8 +131,8 @@ rule removeIf {
 	from o : OCL!BinaryOperatorCallExp (
 		-- TODO: Check they all have the same source expression
 		if o.isOrKindOf and o.commonVar <> OclUndefined and o.parentIsNotOrKindOf then
-			o.commonVar.type <> OclUndefined -- Not sure about this condition... type is always <> null??? 
-			and
+			--o.commonVar.type <> OclUndefined -- Not sure about this condition... type is always <> null??? 
+			--and
 			thisModule.findSuperType(o.orKindOfCheckedTypes) <> OclUndefined
 		else
 			false
@@ -149,7 +157,7 @@ rule removeIf {
 	  )
 	  ,
 	  m : OCL2!OclModel (
-		name <- o.commonVar.type.model.name
+		name <- thisModule.typ.modelName(o.commonVar) --.type.model.name
 	)
 	  
 	do {

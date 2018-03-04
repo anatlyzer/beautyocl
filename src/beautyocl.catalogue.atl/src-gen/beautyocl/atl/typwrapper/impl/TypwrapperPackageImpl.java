@@ -141,8 +141,17 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getTypWrapper__TypeOf__OclExpression() {
+	public EOperation getTypWrapper__ModelName__VariableDeclaration() {
 		return typWrapperEClass.getEOperations().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getTypWrapper__TypeOf__OclExpression() {
+		return typWrapperEClass.getEOperations().get(4);
 	}
 
 	/**
@@ -177,6 +186,7 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SAME_TYPE__OCLEXPRESSION_OCLEXPRESSION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP);
+		createEOperation(typWrapperEClass, TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___TYPE_OF__OCLEXPRESSION);
 	}
 
@@ -225,6 +235,9 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 
 		op = initEOperation(getTypWrapper__AccessType__PropertyCallExp(), ecorePackage.getEClass(), "accessType", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getPropertyCallExp(), "exp", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getTypWrapper__ModelName__VariableDeclaration(), ecorePackage.getEString(), "modelName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theOCLPackage.getVariableDeclaration(), "vd", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = initEOperation(getTypWrapper__TypeOf__OclExpression(), ecorePackage.getEClassifier(), "typeOf", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getOclExpression(), "e", 0, 1, IS_UNIQUE, IS_ORDERED);

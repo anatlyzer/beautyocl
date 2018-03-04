@@ -31,6 +31,8 @@ public class ActionsEngine {
 			return replace(match, (Replace) a, cloneScope);
 		} else if ( a instanceof DeleteMoveChildren ) {
 			return deleteMoveChildren(match, (DeleteMoveChildren) a, cloneScope);
+		} else if ( a instanceof Set ) {
+			return setValue(match, (Set) a, cloneScope);			
 		} else if ( a instanceof CompositeAction ) {
 			return compositeAction(match, (CompositeAction) a);			
 		} else { 
@@ -59,12 +61,7 @@ public class ActionsEngine {
 				// Adapt v if it is a clone
 				v = getTarget(v, scope);
 				
-				EStructuralFeature f = result.eClass().getEStructuralFeature(prop);
-				if ( f.isMany() ) {
-					((Collection<EObject>) result.eGet(f)).add(v);
-				} else {
-					result.eSet(f, v);
-				}
+				setPropertyValue(result, v, prop);
 			}
 			
 		}
@@ -78,6 +75,16 @@ public class ActionsEngine {
 		}
 		
 		return lastResult;
+	}
+
+
+	private void setPropertyValue(EObject source, EObject value, String propertyName) {
+		EStructuralFeature f = source.eClass().getEStructuralFeature(propertyName);
+		if ( f.isMany() ) {
+			((Collection<EObject>) source.eGet(f)).add(value);
+		} else {
+			source.eSet(f, value);
+		}
 	}
 
 	public <T extends InPlaceAction> List<? extends T> getActions(List<? extends InPlaceAction> actions, Class<T> type) {
@@ -96,6 +103,9 @@ public class ActionsEngine {
 		EcoreUtil.replace(a.getSource(), tgt);
 		
 		changeRootIfNeeded(m, a.getSource(), tgt);
+		
+		System.out.println("D: " + a.getSource());
+		EcoreUtil.delete(a.getSource());
 		
 		return tgt;
 	}
@@ -118,9 +128,17 @@ public class ActionsEngine {
 		
 		changeRootIfNeeded(m, a.getSource(), tgt);
 		
+		EcoreUtil.delete(a.getSource());
+		
 		return a.getChildren();
 	}
 	
+	private EObject setValue(Match match, Set action, CloneScope cloneScope) {
+		EObject obj = getTarget(action.getSource(), cloneScope);
+		setPropertyValue(obj, action.getValue(), action.getPropertyName());
+		return obj;
+	}
+
 	private void changeRootIfNeeded(Match m, EObject source, EObject tgt) {
 		if ( m.getExpression().getRoot() == source ) {
 			m.getExpression().setRoot(tgt);

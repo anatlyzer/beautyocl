@@ -183,7 +183,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			
 			BeautyOCLAnatlyzer simplifier = new BeautyOCLAnatlyzer();
 			System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression)+"\n");
-			ExecutionInfo result = simplifier.simplify(null, targetExpression, new ExperimentTracer(expQfx));
+			ExecutionInfo result = simplifier.simplify(original.getAnalyser(), targetExpression, new ExperimentTracer(expQfx));
 			System.out.println("After:\n" + ATLSerializer.serialize(result.getResult())+"\n");
 			
 			// TODO: Poner solo si se ha simplificado algo!

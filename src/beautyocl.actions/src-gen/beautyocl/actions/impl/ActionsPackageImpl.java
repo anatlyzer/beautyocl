@@ -10,6 +10,7 @@ import beautyocl.actions.DeleteMoveChildren;
 import beautyocl.actions.InPlaceAction;
 import beautyocl.actions.Replace;
 
+import beautyocl.actions.Set;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -58,6 +59,13 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * @generated
 	 */
 	private EClass compositeActionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass setEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -233,6 +241,33 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getSet() {
+		return setEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSet_PropertyName() {
+		return (EAttribute)setEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSet_Value() {
+		return (EReference)setEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ActionsFactory getActionsFactory() {
 		return (ActionsFactory)getEFactoryInstance();
 	}
@@ -272,6 +307,10 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		compositeActionEClass = createEClass(COMPOSITE_ACTION);
 		createEReference(compositeActionEClass, COMPOSITE_ACTION__ACTIONS);
+
+		setEClass = createEClass(SET);
+		createEAttribute(setEClass, SET__PROPERTY_NAME);
+		createEReference(setEClass, SET__VALUE);
 	}
 
 	/**
@@ -306,6 +345,7 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 		deleteMoveChildrenEClass.getESuperTypes().add(this.getInPlaceAction());
 		cloneEClass.getESuperTypes().add(this.getInPlaceAction());
 		compositeActionEClass.getESuperTypes().add(this.getInPlaceAction());
+		setEClass.getESuperTypes().add(this.getInPlaceAction());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(inPlaceActionEClass, InPlaceAction.class, "InPlaceAction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -324,6 +364,10 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		initEClass(compositeActionEClass, CompositeAction.class, "CompositeAction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getCompositeAction_Actions(), this.getInPlaceAction(), null, "actions", null, 0, -1, CompositeAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(setEClass, Set.class, "Set", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getSet_PropertyName(), ecorePackage.getEString(), "propertyName", null, 1, 1, Set.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSet_Value(), ecorePackage.getEObject(), null, "value", null, 1, 1, Set.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

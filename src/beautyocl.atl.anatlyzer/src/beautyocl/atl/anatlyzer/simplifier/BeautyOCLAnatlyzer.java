@@ -2,6 +2,7 @@ package beautyocl.atl.anatlyzer.simplifier;
 
 import org.eclipse.emf.ecore.EObject;
 
+import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.model.ATLModel;
 import anatlyzer.atl.simplifier.IOclSimplifier;
 import beautyocl.actions.ExecutionInfo;
@@ -18,13 +19,13 @@ public class BeautyOCLAnatlyzer implements IOclSimplifier {
 	}
 
 	@Override
-	public EObject simplify(ATLModel model, EObject obj) {
-		return simplify(model, obj, IExecutionTracer.NULL).getResult();
+	public EObject simplify(IAnalyserResult r, EObject obj) {
+		return simplify(r, obj, IExecutionTracer.NULL).getResult();
 	}
 
-	public ExecutionInfo simplify(ATLModel model, EObject obj, IExecutionTracer tracer) {
+	public ExecutionInfo simplify(IAnalyserResult r, EObject obj, IExecutionTracer tracer) {
 		TransformationRepository rep = BeautyATLUtils.getRepository();
-		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(model, obj);
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(r, obj);
 		
 		Beautyfier beauty = new Beautyfier(rep, tracer);
 		ExecutionInfo info = beauty.applyAll(exp);

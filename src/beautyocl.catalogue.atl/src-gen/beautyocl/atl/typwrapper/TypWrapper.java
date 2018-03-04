@@ -5,6 +5,7 @@ package beautyocl.atl.typwrapper;
 import anatlyzer.atlext.OCL.OclExpression;
 
 import anatlyzer.atlext.OCL.PropertyCallExp;
+import anatlyzer.atlext.OCL.VariableDeclaration;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
@@ -43,6 +44,14 @@ public interface TypWrapper extends EObject {
 	 * @generated
 	 */
 	EClass accessType(PropertyCallExp exp);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	String modelName(VariableDeclaration vd);
 
 	/**
 	 * <!-- begin-user-doc -->

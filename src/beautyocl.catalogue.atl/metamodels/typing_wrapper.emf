@@ -12,6 +12,9 @@ class TypWrapper {
   op boolean isSuperType(atlext.OCL.OclExpression e1_subtype, atlext.OCL.OclExpression e2_supertype);
   
   op ecore.EClass accessType(atlext.OCL.PropertyCallExp exp);
+ 
+  op String modelName(atlext.OCL.VariableDeclaration vd);
+ 
   
   op ecore.EClassifier typeOf(atlext.OCL.OclExpression e);	
 }

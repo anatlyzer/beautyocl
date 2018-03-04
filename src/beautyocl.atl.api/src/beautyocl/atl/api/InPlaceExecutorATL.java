@@ -17,6 +17,7 @@ import org.eclipse.m2m.atl.core.emf.EMFModelFactory;
 import org.eclipse.m2m.atl.core.launch.ILauncher;
 import org.eclipse.m2m.atl.engine.emfvm.launch.EMFVMLauncher;
 
+import anatlyzer.atlext.OCL.OclExpression;
 import beautyocl.actions.InPlaceAction;
 import beautyocl.actions.MatchPhase;
 import beautyocl.api.common.UglyExpression;
@@ -46,7 +47,14 @@ public class InPlaceExecutorATL {
 		
 		EMFModel loadedModel = (EMFModel) factory.newModel(loadedMetamodel);
 		injector.inject(loadedModel, exp.getResource());
-	
+		
+		if ( true ) {
+			exp.getResource().getAllContents().forEachRemaining(o -> {
+				if ( o instanceof OclExpression )
+				System.out.println("L: " + o);
+			});
+		}
+		
 		// Create the typing model in-line
 		EMFModel typWrapperModel = (EMFModel) factory.newModel(typWrapperMetamodel);
 		typWrapperModel.newElement(typWrapperMetamodel.getMetaElementByName("TypWrapper"));

@@ -1,0 +1,38 @@
+-- @path HSM=/anatlyzer.evaluation.preconditions/metamodels/HSM.ecore
+-- @path FSM=/anatlyzer.evaluation.preconditions/metamodels/FSM.ecore
+-- @atlcompiler atl2010
+
+
+module HSM2FSM;
+create OUT: FSM from IN: HSM;
+
+helper def: unique_hsm_sm_names : Boolean = --  different state machines have different names
+HSM!Transition.allInstances()->select(t1 | not t1.source.oclIsTypeOf(HSM!CompositeState) and not t1.target.oclIsTypeOf(HSM!CompositeState))->forAll(t | not if t.source.oclIsKindOf(HSM!RegularState) then
+	t.source
+else
+	if t.source.oclIsKindOf(HSM!InitialState) then
+		if t.source.compositeState.oclIsUndefined() then
+			t.source
+		else
+			if t.source.oclIsKindOf(HSM!InitialState) then
+				if not t.source.compositeState.oclIsUndefined() then
+					t.source
+				else
+					OclUndefined
+				endif
+			else
+				OclUndefined
+			endif
+		endif
+	else
+		if t.source.oclIsKindOf(HSM!InitialState) then
+			if not t.source.compositeState.oclIsUndefined() then
+				t.source
+			else
+				OclUndefined
+			endif
+		else
+			OclUndefined
+		endif
+	endif
+endif.oclIsUndefined()) ;
