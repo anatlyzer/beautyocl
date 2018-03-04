@@ -24,7 +24,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
         eType="#//InPlaceAction" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Set" eSuperTypes="#//InPlaceAction">
+  <eClassifiers xsi:type="ecore:EClass" name="SetP" eSuperTypes="#//InPlaceAction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="propertyName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>

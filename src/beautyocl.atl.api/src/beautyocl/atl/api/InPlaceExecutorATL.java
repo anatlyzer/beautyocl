@@ -48,7 +48,7 @@ public class InPlaceExecutorATL {
 		EMFModel loadedModel = (EMFModel) factory.newModel(loadedMetamodel);
 		injector.inject(loadedModel, exp.getResource());
 		
-		if ( true ) {
+		if ( false ) {
 			exp.getResource().getAllContents().forEachRemaining(o -> {
 				if ( o instanceof OclExpression )
 				System.out.println("L: " + o);

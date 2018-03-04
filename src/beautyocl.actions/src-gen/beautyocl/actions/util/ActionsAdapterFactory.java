@@ -88,8 +88,8 @@ public class ActionsAdapterFactory extends AdapterFactoryImpl {
 				return createCompositeActionAdapter();
 			}
 			@Override
-			public Adapter caseSet(Set object) {
-				return createSetAdapter();
+			public Adapter caseSetP(SetP object) {
+				return createSetPAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -182,16 +182,16 @@ public class ActionsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link beautyocl.actions.Set <em>Set</em>}'.
+	 * Creates a new adapter for an object of class '{@link beautyocl.actions.SetP <em>Set P</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see beautyocl.actions.Set
+	 * @see beautyocl.actions.SetP
 	 * @generated
 	 */
-	public Adapter createSetAdapter() {
+	public Adapter createSetPAdapter() {
 		return null;
 	}
 

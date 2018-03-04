@@ -25,7 +25,7 @@ class CompositeAction extends InPlaceAction {
 	val InPlaceAction[*] actions;	
 }
 
-class Set extends InPlaceAction {
+class SetP extends InPlaceAction {
 	attr String[1] propertyName;
 	ref EObject[1] value;
 }

@@ -336,14 +336,14 @@ public interface ActionsPackage extends EPackage {
 
 
 	/**
-	 * The meta object id for the '{@link beautyocl.actions.impl.SetImpl <em>Set</em>}' class.
+	 * The meta object id for the '{@link beautyocl.actions.impl.SetPImpl <em>Set P</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see beautyocl.actions.impl.SetImpl
-	 * @see beautyocl.actions.impl.ActionsPackageImpl#getSet()
+	 * @see beautyocl.actions.impl.SetPImpl
+	 * @see beautyocl.actions.impl.ActionsPackageImpl#getSetP()
 	 * @generated
 	 */
-	int SET = 5;
+	int SET_P = 5;
 
 	/**
 	 * The feature id for the '<em><b>Transformation</b></em>' attribute.
@@ -352,7 +352,7 @@ public interface ActionsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
+	int SET_P__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
@@ -361,7 +361,7 @@ public interface ActionsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET__SOURCE = IN_PLACE_ACTION__SOURCE;
+	int SET_P__SOURCE = IN_PLACE_ACTION__SOURCE;
 
 	/**
 	 * The feature id for the '<em><b>Property Name</b></em>' attribute.
@@ -370,7 +370,7 @@ public interface ActionsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET__PROPERTY_NAME = IN_PLACE_ACTION_FEATURE_COUNT + 0;
+	int SET_P__PROPERTY_NAME = IN_PLACE_ACTION_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' reference.
@@ -379,26 +379,25 @@ public interface ActionsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET__VALUE = IN_PLACE_ACTION_FEATURE_COUNT + 1;
+	int SET_P__VALUE = IN_PLACE_ACTION_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of structural features of the '<em>Set</em>' class.
+	 * The number of structural features of the '<em>Set P</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SET_FEATURE_COUNT = IN_PLACE_ACTION_FEATURE_COUNT + 2;
+	int SET_P_FEATURE_COUNT = IN_PLACE_ACTION_FEATURE_COUNT + 2;
 
 	/**
-	 * The number of operations of the '<em>Set</em>' class.
+	 * The number of operations of the '<em>Set P</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SET_OPERATION_COUNT = IN_PLACE_ACTION_OPERATION_COUNT + 0;
-
+	int SET_P_OPERATION_COUNT = IN_PLACE_ACTION_OPERATION_COUNT + 0;
 
 	/**
 	 * Returns the meta object for class '{@link beautyocl.actions.InPlaceAction <em>In Place Action</em>}'.
@@ -528,36 +527,36 @@ public interface ActionsPackage extends EPackage {
 	EReference getCompositeAction_Actions();
 
 	/**
-	 * Returns the meta object for class '{@link beautyocl.actions.Set <em>Set</em>}'.
+	 * Returns the meta object for class '{@link beautyocl.actions.SetP <em>Set P</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Set</em>'.
-	 * @see beautyocl.actions.Set
+	 * @return the meta object for class '<em>Set P</em>'.
+	 * @see beautyocl.actions.SetP
 	 * @generated
 	 */
-	EClass getSet();
+	EClass getSetP();
 
 	/**
-	 * Returns the meta object for the attribute '{@link beautyocl.actions.Set#getPropertyName <em>Property Name</em>}'.
+	 * Returns the meta object for the attribute '{@link beautyocl.actions.SetP#getPropertyName <em>Property Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Property Name</em>'.
-	 * @see beautyocl.actions.Set#getPropertyName()
-	 * @see #getSet()
+	 * @see beautyocl.actions.SetP#getPropertyName()
+	 * @see #getSetP()
 	 * @generated
 	 */
-	EAttribute getSet_PropertyName();
+	EAttribute getSetP_PropertyName();
 
 	/**
-	 * Returns the meta object for the reference '{@link beautyocl.actions.Set#getValue <em>Value</em>}'.
+	 * Returns the meta object for the reference '{@link beautyocl.actions.SetP#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Value</em>'.
-	 * @see beautyocl.actions.Set#getValue()
-	 * @see #getSet()
+	 * @see beautyocl.actions.SetP#getValue()
+	 * @see #getSetP()
 	 * @generated
 	 */
-	EReference getSet_Value();
+	EReference getSetP_Value();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -689,14 +688,14 @@ public interface ActionsPackage extends EPackage {
 		EReference COMPOSITE_ACTION__ACTIONS = eINSTANCE.getCompositeAction_Actions();
 
 		/**
-		 * The meta object literal for the '{@link beautyocl.actions.impl.SetImpl <em>Set</em>}' class.
+		 * The meta object literal for the '{@link beautyocl.actions.impl.SetPImpl <em>Set P</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see beautyocl.actions.impl.SetImpl
-		 * @see beautyocl.actions.impl.ActionsPackageImpl#getSet()
+		 * @see beautyocl.actions.impl.SetPImpl
+		 * @see beautyocl.actions.impl.ActionsPackageImpl#getSetP()
 		 * @generated
 		 */
-		EClass SET = eINSTANCE.getSet();
+		EClass SET_P = eINSTANCE.getSetP();
 
 		/**
 		 * The meta object literal for the '<em><b>Property Name</b></em>' attribute feature.
@@ -704,7 +703,7 @@ public interface ActionsPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute SET__PROPERTY_NAME = eINSTANCE.getSet_PropertyName();
+		EAttribute SET_P__PROPERTY_NAME = eINSTANCE.getSetP_PropertyName();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' reference feature.
@@ -712,7 +711,7 @@ public interface ActionsPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference SET__VALUE = eINSTANCE.getSet_Value();
+		EReference SET_P__VALUE = eINSTANCE.getSetP_Value();
 
 	}
 

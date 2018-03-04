@@ -58,13 +58,13 @@ public interface ActionsFactory extends EFactory {
 	CompositeAction createCompositeAction();
 
 	/**
-	 * Returns a new object of class '<em>Set</em>'.
+	 * Returns a new object of class '<em>Set P</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Set</em>'.
+	 * @return a new object of class '<em>Set P</em>'.
 	 * @generated
 	 */
-	Set createSet();
+	SetP createSetP();
 
 	/**
 	 * Returns the package supported by this factory.

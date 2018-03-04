@@ -3,7 +3,7 @@
 package beautyocl.actions.impl;
 
 import beautyocl.actions.ActionsPackage;
-import beautyocl.actions.Set;
+import beautyocl.actions.SetP;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -15,19 +15,19 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Set</b></em>'.
+ * An implementation of the model object '<em><b>Set P</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link beautyocl.actions.impl.SetImpl#getPropertyName <em>Property Name</em>}</li>
- *   <li>{@link beautyocl.actions.impl.SetImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link beautyocl.actions.impl.SetPImpl#getPropertyName <em>Property Name</em>}</li>
+ *   <li>{@link beautyocl.actions.impl.SetPImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class SetImpl extends InPlaceActionImpl implements Set {
+public class SetPImpl extends InPlaceActionImpl implements SetP {
 	/**
 	 * The default value of the '{@link #getPropertyName() <em>Property Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -63,7 +63,7 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected SetImpl() {
+	protected SetPImpl() {
 		super();
 	}
 
@@ -74,7 +74,7 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ActionsPackage.Literals.SET;
+		return ActionsPackage.Literals.SET_P;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 		String oldPropertyName = propertyName;
 		propertyName = newPropertyName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ActionsPackage.SET__PROPERTY_NAME, oldPropertyName, propertyName));
+			eNotify(new ENotificationImpl(this, Notification.SET, ActionsPackage.SET_P__PROPERTY_NAME, oldPropertyName, propertyName));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 			value = eResolveProxy(oldValue);
 			if (value != oldValue) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ActionsPackage.SET__VALUE, oldValue, value));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ActionsPackage.SET_P__VALUE, oldValue, value));
 			}
 		}
 		return value;
@@ -133,7 +133,7 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 		EObject oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ActionsPackage.SET__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ActionsPackage.SET_P__VALUE, oldValue, value));
 	}
 
 	/**
@@ -144,9 +144,9 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ActionsPackage.SET__PROPERTY_NAME:
+			case ActionsPackage.SET_P__PROPERTY_NAME:
 				return getPropertyName();
-			case ActionsPackage.SET__VALUE:
+			case ActionsPackage.SET_P__VALUE:
 				if (resolve) return getValue();
 				return basicGetValue();
 		}
@@ -161,10 +161,10 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ActionsPackage.SET__PROPERTY_NAME:
+			case ActionsPackage.SET_P__PROPERTY_NAME:
 				setPropertyName((String)newValue);
 				return;
-			case ActionsPackage.SET__VALUE:
+			case ActionsPackage.SET_P__VALUE:
 				setValue((EObject)newValue);
 				return;
 		}
@@ -179,10 +179,10 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ActionsPackage.SET__PROPERTY_NAME:
+			case ActionsPackage.SET_P__PROPERTY_NAME:
 				setPropertyName(PROPERTY_NAME_EDEFAULT);
 				return;
-			case ActionsPackage.SET__VALUE:
+			case ActionsPackage.SET_P__VALUE:
 				setValue((EObject)null);
 				return;
 		}
@@ -197,9 +197,9 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ActionsPackage.SET__PROPERTY_NAME:
+			case ActionsPackage.SET_P__PROPERTY_NAME:
 				return PROPERTY_NAME_EDEFAULT == null ? propertyName != null : !PROPERTY_NAME_EDEFAULT.equals(propertyName);
-			case ActionsPackage.SET__VALUE:
+			case ActionsPackage.SET_P__VALUE:
 				return value != null;
 		}
 		return super.eIsSet(featureID);
@@ -221,4 +221,4 @@ public class SetImpl extends InPlaceActionImpl implements Set {
 		return result.toString();
 	}
 
-} //SetImpl
+} //SetPImpl

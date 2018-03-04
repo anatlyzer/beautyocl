@@ -1,9 +1,9 @@
 package beautyocl.actions;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
@@ -31,8 +31,8 @@ public class ActionsEngine {
 			return replace(match, (Replace) a, cloneScope);
 		} else if ( a instanceof DeleteMoveChildren ) {
 			return deleteMoveChildren(match, (DeleteMoveChildren) a, cloneScope);
-		} else if ( a instanceof Set ) {
-			return setValue(match, (Set) a, cloneScope);			
+		} else if ( a instanceof SetP ) {
+			return setValue(match, (SetP) a, cloneScope);			
 		} else if ( a instanceof CompositeAction ) {
 			return compositeAction(match, (CompositeAction) a);			
 		} else { 
@@ -133,7 +133,7 @@ public class ActionsEngine {
 		return a.getChildren();
 	}
 	
-	private EObject setValue(Match match, Set action, CloneScope cloneScope) {
+	private EObject setValue(Match match, SetP action, CloneScope cloneScope) {
 		EObject obj = getTarget(action.getSource(), cloneScope);
 		setPropertyValue(obj, action.getValue(), action.getPropertyName());
 		return obj;

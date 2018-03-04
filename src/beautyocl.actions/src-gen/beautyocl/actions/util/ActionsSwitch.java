@@ -100,10 +100,10 @@ public class ActionsSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ActionsPackage.SET: {
-				Set set = (Set)theEObject;
-				T result = caseSet(set);
-				if (result == null) result = caseInPlaceAction(set);
+			case ActionsPackage.SET_P: {
+				SetP setP = (SetP)theEObject;
+				T result = caseSetP(setP);
+				if (result == null) result = caseInPlaceAction(setP);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -187,17 +187,17 @@ public class ActionsSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Set</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Set P</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Set</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Set P</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseSet(Set object) {
+	public T caseSetP(SetP object) {
 		return null;
 	}
 

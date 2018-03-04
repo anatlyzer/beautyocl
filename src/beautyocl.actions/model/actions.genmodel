@@ -24,9 +24,9 @@
     <genClasses ecoreClass="actions.ecore#//CompositeAction">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference actions.ecore#//CompositeAction/actions"/>
     </genClasses>
-    <genClasses ecoreClass="actions.ecore#//Set">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute actions.ecore#//Set/propertyName"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//Set/value"/>
+    <genClasses ecoreClass="actions.ecore#//SetP">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute actions.ecore#//SetP/propertyName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference actions.ecore#//SetP/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

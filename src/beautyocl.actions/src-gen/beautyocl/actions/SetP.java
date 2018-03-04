@@ -6,22 +6,22 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Set</b></em>'.
+ * A representation of the model object '<em><b>Set P</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link beautyocl.actions.Set#getPropertyName <em>Property Name</em>}</li>
- *   <li>{@link beautyocl.actions.Set#getValue <em>Value</em>}</li>
+ *   <li>{@link beautyocl.actions.SetP#getPropertyName <em>Property Name</em>}</li>
+ *   <li>{@link beautyocl.actions.SetP#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see beautyocl.actions.ActionsPackage#getSet()
+ * @see beautyocl.actions.ActionsPackage#getSetP()
  * @model
  * @generated
  */
-public interface Set extends InPlaceAction {
+public interface SetP extends InPlaceAction {
 	/**
 	 * Returns the value of the '<em><b>Property Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -32,14 +32,14 @@ public interface Set extends InPlaceAction {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Property Name</em>' attribute.
 	 * @see #setPropertyName(String)
-	 * @see beautyocl.actions.ActionsPackage#getSet_PropertyName()
+	 * @see beautyocl.actions.ActionsPackage#getSetP_PropertyName()
 	 * @model required="true"
 	 * @generated
 	 */
 	String getPropertyName();
 
 	/**
-	 * Sets the value of the '{@link beautyocl.actions.Set#getPropertyName <em>Property Name</em>}' attribute.
+	 * Sets the value of the '{@link beautyocl.actions.SetP#getPropertyName <em>Property Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Property Name</em>' attribute.
@@ -58,14 +58,14 @@ public interface Set extends InPlaceAction {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' reference.
 	 * @see #setValue(EObject)
-	 * @see beautyocl.actions.ActionsPackage#getSet_Value()
+	 * @see beautyocl.actions.ActionsPackage#getSetP_Value()
 	 * @model required="true"
 	 * @generated
 	 */
 	EObject getValue();
 
 	/**
-	 * Sets the value of the '{@link beautyocl.actions.Set#getValue <em>Value</em>}' reference.
+	 * Sets the value of the '{@link beautyocl.actions.SetP#getValue <em>Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Value</em>' reference.
@@ -74,4 +74,4 @@ public interface Set extends InPlaceAction {
 	 */
 	void setValue(EObject value);
 
-} // Set
+} // SetP
