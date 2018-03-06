@@ -27,6 +27,9 @@ import anatlyzer.atl.editor.quickfix.SpeculativeQuickfixUtils;
 import anatlyzer.atl.editor.witness.EclipseUseWitnessFinder;
 import anatlyzer.atl.errors.Problem;
 import anatlyzer.atl.errors.ProblemStatus;
+import anatlyzer.atl.errors.atl_error.AccessToUndefinedValue;
+import anatlyzer.atl.errors.atl_error.BindingPossiblyUnresolved;
+import anatlyzer.atl.errors.atl_error.BindingWithResolvedByIncompatibleRule;
 import anatlyzer.atl.quickfixast.InDocumentSerializer;
 import anatlyzer.atl.quickfixast.QuickfixApplication.Action;
 import anatlyzer.atl.util.ATLSerializer;
@@ -158,6 +161,20 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		
 		return false;
 	}
+	
+	private boolean isInterestingProblem(Problem p) {
+		if ( p instanceof BindingWithResolvedByIncompatibleRule )
+			return true;
+
+		if ( p instanceof BindingPossiblyUnresolved )
+			return true;
+
+		if ( p instanceof AccessToUndefinedValue )
+			return true;
+
+		return false;
+	}
+
 
 	protected AppliedQuickfixInfo applyQuickfix(AtlProblemQuickfix quickfix, IResource resource, Problem p, AnalyserData original, BEQuickfix expQfx) throws IOException, CoreException, Exception {
 		quickfix.setData(ORIGINAL_RESOURCE, resource);
@@ -199,16 +216,20 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		List<Problem> originalProblems = r.getProblems();
 		ArrayList<Problem> allProblems = new ArrayList<Problem>();
 		for (Problem p : originalProblems) {
-//			if ( AnalyserUtils.isWitnessRequred(p) ) { 
-//				ProblemStatus result = createFinder().find(p, r);
-//				p.setStatus(result);
-//				
-//				if ( AnalyserUtils.isConfirmed(p)) {
-//					allProblems.add(p);
-//				}
-//			} else {
-//				allProblems.add(p);
-//			}
+			if ( ! isInterestingProblem(p) ) {
+				continue;
+			}
+			 
+			if ( AnalyserUtils.isWitnessRequred(p) ) { 
+				ProblemStatus result = createFinder().find(p, r);
+				p.setStatus(result);
+				
+				if ( AnalyserUtils.isConfirmed(p)) {
+					allProblems.add(p);
+				}
+			} else {
+				allProblems.add(p);
+			}
 
 			allProblems.add(p);
 			
