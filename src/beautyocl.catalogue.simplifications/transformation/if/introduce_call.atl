@@ -14,56 +14,14 @@ helper context OCL!OclExpression def: isComplexInlining() : Boolean = false;
 helper context OCL!OperationCallExp def: isComplexInlining() : Boolean = 
 	self.arguments->exists(a | a.oclIsKindOf(OCL!IfExp));
 helper context OCL!OperatorCallExp def: isComplexInlining() : Boolean = 
-	self.argument.oclIsKindOf(OCL!IfExp);
+	self.source.oclIsKindOf(OCL!IfExp) or self.argument.oclIsKindOf(OCL!IfExp);
 
--- @ignore invalid-assignment-imperative-binding
---rule convert {
---	from o : OCL!PropertyCallExp (
---		-- TODO: This is to avoid conflicts in the bindings. Should be handled differently in the binding, but there seems to be a bug
---		( not o.oclIsKindOf(OCL!OperatorCallExp) and
---		
---		o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInlining()).debug(o)
---		-- TODO: Check args complexity
---	)
---	to c1 : ACT!Clone (		
---		ignoredProperties <- Sequence { 'source' }	
---	),
---	c2 : ACT!Clone (		
---		ignoredProperties <- Sequence { 'source' }	
---	),
---	c3 : ACT!Clone,
---	c4 : ACT!Clone,
---	r1 : ACT!Replace,
---	r2 : ACT!Replace,
---	m : ACT!DeleteMoveChildren,
---	comp : ACT!CompositeAction (
---		actions <- Sequence { c3, c4, c1, c2, r1, r2, m }	
---	)
---	do {
---		c1.source <- o;
---		c2.source <- o;
---		c1.values <- Sequence { c3 };
---		c2.values <- Sequence { c4 };
---		
---		c3.source <- o.source.thenExpression;
---		c4.source <- o.source.elseExpression;		
---		
---		r1.source <- o.source.thenExpression;
---		r1.target <- c1;
---		r2.source <- o.source.elseExpression;
---		r2.target <- c2;
---		
---		m.source <- o;
---		m.children <- o.source;
---		
---		comp.source <- o; -- This is needed for scope calculation
---	}
---}
---
-
-rule convertOperator {
-	from o : OCL!BinaryOperatorCallExp (
-		(o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInlining()).debug(o)
+rule convert {
+	from o : OCL!PropertyCallExp (
+		-- TODO: This is to avoid conflicts in the bindings. Should be handled differently in the binding, but there seems to be a bug
+		( not o.oclIsKindOf(OCL!OperatorCallExp) and
+		
+		o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInlining())
 		-- TODO: Check args complexity
 	)
 	to c1 : ACT!Clone (		
@@ -81,7 +39,47 @@ rule convertOperator {
 		actions <- Sequence { c3, c4, c1, c2, r1, r2, m }	
 	)
 	do {
-		c1.source <- o.debug('settting');
+		c1.source <- o;
+		c2.source <- o;
+		c1.values <- Sequence { c3 };
+		c2.values <- Sequence { c4 };
+		
+		c3.source <- o.source.thenExpression;
+		c4.source <- o.source.elseExpression;		
+		
+		r1.source <- o.source.thenExpression;
+		r1.target <- c1;
+		r2.source <- o.source.elseExpression;
+		r2.target <- c2;
+		
+		m.source <- o;
+		m.children <- o.source;
+		
+		comp.source <- o; -- This is needed for scope calculation
+	}
+}
+
+
+rule convertOperator {
+	from o : OCL!BinaryOperatorCallExp (
+		(o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInlining())
+	)
+	to c1 : ACT!Clone (		
+		ignoredProperties <- Sequence { 'source' }	
+	),
+	c2 : ACT!Clone (		
+		ignoredProperties <- Sequence { 'source' }	
+	),
+	c3 : ACT!Clone,
+	c4 : ACT!Clone,
+	r1 : ACT!Replace,
+	r2 : ACT!Replace,
+	m : ACT!DeleteMoveChildren,
+	comp : ACT!CompositeAction (
+		actions <- Sequence { c3, c4, c1, c2, r1, r2, m }	
+	)
+	do {
+		c1.source <- o;
 		c2.source <- o;
 		c1.values <- Sequence { c3 };
 		c2.values <- Sequence { c4 };
