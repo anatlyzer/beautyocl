@@ -15,6 +15,8 @@ composite component beautyocl.atl {
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_else.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_introduce_call.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_same_expr.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_true_false.bento"
+
 	// Unshort-circuiting	                          
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_unshort_circuit.bento"	
 	                          
@@ -40,6 +42,7 @@ composite component beautyocl.atl {
 		apply integers(bindAll(in)) -> (act, bindAllTgt(out))
 		apply iterator(bindAll(in)) -> (act, bindAllTgt(out))
 		apply ifelse(bindAll(in)) -> (act, bindAllTgt(out))
+		apply iftruefalse(bindAll(in)) -> (act, bindAllTgt(out))		
 		apply ifintrocall(bindAll(in)) -> (act, bindAllTgt(out))
 		apply ifsameexpr(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
 				

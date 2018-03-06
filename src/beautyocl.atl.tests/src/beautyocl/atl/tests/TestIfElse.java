@@ -2,6 +2,7 @@ package beautyocl.atl.tests;
 
 import static org.junit.Assert.assertNotEquals;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import anatlyzer.atl.tests.api.AtlLoader;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
+import beautyocl.actions.MatchPhase.Match;
 import beautyocl.api.common.Beautyfier;
 import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.ATLTransformation;
@@ -101,7 +103,23 @@ public class TestIfElse extends Tester {
 		UglyAnATLyzerExpression exp = loadExpressionHSM2FSM("files/ifelse/intro_call_hsm2fsm_failure.atl");
 
 		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			Beautyfier beauty = new Beautyfier(rep, new IExecutionTracer() {
+
+				@Override
+				public void preApply(Match m, EObject original) {
+					System.out.println("A: " + m.getAction().getSource());
+					
+					String exp = ATLSerializer.serialize(original);
+					System.out.println("Before " + m.getTransformationName() + "\n" + exp);
+				}
+
+				@Override
+				public void postApply(Match m, EObject transformed) {
+					String exp = ATLSerializer.serialize(transformed);
+					System.out.println("After " + m.getTransformationName() + "\n" + exp);					
+				}
+				
+			});
 			beauty.applyAll(exp);
 		String after = ATLSerializer.serialize(exp.getRoot());
 		assertNotEquals(before, after);

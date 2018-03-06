@@ -12,10 +12,23 @@ if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
 	false
 else 
 	true
-endif and if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+endif and (if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
 	s.stateMachine
 else
 	OclUndefined
-endif = sm2))) --  implies sm1 = sm2))) 
+endif = sm2) ))) --  implies sm1 = sm2))) 
 ;
+
+--helper def: fsm_state_multi_upper : Boolean = 
+--HSM!RegularState.allInstances()->forAll(s | HSM!StateMachine.allInstances()->forAll(sm1 | HSM!StateMachine.allInstances()->forAll(sm2 | 
+--if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	false
+--else 
+--	true
+--endif and if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s.stateMachine
+--else
+--	OclUndefined
+--endif = sm2))) --  implies sm1 = sm2))) 
+--;
 -- cut to facilitate debugging
