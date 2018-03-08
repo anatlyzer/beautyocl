@@ -7,12 +7,18 @@ abstract class OclExpression {
 
 class VariableDeclaration {
 	attr String[1] name;
-    
+    val OclExpression[0..1] initExpression;
     ref OclType[1] type;
 }
 
 class VariableExp extends OclExpression {
 	ref VariableDeclaration[1] varDcl;
+}
+
+
+class LetExp extends OclExpression {
+    val VariableDeclaration[1] variable;
+    val OclExpression[1] in_;
 }
 
 class OperationCallExp extends OclExpression {

@@ -1,0 +1,22 @@
+transformation component beautyocl.simplifications.removelet {
+	source concept OCL : "superimposed.ecore"
+	source concept OCL2 : "superimposed.ecore"
+	source concept COMP : "comparison.ecore"
+	source concept TYP : "typing.ecore"	
+	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
+	
+	source model in : OCL
+	source model in2 : TYP	
+	source model in3 : COMP
+	target model out : ACT
+	target model out2 : OCL2
+	
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/let/remove_let.atl" with
+		IN : OCL = in,
+		IN2 : TYP = in2,		
+		IN3 : COMP = in3,
+		OUT : ACT = out,
+		OUT2 : OCLt = out2
+		
+	tags "ocl", "simplification"	
+}

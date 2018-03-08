@@ -19,10 +19,16 @@ public interface IExecutionTracer {
 			
 		}
 
+		@Override
+		public boolean onError(Throwable t) {
+			return false;
+		}
 		
 	};
 
 	void preApply(Match m, EObject original);
 
 	void postApply(Match m, EObject transformed);
+	
+	boolean onError(Throwable t);
 }

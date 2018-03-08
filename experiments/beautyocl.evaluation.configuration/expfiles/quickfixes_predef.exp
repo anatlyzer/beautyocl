@@ -2,8 +2,7 @@ name: Quickfix simplifications
 extensionID: simplification.experiment.quickfixes
 options: {
  only_trafos_with_qfxs : true,
- timeout : 2500
+ timeout : 5000
 }
 projects: 
--  name: Ant2Maven
--  name: Bibtex2Docbook
+-  name: beautyocl.evaluation.transformations

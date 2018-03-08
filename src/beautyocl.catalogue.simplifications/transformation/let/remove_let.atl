@@ -1,0 +1,76 @@
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path COMP=/beautyocl.catalogue.simplifications/metamodels/comparison.ecore
+-- @path TYP=/beautyocl.catalogue.simplifications/metamodels/typing.ecore
+
+module "replaceLet";
+create OUT : ACT, OUT2 : OCLt from IN : OCL, IN2 : TYP, IN3 : COMP; 
+
+helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
+helper def : typ  : TYP!ExprTyping = TYP!ExprTyping.allInstances()->first();
+
+helper context OclAny def: oclAsType(t : OCL!"OclType") : OclAny = self;
+
+helper context OCL!OclExpression def: isSimpleExpression() : Boolean = true;
+helper context OCL!OperationCallExp def: isSimpleExpression() : Boolean = 
+	not self.arguments->exists(a | a.oclIsKindOf(OCL!IfExp));
+helper context OCL!OperatorCallExp def: isSimpleExpression() : Boolean = 
+	not (self.source.oclIsKindOf(OCL!IfExp) or self.arguments.oclIsKindOf(OCL!IfExp));
+
+
+helper context OCL!OclExpression def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = Set { };
+helper context OCL!VariableExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	if self.varDcl = v then Set { self } else Set { } endif;
+
+helper context OCL!PropertyCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v);
+
+helper context OCL!OperationCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
+
+helper context OCL!OperatorCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
+
+helper context OCL!IfExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.condition.findOcurrences(v)->
+		union(self.thenExpression.findOcurrences(v))->
+		union(self.elseExpression.findOcurrences(v))->
+		flatten();
+
+	
+
+-- @ignore invalid-assignment-imperative-binding
+rule replaceLet {
+	from i : OCL!LetExp (
+		if i.variable.initExpression.oclIsUndefined() then 
+			false
+		else 
+			i.variable.initExpression.isSimpleExpression()
+		endif
+	)
+	to c : ACT!CompositeAction (
+			actions <- i.in_.findOcurrences(i.variable)->collect(v | thisModule.createSet(i.variable, v)),
+			actions <- Sequence { mov }
+	   ),	
+	   mov : ACT!DeleteMoveChildren
+	do {
+		c.source <- i;
+		
+		mov.source <- i;
+		mov.children <- i.in_;
+	}
+}
+
+rule createSet(vd : OCL!VariableDeclaration, ve : OCL!VariableExp) {
+	to 
+		s : ACT!SetP (
+			propertyName <- 'referredVariable' -- TODO: Do it automatically in the binding!
+			,
+			source <- ve,
+			value <- vd
+		)
+	do {
+		s;
+	}
+}

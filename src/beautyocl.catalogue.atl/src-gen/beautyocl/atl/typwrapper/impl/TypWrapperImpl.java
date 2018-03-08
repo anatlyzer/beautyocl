@@ -98,7 +98,8 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 		
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		//throw new UnsupportedOperationException();
+		return null;
 	}
 
 	/**

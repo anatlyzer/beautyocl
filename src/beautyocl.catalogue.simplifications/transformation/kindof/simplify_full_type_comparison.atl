@@ -117,7 +117,11 @@ helper context OCL!BinaryOperatorCallExp def: getSameSource(exp : OCL!OclExpress
 	self.source.getSameSource(exp);
 	
 helper context OCL!BinaryOperatorCallExp def: commonVar : OCL!VariableDeclaration =
-	self.source.getSameSource(self.argument);
+	if self.arguments->size() = 1 then
+		self.source.getSameSource(self.argument)
+	else
+		OclUndefined
+	endif;
 
 helper context OCL!BinaryOperatorCallExp def: parentIsNotOrKindOf : Boolean =
 	if self.refImmediateComposite().oclIsKindOf(OCL!OclExpression) then
@@ -134,6 +138,8 @@ rule removeIf {
 			--o.commonVar.type <> OclUndefined -- Not sure about this condition... type is always <> null??? 
 			--and
 			thisModule.findSuperType(o.orKindOfCheckedTypes) <> OclUndefined
+			and
+			thisModule.typ.modelName(o.commonVar) <> OclUndefined -- Make sure I can grab a model name
 		else
 			false
 		endif

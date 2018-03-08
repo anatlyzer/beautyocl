@@ -1,0 +1,18 @@
+-- @path PNML=/beautyocl.atl.tests/metamodels/PNML_simplified.ecore
+-- @path PetriNet=/beautyocl.atl.tests/metamodels/PetriNet.ecore
+
+
+module PNML2PetriNet;
+create OUT : PetriNet from IN : PNML;
+ 
+helper  def: genPrecondition() : Boolean = PNML!NetElement.allInstances()->forAll(n | n.contents->forAll(v | 
+	v.oclIsKindOf(PNML!Place) or -- v.oclIsKindOf(PNML!Transition) or	
+	if v.oclIsKindOf(PNML!Arc) then
+	v.source.oclIsKindOf(PNML!Place) and v.target.oclIsKindOf(PNML!Transition)
+else
+	false
+endif or if v.oclIsKindOf(PNML!Arc) then
+	v.target.oclIsKindOf(PNML!Place)
+else
+	false
+endif));

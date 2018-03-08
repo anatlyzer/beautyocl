@@ -118,6 +118,53 @@ public class TestIfElse extends Tester {
 					String exp = ATLSerializer.serialize(transformed);
 					System.out.println("After " + m.getTransformationName() + "\n" + exp);					
 				}
+
+				@Override
+				public boolean onError(Throwable t) {
+					t.printStackTrace();
+					// TODO Auto-generated method stub
+					return false;
+				}
+				
+			});
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
+
+	@Test
+	public void testIfFusion_HSM2FSM() throws ATLCoreException {	
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.SIMP_IF_FUSION);
+		
+		UglyAnATLyzerExpression exp = loadExpressionHSM2FSM("files/ifelse/if_fusion_pnml2petrinet.atl");
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, new IExecutionTracer() {
+
+				@Override
+				public void preApply(Match m, EObject original) {
+					System.out.println("A: " + m.getAction().getSource());
+					
+					String exp = ATLSerializer.serialize(original);
+					System.out.println("Before " + m.getTransformationName() + "\n" + exp);
+				}
+
+				@Override
+				public void postApply(Match m, EObject transformed) {
+					String exp = ATLSerializer.serialize(transformed);
+					System.out.println("After " + m.getTransformationName() + "\n" + exp);					
+				}
+
+				@Override
+				public boolean onError(Throwable t) {
+					t.printStackTrace();
+					// TODO Auto-generated method stub
+					return false;
+				}
 				
 			});
 			beauty.applyAll(exp);

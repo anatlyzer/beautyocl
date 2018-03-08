@@ -1,5 +1,8 @@
 package beautyocl.api.common;
 
+import java.util.Iterator;
+import java.util.List;
+
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
 import beautyocl.actions.MatchPhase;
@@ -25,13 +28,40 @@ public class Beautyfier {
 	public ExecutionInfo applyAll(UglyExpression exp) {
 		Scheduler scheduler = new Scheduler(tracer, exp);
 
-		return scheduler.apply(s -> {
-			for (IATLTransformation t : repo.getTransformations()) {
-				MatchPhase match = t.exec(exp);
-				s.add(match);
-			}
+		return scheduler.applyIt(() -> {
+			return new RepoIterator(repo, exp);
 		});
-		
+
+
+//		return scheduler.apply(s -> {
+//			for (IATLTransformation t : repo.getTransformations()) {
+//				MatchPhase match = t.exec(exp);
+//				s.add(match);
+//			}
+//		});
+	
 	}
 	
+	public class RepoIterator implements Scheduler.TrafoIterator {
+
+		private Iterator<IATLTransformation> trafos;
+		private UglyExpression exp;
+
+		public RepoIterator(TransformationRepository repo, UglyExpression exp) {
+			this.trafos = repo.getTransformations().iterator();
+			this.exp = exp;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return trafos.hasNext();
+		}
+
+		@Override
+		public MatchPhase next() {
+			IATLTransformation t = trafos.next();
+			return t.exec(exp);
+		}
+		
+	}
 }

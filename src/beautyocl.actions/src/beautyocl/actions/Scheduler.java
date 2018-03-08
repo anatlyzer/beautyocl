@@ -1,10 +1,15 @@
 package beautyocl.actions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
+
+import beautyocl.actions.MatchPhase.Match;
 
 public class Scheduler {
 
@@ -22,6 +27,47 @@ public class Scheduler {
 		matches.add(match);		
 	}
 
+	public ExecutionInfo applyIt(Supplier<TrafoIterator> supplier) {
+		ActionsEngine engine = new ActionsEngine();
+		ExecutionInfo info = new ExecutionInfo();
+		
+		while ( true ) {
+			TrafoIterator it = supplier.get();
+			
+			boolean applied = false;
+
+			TRY_TRAFO:
+			while ( it.hasNext() ) {
+				List<Match> matches = it.next().getMatches().stream().filter(m -> engine.isWithinScope(m)).collect(Collectors.toList());
+			
+				for(Match m : matches) {
+					EObject result = null;
+					try {
+						tracer.preApply(m, m.getAction().getSource());
+						result = engine.apply(m);
+						applied = true;
+					} catch ( Throwable e ) {
+						if ( tracer.onError(e) ) {
+							// Continue with another trafo
+							continue TRY_TRAFO;
+						}
+					}
+					
+					tracer.postApply(m, result);
+				}				
+			}
+			
+			if ( ! applied ) {
+				break;
+			}
+			
+		}
+		
+
+		info.setResult(exp.getRoot());
+		return info;
+	}
+	
 	public ExecutionInfo apply(Consumer<List<MatchPhase>> consumer) {
 		ActionsEngine engine = new ActionsEngine();
 		ExecutionInfo info = new ExecutionInfo();
@@ -54,4 +100,7 @@ public class Scheduler {
 		return info;
 	}
 
+	public static interface TrafoIterator extends Iterator<MatchPhase> {
+		
+	}
 }

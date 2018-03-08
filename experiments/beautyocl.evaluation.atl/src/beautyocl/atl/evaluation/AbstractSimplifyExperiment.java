@@ -41,6 +41,12 @@ public abstract class AbstractSimplifyExperiment extends AbstractATLExperiment {
 			this.simp.addSimplification(currentSimplification);
 		}
 
+		@Override
+		public boolean onError(Throwable t) {
+			t.printStackTrace();
+			return false;
+		}
+
 	}
 	
 	protected int countNodes(EObject obj) {

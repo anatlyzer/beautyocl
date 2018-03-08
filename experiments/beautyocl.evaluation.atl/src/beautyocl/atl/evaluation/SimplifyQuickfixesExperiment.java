@@ -1,8 +1,11 @@
 package beautyocl.atl.evaluation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,7 @@ import anatlyzer.atl.errors.ProblemStatus;
 import anatlyzer.atl.errors.atl_error.AccessToUndefinedValue;
 import anatlyzer.atl.errors.atl_error.BindingPossiblyUnresolved;
 import anatlyzer.atl.errors.atl_error.BindingWithResolvedByIncompatibleRule;
+import anatlyzer.atl.errors.atl_error.BindingWithoutRule;
 import anatlyzer.atl.quickfixast.InDocumentSerializer;
 import anatlyzer.atl.quickfixast.QuickfixApplication.Action;
 import anatlyzer.atl.util.ATLSerializer;
@@ -65,7 +69,22 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		return true;
 	}
 
+	private PrintWriter writer;
+	
+	public SimplifyQuickfixesExperiment() {
+		try {
+			writer = new PrintWriter(new File("/tmp/qfx.log"));
+		} catch (FileNotFoundException e) {			
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		writer.close();
+	}
+	
  	List<AnalyserData> allData = new ArrayList<AnalyserData>();
  	BEData expData = new BEData();
 
@@ -74,7 +93,6 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		perform(resource, new NullProgressMonitor());
 	}
 
- 	
 	@Override
 	public void perform(IResource resource, IProgressMonitor monitor) {
 		AnalyserData data;
@@ -123,7 +141,8 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 					try {
 						applyQuickfix(quickfix, resource, p, data, expQfx);
 					} catch ( Exception e ) {
-						e.printStackTrace();
+						writer.append("ERROR: \n" + "  " + resource.getFullPath().toOSString() + "\n   " + p + "\n   " + quickfix.getDisplayString());						
+						e.printStackTrace(writer);
 						printMessage("ERROR when applying qfx: " + quickfix.getClass().getSimpleName() + " . File: " + resource.getName() + e.getMessage());
 						// TODO: Register the error in the raw experiment DOM
 						continue;
@@ -139,11 +158,16 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			}
 			
 		} catch (Exception e) {
+			writer.append("ERROR: \n" + "  " + resource.getFullPath().toOSString());
+			e.printStackTrace(writer);
+
 			printMessage("Error " + resource.getName() + e.getMessage());
 			// counting.addError(resource.getName(), e);
 //			e.printStackTrace();
 			// throw new RuntimeException(e);
 		}
+		
+		writer.flush();
 		
 	}
 
@@ -166,6 +190,10 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		if ( p instanceof BindingWithResolvedByIncompatibleRule )
 			return true;
 
+		if ( p instanceof BindingWithoutRule ) {
+			return true;
+		}
+		
 		if ( p instanceof BindingPossiblyUnresolved )
 			return true;
 
@@ -200,7 +228,13 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			
 			BeautyOCLAnatlyzer simplifier = new BeautyOCLAnatlyzer();
 			System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression)+"\n");
-			ExecutionInfo result = simplifier.simplify(original.getAnalyser(), targetExpression, new ExperimentTracer(expQfx));
+			ExecutionInfo result = simplifier.simplify(original.getAnalyser(), targetExpression, new ExperimentTracer(expQfx) {
+				@Override
+				public boolean onError(Throwable t) {
+					writer.append("SIMPLIFICATION ERROR: \n" + "  " + original.getATLModel().getMainFileLocation() + "\n   " + p + "\n   " + quickfix.getDisplayString());
+					return true;
+				}
+			});
 			System.out.println("After:\n" + ATLSerializer.serialize(result.getResult())+"\n");
 			
 			// TODO: Poner solo si se ha simplificado algo!
@@ -229,10 +263,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 				}
 			} else {
 				allProblems.add(p);
-			}
-
-			allProblems.add(p);
-			
+			}			
 		}
 		return allProblems;
 	}
