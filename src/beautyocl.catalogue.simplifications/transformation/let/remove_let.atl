@@ -49,7 +49,12 @@ rule replaceLet {
 		if i.variable.initExpression.oclIsUndefined() then 
 			false
 		else 
-			i.variable.initExpression.isSimpleExpression()
+			if i.variable.initExpression.isSimpleExpression() then
+				let occ : Set(OCL!VariableExp) = i.in_.findOcurrences(i.variable) 
+				in occ->size() <= 2
+			else
+				false
+			endif
 		endif
 	)
 	to c : ACT!CompositeAction (
