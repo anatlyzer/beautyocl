@@ -3,6 +3,7 @@ package beautyocl.api.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.eclipse.m2m.atl.engine.emfvm.launch.EMFVMLauncher;
 
 import beautyocl.actions.ActionsEngine;
 import beautyocl.actions.InPlaceAction;
+import beautyocl.actions.MatchPhase;
 import beautyocl.api.common.UglyExpression;
 
 public abstract class AbstractInPlaceExecutorATL {
@@ -27,7 +29,7 @@ public abstract class AbstractInPlaceExecutorATL {
 	protected abstract ModelDef initOCLVariant(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
 	protected abstract ModelDef initTypingWrapper(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
 	
-	public Resource apply(InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
+	public MatchPhase apply(String transformationName, InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
 		EMFModelFactory factory = new EMFModelFactory();
 		EMFInjector injector = new EMFInjector();
 
@@ -52,6 +54,7 @@ public abstract class AbstractInPlaceExecutorATL {
 		
 		
 		EMFModel newModel = (EMFModel) factory.newModel(actionsMetamodel);
+		EMFModel newModelOCL = (EMFModel) factory.newModel(ocl.metamodel);
 		
 		ILauncher launcher = new EMFVMLauncher();
 		Map<String, Object> launcherOptions = new HashMap<String, Object>();
@@ -61,33 +64,40 @@ public abstract class AbstractInPlaceExecutorATL {
 
 		launcher.addInModel(loadedModel, "IN", ocl.mmName);
 		launcher.addInModel(typWrapperModel, "IN2", typ.mmName);
+
+		launcher.addOutModel(newModelOCL, "OUT2", "EMF");
 		launcher.addOutModel(newModel, "OUT", "ACT");
 			
-		// Execute!
+		
+		// From ATLInPlaceExecutor
+		System.out.println("Executing: " + transformationName);
 		launcher.launch("run", null, launcherOptions, asmFile);
 
-		
 		Resource r = newModel.getResource();
 		if ( r == null ) {
 			// No actions, thus nothing matched
-			System.out.println("Nothing applied!");
+			System.out.println("Nothing applied! " + transformationName);
 		} else {
 			List<InPlaceAction> actions = new ArrayList<>();
 			newModel.getResource().getAllContents().forEachRemaining(o -> {
 				if ( o instanceof InPlaceAction ) {
-					actions.add((InPlaceAction) o);
+					((InPlaceAction) o).setTransformation(transformationName);
+					
+					// It is not a subordinate action
+					if ( o.eContainer() == null )
+						actions.add((InPlaceAction) o);
 				} else {
 					throw new IllegalStateException("No action! " + o);
 				}
 			});
-			
-			// 
-			throw new UnsupportedOperationException();
-			// new ActionsEngine().apply(exp.getResource(), actions);
+
+			return new MatchPhase(exp.getResource(), exp, actions);
+			// new ActionsEngine().apply(exp.getResource(), exp.getScope(), newModelATL.getResource(), actions);
 			
 		}
 
-		return exp.getResource();
+		return new MatchPhase(exp.getResource(), exp, Collections.emptyList());
+
 	}
 
 	

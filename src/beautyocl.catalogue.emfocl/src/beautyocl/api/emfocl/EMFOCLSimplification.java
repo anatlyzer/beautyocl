@@ -13,12 +13,19 @@ import beautyocl.api.common.UglyExpression;
 public class EMFOCLSimplification implements IATLTransformation {
 
 	private String fname;
+	private String name;
 	private static FileUtils futils = new FileUtils(Activator.class);
 	
-	public EMFOCLSimplification(String fname) {
+	public EMFOCLSimplification(String name, String fname) {
+		this.name = name;
 		this.fname = fname;
 	}
 
+	@Override
+	public String getName() {
+		return name;
+	}
+	
 	@Override
 	public MatchPhase exec(UglyExpression exp) {
 		try {
@@ -26,8 +33,7 @@ public class EMFOCLSimplification implements IATLTransformation {
 			InputStream asmFile = futils.getFileURL( fname.replace(".atl", ext) ).openStream();
 			EMFOclInPlaceExecutor exec = new EMFOclInPlaceExecutor(exp);
 			
-			exec.apply(asmFile, exp);
-			throw new UnsupportedOperationException();
+			return exec.apply(name, asmFile, exp);
 		} catch (IOException | ATLCoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,10 +41,8 @@ public class EMFOCLSimplification implements IATLTransformation {
 		}
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getFileName() {
+		return fname;
 	}
 
 

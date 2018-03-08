@@ -22,8 +22,10 @@ import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ActionsPackage;
+import beautyocl.actions.IExecutionTracer;
 import beautyocl.api.common.Beautyfier;
 import beautyocl.api.common.TransformationRepository;
+import beautyocl.api.emfocl.BeautyOCLUtils;
 import beautyocl.api.emfocl.EMFOCLSimplification;
 import beautyocl.api.emfocl.UglyEMFOclExpression;
 import beautyocl.atl.api.ATLTransformation;
@@ -31,43 +33,23 @@ import beautyocl.atl.api.ATLTransformation.VM;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
-public class TestEMFOclKindOf {
-	static {
-		standalone();
-	}
+public class TestEMFOclKindOf extends EMFOclTester {
 	
-	public static void standalone() {
-//		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl() {
-//			public Resource createResource(URI uri) {
-//				XMIResource xmiResource = new XMIResourceImpl(uri);
-//				return xmiResource;
-//			}
-//		});
-
-		
-		EPackage.Registry.INSTANCE.put(ActionsPackage.eNS_URI, ActionsPackage.eINSTANCE);
-		EPackage.Registry.INSTANCE.put(TypwrapperPackage.eNS_URI, TypwrapperPackage.eINSTANCE);
-		EPackage.Registry.INSTANCE.put(emfocl.typwrapper.TypwrapperPackage.eNS_URI, emfocl.typwrapper.TypwrapperPackage.eINSTANCE);
-		
-	}
-	
-	public TransformationRepository configureRepo()  {
+	@Test
+	public void test() {
 		TransformationRepository rep = new TransformationRepository();
-		rep.add(new EMFOCLSimplification("beautyocl.simplifications.ifKindOf.atl"));
-		return rep;
-	}
+		rep.add(BeautyOCLUtils.SIMP_BOOLEANS);
+		rep.add(BeautyOCLUtils.SIMP_INTEGERS);
 
-//	@Test
-//	public void test() {
-//		UglyEMFOclExpression exp = loadExpression();
-//		
-//		Beautyfier beauty = new Beautyfier(configureRepo());
-//		beauty.applyAll(exp);
-//		
-//		exp.getResource().getContents().forEach(o -> {
-//			System.out.println(o);
-//		});
-//	}
+		UglyEMFOclExpression exp = loadExpression();
+		
+		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+		beauty.applyAll(exp);
+		
+		exp.getResource().getContents().forEach(o -> {
+			System.out.println(o);
+		});
+	}
 	
 	private UglyEMFOclExpression loadExpression() {
 		AnalysisLoader.setStandaloneMode();

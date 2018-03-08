@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.core.runtime,
  beautyocl.api.common,
  org.eclipse.m2m.atl.core.emf,
  org.eclipse.ocl.ecore,
- beautyocl.actions
+ beautyocl.actions,
+ beautyocl.atl.api
 Bundle-ActivationPolicy: lazy
