@@ -1,0 +1,16 @@
+-- @path HSM=/anatlyzer.evaluation.preconditions/metamodels/HSM.ecore
+-- @path FSM=/anatlyzer.evaluation.preconditions/metamodels/FSM.ecore
+-- @atlcompiler atl2010
+
+
+module HSM2FSM;
+create OUT: FSM from IN: HSM;
+
+helper def: letTest : Boolean =
+let cf1 : HSM!InitialState = HSM!InitialState.allInstances()->first()
+ in cf1.stateMachine
+ ;
+	
+	--let cf1 : HSM!InitialState = HSM!InitialState.allInstances()->first()
+-- in let sm : HSM!StateMachine = cf1.stateMachine
+-- in not sm.oclIsUndefined();

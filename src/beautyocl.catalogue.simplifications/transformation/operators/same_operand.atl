@@ -1,0 +1,31 @@
+
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path COMP=/beautyocl.catalogue.simplifications/metamodels/comparison.ecore
+
+--
+-- EXP AND EXP ==> EXP
+--
+
+module "remove_operand";
+create OUT : ACT, OUT2 : OCLt from IN : OCL, IN3 : COMP; 
+
+helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
+--
+-- if exp then exp else true endif => true
+--
+rule removeOperand {
+	from i : OCL!OperatorCallExp (
+		if i.name = 'and' or i.name = 'or' then
+			thisModule.comp.isSameExpr(i.source, i.arguments->first())
+		else
+			false
+		endif
+	)
+	to a : ACT!DeleteMoveChildren
+	do {
+		a.source <- i;
+		a.children <- i.source;
+	}
+}

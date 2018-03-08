@@ -23,6 +23,9 @@ composite component beautyocl.atl {
 
 	// Let	                          
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_remove_let.bento"	
+	                         
+	// Operators	                         
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_same_operand.bento"	
 	                          
 	binding bindTyping    = "typing2atl.gbind"
 	binding bindComparison= "comparison2atl.gbind"
@@ -60,5 +63,8 @@ composite component beautyocl.atl {
 		apply unshortcircuit(bindAll(in), bindTyping(in2),  bindComparison(in3)) -> (act, bindAllTgt(out))
 		
 		apply removelet(bindAll(in), bindTyping(in2),  bindComparison(in3)) -> (act, bindAllTgt(out))
+
+		apply sameoperand(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
+		
 }
 

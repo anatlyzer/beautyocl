@@ -5,7 +5,7 @@
 module "simplify_booleans";
 create OUT : ACT, OUT2 : OCLt from IN : OCL; 
 
-helper def : relationalOps : Set(String) = Set { '=', '<>', 'implies' };
+helper def : relationalOps : Set(String) = Set { '=', '<>', 'implies', 'and', 'or', 'xor' };
 
 --
 -- A binary, relational operation with two boolean operands
@@ -22,7 +22,10 @@ rule binaryBooleanRelational {
 		booleanSymbol <- 
 			if o.name = 'implies' then o.source.booleanSymbol implies o.argument.booleanSymbol 
 			else if o.name = '<>' then o.source.booleanSymbol <> o.argument.booleanSymbol
-			else o.source.booleanSymbol = o.argument.booleanSymbol endif endif 
+			else if o.name = 'and' then o.source.booleanSymbol and o.argument.booleanSymbol		
+			else if o.name = 'or' then o.source.booleanSymbol or o.argument.booleanSymbol
+			else if o.name = 'xor' then o.source.booleanSymbol xor o.argument.booleanSymbol			
+			else o.source.booleanSymbol = o.argument.booleanSymbol endif endif endif endif endif
 		)
 	do {
 		a.source <- o;

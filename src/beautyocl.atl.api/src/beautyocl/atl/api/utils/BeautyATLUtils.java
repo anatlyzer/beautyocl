@@ -16,13 +16,15 @@ public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_KIND_OF_FULL = new ATLTransformation("kind-of-full", pathTo("beautyocl.simplifications.fullTypeComparison.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_INTRO_CALL= new ATLTransformation("if-intro-call", pathTo("beautyocl.simplifications.ifintrocall.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_TRUE_FALSE = new ATLTransformation("if-true-false", pathTo("beautyocl.simplifications.iftruefalse.asm"), VM.STANDARD);
-	public static final ATLTransformation SIMP_REMOVE_LET = new ATLTransformation("if-true-false", pathTo("beautyocl.simplifications.removelet.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_REMOVE_LET = new ATLTransformation("remove-let", pathTo("beautyocl.simplifications.removelet.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_SAME_OPERAND = new ATLTransformation("same-operand", pathTo("beautyocl.simplifications.sameoperand.asm"), VM.STANDARD);
 	
 	public static TransformationRepository getRepository() {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
 		rep.add(SIMP_INTEGERS);
 		rep.add(SIMP_BOOLEANS);
+		rep.add(SIMP_SAME_OPERAND);
 		rep.add(SIMP_ITERATORS);
 		rep.add(SIMP_IF_ELSE);
 		rep.add(SIMP_IF_SAME_EXPR);
@@ -31,7 +33,7 @@ public class BeautyATLUtils {
 		rep.add(SIMP_KIND_OF_TRUE);
 		rep.add(SIMP_KIND_OF_FULL);
 		rep.add(SIMP_IF_TRUE_FALSE);
-		rep.add(SIMP_IF_INTRO_CALL);
+		//rep.add(SIMP_IF_INTRO_CALL);
 		rep.add(SIMP_REMOVE_LET);
 		
 		return rep;

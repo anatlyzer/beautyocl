@@ -26,6 +26,9 @@ helper context OCL!VariableExp def: findOcurrences(v : OCL!VariableDeclaration) 
 helper context OCL!PropertyCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
 	self.source.findOcurrences(v);
 
+helper context OCL!NavigationCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v);
+
 helper context OCL!OperationCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
 	self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
 
@@ -50,7 +53,9 @@ rule replaceLet {
 		endif
 	)
 	to c : ACT!CompositeAction (
-			actions <- i.in_.findOcurrences(i.variable)->collect(v | thisModule.createSet(i.variable, v)),
+			actions <- i.in_.findOcurrences(i.variable)->collect(v |
+				let clone : ACT!Clone = thisModule.createClone(i.variable.initExpression) in
+					Sequence { clone, thisModule.createReplace(v, clone) })->flatten(),
 			actions <- Sequence { mov }
 	   ),	
 	   mov : ACT!DeleteMoveChildren
@@ -62,15 +67,20 @@ rule replaceLet {
 	}
 }
 
-rule createSet(vd : OCL!VariableDeclaration, ve : OCL!VariableExp) {
+rule createClone(o : OCL!OclExpression) {
+     to iTgt : ACT!Clone 
+	 do {
+	 	iTgt.source <- o;
+	 	iTgt;		
+	 }
+}
+
+rule createReplace(ve : OCL!VariableExp, c : ACT!Clone) {
 	to 
-		s : ACT!SetP (
-			propertyName <- 'referredVariable' -- TODO: Do it automatically in the binding!
-			,
-			source <- ve,
-			value <- vd
-		)
+		s : ACT!Replace		
 	do {
+		s.source <- ve;
+		s.target <- c;		
 		s;
 	}
 }

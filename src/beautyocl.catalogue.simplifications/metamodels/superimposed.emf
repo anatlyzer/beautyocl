@@ -21,11 +21,14 @@ class LetExp extends OclExpression {
     val OclExpression[1] in_;
 }
 
-class OperationCallExp extends OclExpression {
+class OperationCallExp extends PropertyCallExp {
 	attr String[1] name;	
 
-	val OclExpression[1] source;
 	val OclExpression[*] arguments;	
+}
+
+class NavigationCallExp extends PropertyCallExp {
+	attr String[1] name;	
 }
 
 class IfExp extends OclExpression {
