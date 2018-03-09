@@ -1,0 +1,43 @@
+binding superimposed2emfocl {  
+	concept   OCL : "bento:/beautyocl.catalogue.simplifications/superimposed.ecore"
+	metamodel EMF : "simpleocl.ecore"
+
+	--class PropertyCallExp to PropertyCallExp when not self.oclIsKindOf(OCL!OperatorCallExp)
+	class OperationCallExp to OperationCall
+	class OperatorCallExp  to OperatorCallExp
+	-- class OperatorCallExp to OperatorCallExp
+	class NavigationCallExp to NavigationOrAttributeCall
+	class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 
+	class UnaryOperatorCallExp to OperatorCallExp when self.arguments->isEmpty() 
+    class VariableExp to VariableExp
+    class IteratorExp to IteratorExp
+    
+    class BooleanExp to BooleanExp
+    class IntegerExp to IntegerExp
+     
+    --feature OperationCallExp.name  is operationName
+    feature OperationCallExp.arguments = self.arguments
+    feature OperationCallExp.name  = self.operationName
+    
+    feature BinaryOperatorCallExp.name  = self.operationName
+    feature UnaryOperatorCallExp.name   = self.operationName
+
+	feature BinaryOperatorCallExp.source  is source
+	feature BinaryOperatorCallExp.argument = self.arguments->first()
+
+	feature UnaryOperatorCallExp.source  is source
+	
+
+	feature IteratorExp.iteratorVar = self.iterators->first()
+
+	feature VariableExp.varDcl is referredVariable	
+	
+}
+
+
+--helper context EMF!OperationCallExp def: argument : OclAny = 
+--	self.refInvokeOperation('getArgument', Sequence {})->first();
+
+--helper context EMF!OperationCallExp def: arguments : OclAny = 
+--   self.refInvokeOperation('getArgument', Sequence {});
+	

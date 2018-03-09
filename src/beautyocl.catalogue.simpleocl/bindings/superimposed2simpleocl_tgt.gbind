@@ -1,0 +1,26 @@
+target binding superimposed2emfocl_tgt {  
+	concept   OP  : "bento:/beautyocl.catalogue.simplifications/superimposed.ecore"
+	metamodel EMF : "simpleocl.ecore"
+
+	class OperationCallExp to OperationCall
+	class OperatorCallExp to OperatorCallExp
+	-- class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 
+	-- class UnaryOperatorCallExp to OperatorCallExp when self.arguments->isEmpty() 
+    class VariableExp to VariableExp
+     
+    feature OperationCallExp.name is operationName
+    feature OperatorCallExp.name  is operationName
+    
+    --feature BinaryOperatorCallExp.name  is operationName
+    --feature UnaryOperatorCallExp.name   is operationName
+
+	--feature BinaryOperatorCallExp.source  is source
+	--feature BinaryOperatorCallExp.argument = self.argument->first()
+
+	--feature UnaryOperatorCallExp.source  is source
+
+    class BooleanExp to BooleanExp
+    class IntegerExp to IntegerExp
+
+	feature VariableExp.varDcl is referredVariable	
+}

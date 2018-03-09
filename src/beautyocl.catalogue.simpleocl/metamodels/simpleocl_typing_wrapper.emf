@@ -1,0 +1,19 @@
+@namespace(
+	uri="http://beautyocl/atl/simpleocl_typing_wrapper",
+	prefix="simpleocl_typing_wrapper")
+package typwrapper;
+
+//import "http://www.eclipse.org/ocl/1.1.0/Ecore";
+//import "platform:/resource/beautyocl.catalogue.simpleocl/metamodels/simpleocl.ecore";
+//import "http://eclipselabs.org/simpleocl/2013/SimpleOCL";
+
+//class TypWrapper {
+//  op boolean isSameType(simpleocl.OclExpression e1, simpleocl.OclExpression e2);
+//  op boolean isSuperType(simpleocl.OclExpression e1_subtype, simpleocl.OclExpression e2_supertype);	
+//}
+
+class TypWrapper {
+  op boolean isSameType(EObject e1, EObject e2);
+  op boolean isSuperType(EObject e1_subtype, EObject e2_supertype);	
+}
+

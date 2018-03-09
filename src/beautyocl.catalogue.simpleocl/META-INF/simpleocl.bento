@@ -1,0 +1,27 @@
+composite component beautyocl.simpleocl {
+	// Literals
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
+
+	binding bindTyping    = "typing2simpleocl.gbind"
+	//binding bindComparison= "comparison2atl.gbind"
+	binding bindAll    = "superimposed2simpleocl.gbind"
+	binding bindAllTgt    = "superimposed2simpleocl_tgt.gbind"
+			
+	source concept EMFs : "simpleocl.ecore"
+	source concept TYPW : "simpleocl_typing_wrapper.ecore"
+	// source concept COMPW: "comparison_wrapper.ecore"	
+	target concept EMFt : "simpleocl.ecore"
+	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
+
+	
+	source model in  : EMFs
+	source model in2 : TYPW  
+	target model act : ACT
+	
+	compose seq
+		apply booleans(bindAll(in)) -> (act, bindAllTgt(out))
+		apply integers(bindAll(in)) -> (act, bindAllTgt(out))
+		
+}
+
