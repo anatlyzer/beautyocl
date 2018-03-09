@@ -124,6 +124,15 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getTypWrapper__SetOperation__OperationCallExp_String() {
+		return typWrapperEClass.getEOperations().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public TypwrapperFactory getTypwrapperFactory() {
 		return (TypwrapperFactory)getEFactoryInstance();
 	}
@@ -150,6 +159,7 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		typWrapperEClass = createEClass(TYP_WRAPPER);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SAME_TYPE__OCLEXPRESSION_OCLEXPRESSION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION);
+		createEOperation(typWrapperEClass, TYP_WRAPPER___SET_OPERATION__OPERATIONCALLEXP_STRING);
 	}
 
 	/**
@@ -194,6 +204,10 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		op = initEOperation(getTypWrapper__IsSuperType__OCLExpression_OCLExpression(), ecorePackage.getEBoolean(), "isSuperType", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theEcorePackage.getOCLExpression(), "e1_subtype", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theEcorePackage.getOCLExpression(), "e2_supertype", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getTypWrapper__SetOperation__OperationCallExp_String(), null, "setOperation", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theEcorePackage.getOperationCallExp(), "e", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

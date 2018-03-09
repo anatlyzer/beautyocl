@@ -44,5 +44,16 @@ public class EMFOclInPlaceExecutor extends AbstractInPlaceExecutorATL {
 	}
 
 
+	@Override
+	protected ModelDef initComparisonWrapper(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException {
+		IReferenceModel compWrapperMetamodel = factory.newReferenceModel();
+		injector.inject(compWrapperMetamodel, "http://beautyocl/atl/emfocl_comparison_wrapper");
+		
+		EMFModel compWrapperModel = (EMFModel) factory.newModel(compWrapperMetamodel);
+		compWrapperModel.newElement(compWrapperMetamodel.getMetaElementByName("ComparisonWrapper"));
+		compWrapperModel.commitToResource();
+
+		return new ModelDef(compWrapperMetamodel, compWrapperModel, "CWRAP");
+	}
 
 }

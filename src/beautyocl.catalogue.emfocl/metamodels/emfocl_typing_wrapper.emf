@@ -8,6 +8,8 @@ import "platform:/resource/beautyocl.catalogue.emfocl/metamodels/OCLEcore.ecore"
 
 class TypWrapper {
   op boolean isSameType(ocl.ecore.OCLExpression e1, ocl.ecore.OCLExpression e2);
-  op boolean isSuperType(ocl.ecore.OCLExpression e1_subtype, ocl.ecore.OCLExpression e2_supertype);	
+  op boolean isSuperType(ocl.ecore.OCLExpression e1_subtype, ocl.ecore.OCLExpression e2_supertype);
+  
+  op void setOperation(ocl.ecore.OperationCallExp e, String name); 	
 }
 

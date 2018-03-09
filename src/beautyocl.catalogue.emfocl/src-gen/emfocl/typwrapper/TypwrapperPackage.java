@@ -93,13 +93,22 @@ public interface TypwrapperPackage extends EPackage {
 	int TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION = 1;
 
 	/**
+	 * The operation id for the '<em>Set Operation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYP_WRAPPER___SET_OPERATION__OPERATIONCALLEXP_STRING = 2;
+
+	/**
 	 * The number of operations of the '<em>Typ Wrapper</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER_OPERATION_COUNT = 2;
+	int TYP_WRAPPER_OPERATION_COUNT = 3;
 
 
 	/**
@@ -131,6 +140,16 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getTypWrapper__IsSuperType__OCLExpression_OCLExpression();
+
+	/**
+	 * Returns the meta object for the '{@link emfocl.typwrapper.TypWrapper#setOperation(org.eclipse.ocl.ecore.OperationCallExp, java.lang.String) <em>Set Operation</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Set Operation</em>' operation.
+	 * @see emfocl.typwrapper.TypWrapper#setOperation(org.eclipse.ocl.ecore.OperationCallExp, java.lang.String)
+	 * @generated
+	 */
+	EOperation getTypWrapper__SetOperation__OperationCallExp_String();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -180,6 +199,14 @@ public interface TypwrapperPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION = eINSTANCE.getTypWrapper__IsSuperType__OCLExpression_OCLExpression();
+
+		/**
+		 * The meta object literal for the '<em><b>Set Operation</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TYP_WRAPPER___SET_OPERATION__OPERATIONCALLEXP_STRING = eINSTANCE.getTypWrapper__SetOperation__OperationCallExp_String();
 
 	}
 

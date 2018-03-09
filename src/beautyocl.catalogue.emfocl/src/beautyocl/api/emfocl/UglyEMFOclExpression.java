@@ -10,9 +10,11 @@ import beautyocl.api.common.UglyExpression;
 public class UglyEMFOclExpression implements UglyExpression {
 
 	private OCLExpression constraint;
+	private Resource metamodel;
 
-	public UglyEMFOclExpression(OCLExpression oclExpression) {
+	public UglyEMFOclExpression(OCLExpression oclExpression, Resource mm) {
 		this.constraint = oclExpression;
+		this.metamodel = mm;
 	}
 	
 	@Override
@@ -37,7 +39,7 @@ public class UglyEMFOclExpression implements UglyExpression {
 
 	@Override
 	public Resource getEcoreTypesResource() {
-		throw new IllegalStateException();
+		return metamodel;
 	}
 
 }

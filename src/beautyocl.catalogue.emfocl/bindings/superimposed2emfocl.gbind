@@ -2,6 +2,8 @@ binding superimposed2emfocl {
 	concept   OCL : "bento:/beautyocl.catalogue.simplifications/superimposed.ecore"
 	metamodel EMF : "OCLEcore.ecore"
 
+	class OclExpression to OCLExpression
+
 	--class PropertyCallExp to PropertyCallExp when not self.oclIsKindOf(OCL!OperatorCallExp)
 	class OperationCallExp to OperationCallExp
 	class OperatorCallExp  to OperationCallExp

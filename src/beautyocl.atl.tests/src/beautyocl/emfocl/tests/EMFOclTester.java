@@ -52,7 +52,7 @@ public class EMFOclTester {
 		try {
 			Constraint inv = helper.createInvariant(query);
 			//helper.createQuery(stringBuilder.toString());
-			return new UglyEMFOclExpression((OCLExpression) inv.getSpecification().getBodyExpression());
+			return new UglyEMFOclExpression((OCLExpression) inv.getSpecification().getBodyExpression(), mm);
 			// return new UglyEMFOclExpression(inv);
 		} catch (ParserException e) {
 			// TODO Auto-generated catch block

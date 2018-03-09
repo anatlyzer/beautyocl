@@ -21,6 +21,7 @@ public interface IExecutionTracer {
 
 		@Override
 		public boolean onError(Throwable t) {
+			t.printStackTrace();			
 			return false;
 		}
 		

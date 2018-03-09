@@ -2,21 +2,31 @@ composite component beautyocl.emfocl {
 	// Literals
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
+
+	// Type comparisons
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplify_full_type_comparison.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_kindof_true.bento"
+	
+	// Iterators                          
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_remove_iterator.bento"	                          
 	                          
-//	binding bindOperators = "operators2atl.gbind"
-//	binding bindKindOf    = "kindof2atl.gbind"
-	binding bindTyping    = "typing2emfocl.gbind"
-			
-	binding bindOperators = "operators2emfocl.gbind"
+	// If	                          	
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_else.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_introduce_call.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_same_expr.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_fusion.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_true_false.bento"
+	                          
+	                          			
 
 	binding bindTyping    = "typing2emfocl.gbind"
-	//binding bindComparison= "comparison2atl.gbind"
+	binding bindComparison= "comparison2emfocl.gbind"
 	binding bindAll    = "superimposed2emfocl.gbind"
 	binding bindAllTgt    = "superimposed2emfocl_tgt.gbind"
 			
 	source concept EMFs : "OCLEcore.ecore"
 	source concept TYPW : "emfocl_typing_wrapper.ecore"
-	// source concept COMPW: "comparison_wrapper.ecore"	
+	source concept COMPW: "emfocl_comparison_wrapper.ecore"	
 	target concept EMFt : "OCLEcore.ecore"
 	target concept ACT : "platform:/resource/beautyocl.actions/model/actions.ecore"
 
@@ -27,11 +37,24 @@ composite component beautyocl.emfocl {
 	
 	source model in  : EMFs
 	source model in2 : TYPW  
+	source model in3  : COMPW	
 	target model act : ACT
+	target model out : EMFt
 	
 	compose seq
 		apply booleans(bindAll(in)) -> (act, bindAllTgt(out))
 		apply integers(bindAll(in)) -> (act, bindAllTgt(out))
+
+		apply kindoftrue(bindAll(in), bindTyping(in2)) -> (act, bindAllTgt(out))
+		apply fullTypeComparison(bindAll(in), bindTyping(in2)) -> (act, bindAllTgt(out))
+
+		apply iterator(bindAll(in)) -> (act, bindAllTgt(out))
+
+		apply ifelse(bindAll(in)) -> (act, bindAllTgt(out))
+		apply iftruefalse(bindAll(in)) -> (act, bindAllTgt(out))		
+		apply ifintrocall(bindAll(in)) -> (act, bindAllTgt(out))
+		apply ifsameexpr(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
+		apply iffusion(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
 		
 }
 

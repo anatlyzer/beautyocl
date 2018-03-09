@@ -28,6 +28,7 @@ public abstract class AbstractInPlaceExecutorATL {
 
 	protected abstract ModelDef initOCLVariant(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
 	protected abstract ModelDef initTypingWrapper(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
+	protected abstract ModelDef initComparisonWrapper(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException;
 	
 	public MatchPhase apply(String transformationName, InputStream asmFile, UglyExpression exp) throws ATLCoreException, IOException {
 		EMFModelFactory factory = new EMFModelFactory();
@@ -39,6 +40,7 @@ public abstract class AbstractInPlaceExecutorATL {
 		
 		ModelDef ocl = initOCLVariant(factory, injector);
 		ModelDef typ = initTypingWrapper(factory, injector);
+		ModelDef comp = initComparisonWrapper(factory, injector);
 		
 //		IReferenceModel loadedMetamodel = ocl.metamodel;
 //		IReferenceModel typWrapperMetamodel = typ.metamodel;
@@ -49,8 +51,15 @@ public abstract class AbstractInPlaceExecutorATL {
 		IReferenceModel actionsMetamodel = factory.newReferenceModel();		
 		injector.inject(actionsMetamodel, "http://beautyocl/actions");
 
+		IReferenceModel ecoreMetamodel = factory.newReferenceModel();
+		injector.inject(ecoreMetamodel, "http://www.eclipse.org/emf/2002/Ecore");
+		
+		EMFModel ecoreModel = (EMFModel) factory.newModel(ecoreMetamodel);
+		injector.inject(ecoreModel, exp.getEcoreTypesResource());
+		
 		IModel loadedModel = ocl.model;
 		IModel typWrapperModel = typ.model;
+		IModel comparisonWrapperModel = comp.model;
 		
 		
 		EMFModel newModel = (EMFModel) factory.newModel(actionsMetamodel);
@@ -64,7 +73,8 @@ public abstract class AbstractInPlaceExecutorATL {
 
 		launcher.addInModel(loadedModel, "IN", ocl.mmName);
 		launcher.addInModel(typWrapperModel, "IN2", typ.mmName);
-
+		launcher.addInModel(comparisonWrapperModel, "IN3", comp.mmName);			
+		launcher.addInModel(ecoreModel, "IN_ECORE", "ECORE");
 		launcher.addOutModel(newModelOCL, "OUT2", "EMF");
 		launcher.addOutModel(newModel, "OUT", "ACT");
 			

@@ -43,6 +43,18 @@ public class SimpleOCLInPlaceExecutor extends AbstractInPlaceExecutorATL {
 		return new ModelDef(typWrapperMetamodel, typWrapperModel, "WRAP");
 	}
 
+	@Override
+	protected ModelDef initComparisonWrapper(EMFModelFactory factory, EMFInjector injector) throws ATLCoreException {
+		IReferenceModel typWrapperMetamodel = factory.newReferenceModel();
+		injector.inject(typWrapperMetamodel, "http://beautyocl/atl/simpleocl_comparison_wrapper");
+		
+		EMFModel typWrapperModel = (EMFModel) factory.newModel(typWrapperMetamodel);
+		typWrapperModel.newElement(typWrapperMetamodel.getMetaElementByName("ComparisonWrapper"));
+		typWrapperModel.commitToResource();
+
+		return new ModelDef(typWrapperMetamodel, typWrapperModel, "CWRAP");
+	}
+
 
 
 }

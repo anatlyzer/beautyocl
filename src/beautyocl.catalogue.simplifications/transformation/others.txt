@@ -1,4 +1,0 @@
-
-
-if true then
-  kill the other branch

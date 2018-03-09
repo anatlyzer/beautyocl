@@ -80,6 +80,10 @@ public class ActionsEngine {
 
 	private void setPropertyValue(EObject source, EObject value, String propertyName) {
 		EStructuralFeature f = source.eClass().getEStructuralFeature(propertyName);
+		if ( f == null ) {
+			throw new RuntimeException("Property " +propertyName + " not found");
+		}
+			
 		if ( f.isMany() ) {
 			((Collection<EObject>) source.eGet(f)).add(value);
 		} else {

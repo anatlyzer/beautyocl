@@ -30,6 +30,23 @@ public class TestLiterals extends EMFOclTester {
 		});
 	}
 	
+	@Test
+	public void testIterators() {
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyOCLUtils.SIMP_ITERATORS);
 
+
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Arc.allInstances()->forAll(a | true)");
+		
+		UglyEMFOclExpression exp = loadPNMLExpression(stringBuilder.toString());
+		
+		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+		beauty.applyAll(exp);
+		
+		exp.getResource().getContents().forEach(o -> {
+			System.out.println(o);
+		});
+	}
 
 }
