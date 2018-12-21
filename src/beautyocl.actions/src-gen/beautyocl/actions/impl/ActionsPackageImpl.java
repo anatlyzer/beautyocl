@@ -388,7 +388,7 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 
 		initEClass(setPEClass, SetP.class, "SetP", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getSetP_PropertyName(), ecorePackage.getEString(), "propertyName", null, 1, 1, SetP.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getSetP_Value(), ecorePackage.getEObject(), null, "value", null, 1, 1, SetP.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSetP_Value(), ecorePackage.getEObject(), null, "value", null, 0, -1, SetP.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

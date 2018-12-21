@@ -391,7 +391,7 @@ public interface ActionsPackage extends EPackage {
 	int SET_P__PROPERTY_NAME = IN_PLACE_ACTION_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' reference.
+	 * The feature id for the '<em><b>Value</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -588,10 +588,10 @@ public interface ActionsPackage extends EPackage {
 	EAttribute getSetP_PropertyName();
 
 	/**
-	 * Returns the meta object for the reference '{@link beautyocl.actions.SetP#getValue <em>Value</em>}'.
+	 * Returns the meta object for the reference list '{@link beautyocl.actions.SetP#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Value</em>'.
+	 * @return the meta object for the reference list '<em>Value</em>'.
 	 * @see beautyocl.actions.SetP#getValue()
 	 * @see #getSetP()
 	 * @generated
@@ -762,7 +762,7 @@ public interface ActionsPackage extends EPackage {
 		EAttribute SET_P__PROPERTY_NAME = eINSTANCE.getSetP_PropertyName();
 
 		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Value</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

@@ -18,6 +18,7 @@ public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_IF_TRUE_FALSE = new ATLTransformation("if-true-false", pathTo("beautyocl.simplifications.iftruefalse.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_REMOVE_LET = new ATLTransformation("remove-let", pathTo("beautyocl.simplifications.removelet.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_SAME_OPERAND = new ATLTransformation("same-operand", pathTo("beautyocl.simplifications.sameoperand.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_EQUALITY_SEQUENCE = new ATLTransformation("equality-sequence", pathTo("beautyocl.simplifications.equalitysequence.asm"), VM.STANDARD);
 	public static final ATLTransformation PULL_UP_CONDITIONAL = new ATLTransformation("pull-up-conditional", pathTo("beautyocl.simplifications.pullupconditional.asm"), VM.STANDARD);
 	
 	public static TransformationRepository getRepository() {

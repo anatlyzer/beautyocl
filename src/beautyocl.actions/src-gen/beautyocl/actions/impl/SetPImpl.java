@@ -5,13 +5,14 @@ package beautyocl.actions.impl;
 import beautyocl.actions.ActionsPackage;
 import beautyocl.actions.SetP;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -49,14 +50,14 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 	protected String propertyName = PROPERTY_NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference.
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected EObject value;
+	protected EList<EObject> value;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -103,37 +104,11 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EObject getValue() {
-		if (value != null && value.eIsProxy()) {
-			InternalEObject oldValue = (InternalEObject)value;
-			value = eResolveProxy(oldValue);
-			if (value != oldValue) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ActionsPackage.SET_P__VALUE, oldValue, value));
-			}
+	public EList<EObject> getValue() {
+		if (value == null) {
+			value = new EObjectResolvingEList<EObject>(EObject.class, this, ActionsPackage.SET_P__VALUE);
 		}
 		return value;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EObject basicGetValue() {
-		return value;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setValue(EObject newValue) {
-		EObject oldValue = value;
-		value = newValue;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ActionsPackage.SET_P__VALUE, oldValue, value));
 	}
 
 	/**
@@ -147,8 +122,7 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 			case ActionsPackage.SET_P__PROPERTY_NAME:
 				return getPropertyName();
 			case ActionsPackage.SET_P__VALUE:
-				if (resolve) return getValue();
-				return basicGetValue();
+				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -158,6 +132,7 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -165,7 +140,8 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 				setPropertyName((String)newValue);
 				return;
 			case ActionsPackage.SET_P__VALUE:
-				setValue((EObject)newValue);
+				getValue().clear();
+				getValue().addAll((Collection<? extends EObject>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -183,7 +159,7 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 				setPropertyName(PROPERTY_NAME_EDEFAULT);
 				return;
 			case ActionsPackage.SET_P__VALUE:
-				setValue((EObject)null);
+				getValue().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -200,7 +176,7 @@ public class SetPImpl extends InPlaceActionImpl implements SetP {
 			case ActionsPackage.SET_P__PROPERTY_NAME:
 				return PROPERTY_NAME_EDEFAULT == null ? propertyName != null : !PROPERTY_NAME_EDEFAULT.equals(propertyName);
 			case ActionsPackage.SET_P__VALUE:
-				return value != null;
+				return value != null && !value.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

@@ -10,7 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestInteger.class, 
 	TestKindOf.class, 
 	TestLet.class, 
-	TestUnshortCircuit.class })
+	TestUnshortCircuit.class,
+	TestOperands.class})
 public class AllTestsAtl {
 
 }

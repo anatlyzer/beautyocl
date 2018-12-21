@@ -30,5 +30,5 @@ class CompositeAction extends InPlaceAction {
 
 class SetP extends InPlaceAction {
 	attr String[1] propertyName;
-	ref EObject[1] value;
+	ref EObject[*] value;
 }

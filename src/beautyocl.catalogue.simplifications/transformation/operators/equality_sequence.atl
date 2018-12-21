@@ -1,0 +1,117 @@
+
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path COMP=/beautyocl.catalogue.simplifications/metamodels/comparison.ecore
+
+--
+-- Given a sequence of or operations like:
+--  
+--    exp = value1 or exp = value1 or exp.value2
+--
+-- We generate:
+--
+--    Set { value1, value2, value3 }->includes(exp)
+--
+
+module "equality_sequence";
+create OUT : ACT, OUT2 : OCLt from IN : OCL, IN3 : COMP; 
+
+helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
+
+helper def : MIN_SIZE : Integer = 4;
+
+
+helper context OCL!OclExpression   def: isEquality() : Boolean =  false;
+helper context OCL!BinaryOperatorCallExp def: isEquality() : Boolean =  self.name = '=';
+
+-- The precondition is that it is an equality (checked with isEquality)
+-- Returns the values for which the key are the same
+helper context OCL!BinaryOperatorCallExp def: isSame(exp : OCL!OclExpression) : OCL!OclExpression =  
+	let left  : OCL!OclExpression = self.source in
+	let right : OCL!OclExpression = self.argument in
+		if thisModule.comp.isSameExpr(exp, left) then
+			right
+		else if thisModule.comp.isSameExpr(exp, right) then
+			left
+		else OclUndefined endif endif;
+
+-- @force-declared-return-type
+helper context OCL!OclExpression def: operatorSequence : Sequence(OCL!BinaryOperatorCallExp) = 
+	if self.isEquality() then
+		Sequence { self }
+	else
+		Sequence { }
+	endif;
+
+-- @force-declared-return-type
+helper context OCL!BinaryOperatorCallExp def: operatorSequence : Sequence(OCL!BinaryOperatorCallExp) = 
+	if self.name = 'or' and self.argument.isEquality() then
+		Sequence { self.argument }->union(self.source.operatorSequence)
+	else
+		Sequence { }
+	endif;
+	
+helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = 
+	let seq : Sequence(OCL!BinaryOperatorCallExp) = self.operatorSequence in
+		if seq->size() >= thisModule.MIN_SIZE then
+			-- seq has equalities x = y
+			let left  : OCL!OclExpression = seq->first().source in
+			let right : OCL!OclExpression = seq->first().argument in
+			let samesLeft  : Sequence(OCL!OclExpression) = seq->collect(e | e.isSame(left))->excluding(OclUndefined) in
+			let samesRight : Sequence(OCL!OclExpression) = seq->collect(e | e.isSame(right))->excluding(OclUndefined) in
+			if samesLeft->size() = seq->size() then
+				Tuple { value = left, keys = samesLeft }
+			else if samesRight->size() = seq->size() then
+				Tuple { value = right, keys = samesRight }
+			else OclUndefined endif endif
+		else
+			OclUndefined
+		endif;
+	
+
+
+-- exp = value1 or exp = value1 or exp = value2
+-- or:
+--   argument: exp = value2
+--     source: or
+--             argument: exp = value1
+--             source: exp = value1 
+
+-- @ignore invalid-assignment-imperative-binding
+rule find_sequence_of_operations {
+	from o : OCL!BinaryOperatorCallExp (
+		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame 
+		 in seq <> OclUndefined 
+		 -- TODO: Check with refImmediateComposite if this is the larger one
+	)
+	to c : ACT!CompositeAction (
+		actions <- Sequence { set_elements, set_includes_source, set_includes_arguments, a }	
+	),
+	a : ACT!Replace, 
+	includesOp : OCLt!CollectionOperationCallExp (
+		name <- 'includes'
+	),
+	set_exp : OCLt!SetExp,
+	set_elements  : ACT!SetP,
+	set_includes_source    : ACT!SetP,
+	set_includes_arguments : ACT!SetP
+	do {
+		c.source <- o;
+		
+		a.source <- o;
+		a.target <- includesOp;
+		
+		set_includes_source.propertyName <- 'source';
+		set_includes_source.source <- includesOp;
+		set_includes_source.value <- set_exp;
+		
+		set_includes_arguments.propertyName <- 'arguments';
+		set_includes_arguments.source <- includesOp;
+		set_includes_arguments.value <- o.operatorSequenceIfSame.value;
+		
+		set_elements.propertyName <- 'elements';
+		set_elements.source <- set_exp;
+		set_elements.value <- o.operatorSequenceIfSame.keys;
+	}
+}

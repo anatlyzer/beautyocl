@@ -4,6 +4,7 @@ binding superimposed2atl {
 
 	--class PropertyCallExp to PropertyCallExp when not self.oclIsKindOf(OCL!OperatorCallExp)
 	class OperationCallExp to OperationCallExp
+	class CollectionOperationCallExp to CollectionOperationCallExp
 	class OperatorCallExp to OperatorCallExp
 	class NavigationCallExp to NavigationOrAttributeCallExp
 	class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 
@@ -14,6 +15,7 @@ binding superimposed2atl {
      
     feature OperationCallExp.name  is operationName
     feature OperatorCallExp.name  is operationName
+    feature CollectionOperationCallExp.name is operationName
     
     --feature BinaryOperatorCallExp.name  is operationName
     --feature UnaryOperatorCallExp.name   is operationName

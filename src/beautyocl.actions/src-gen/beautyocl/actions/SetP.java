@@ -2,6 +2,7 @@
  */
 package beautyocl.actions;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -49,29 +50,19 @@ public interface SetP extends InPlaceAction {
 	void setPropertyName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Value</b></em>' reference.
+	 * Returns the value of the '<em><b>Value</b></em>' reference list.
+	 * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Value</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Value</em>' reference.
-	 * @see #setValue(EObject)
+	 * @return the value of the '<em>Value</em>' reference list.
 	 * @see beautyocl.actions.ActionsPackage#getSetP_Value()
-	 * @model required="true"
+	 * @model
 	 * @generated
 	 */
-	EObject getValue();
-
-	/**
-	 * Sets the value of the '{@link beautyocl.actions.SetP#getValue <em>Value</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Value</em>' reference.
-	 * @see #getValue()
-	 * @generated
-	 */
-	void setValue(EObject value);
+	EList<EObject> getValue();
 
 } // SetP

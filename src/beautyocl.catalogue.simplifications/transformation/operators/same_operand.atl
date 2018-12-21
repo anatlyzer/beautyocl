@@ -12,9 +12,7 @@ module "remove_operand";
 create OUT : ACT, OUT2 : OCLt from IN : OCL, IN3 : COMP; 
 
 helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
---
--- if exp then exp else true endif => true
---
+
 rule removeOperand {
 	from i : OCL!OperatorCallExp (
 		if i.name = 'and' or i.name = 'or' then

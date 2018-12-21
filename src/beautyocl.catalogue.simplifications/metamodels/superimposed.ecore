@@ -23,6 +23,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1"
         eType="#//OclExpression" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CollectionOperationCallExp" eSuperTypes="#//OperationCallExp"/>
   <eClassifiers xsi:type="ecore:EClass" name="NavigationCallExp" eSuperTypes="#//PropertyCallExp">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -89,4 +90,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="OclModel">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CollectionExp" abstract="true" eSuperTypes="#//OclExpression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//OclExpression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SetExp" eSuperTypes="#//CollectionExp"/>
 </ecore:EPackage>

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -152,10 +153,27 @@ public class ActionsEngine {
 		return a.getChildren();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private EObject setValue(Match match, SetP action, CloneScope cloneScope) {
 		EObject source = getTarget(action.getSource(), cloneScope);
-		EObject value  = getTarget(action.getValue(), cloneScope);
-		setPropertyValue(source, value, action.getPropertyName());
+		
+		// If the feature is mono-valued this will overwrite. Should be checked statically.
+		EList<EObject> values = action.getValue();
+		for(EObject o : values) {
+			EObject value  = getTarget( o, cloneScope);
+			setPropertyValue(source, value, action.getPropertyName());	
+		}
+			
+//		if ( v instanceof EObject ) {
+//			EObject value  = getTarget((EObject) v, cloneScope);
+//			setPropertyValue(source, value, action.getPropertyName());	
+//		} else if ( v instanceof Collection ) {
+//			for(Object o : (Collection) v) {
+//				EObject value  = getTarget((EObject) o, cloneScope);
+//				setPropertyValue(source, value, action.getPropertyName());	
+//			}
+//		}
+		
 		return source;
 	}
 

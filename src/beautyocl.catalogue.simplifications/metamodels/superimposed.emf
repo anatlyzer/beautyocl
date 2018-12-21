@@ -27,6 +27,10 @@ class OperationCallExp extends PropertyCallExp {
 	val OclExpression[*] arguments;	
 }
 
+class CollectionOperationCallExp extends OperationCallExp {
+	
+}
+
 class NavigationCallExp extends PropertyCallExp {
 	attr String[1] name;	
 }
@@ -112,3 +116,21 @@ class OclModelElement extends OclType {
 class OclModel {
 	attr String[1] name;
 }
+
+abstract class CollectionExp extends OclExpression {
+  val OclExpression[*] elements;
+}
+
+/*
+  class BagExp extends CollectionExp {
+  }
+
+  class OrderedSetExp extends CollectionExp {
+  }
+
+  class SequenceExp extends CollectionExp {
+  }
+*/
+
+  class SetExp extends CollectionExp {
+  }
