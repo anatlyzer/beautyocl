@@ -19,6 +19,9 @@ class DeleteMoveChildren extends InPlaceAction {
 class Clone extends InPlaceAction {
 	attr String[*] ignoredProperties;
 	ref EObject[*] values;
+	
+	ref EObject[*] replaceReferenceTo;
+	ref EObject[*] withReplacement;
 }
 
 class CompositeAction extends InPlaceAction {

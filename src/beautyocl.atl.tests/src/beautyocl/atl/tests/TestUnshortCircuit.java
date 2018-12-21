@@ -9,6 +9,7 @@ import org.junit.Test;
 import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
+import anatlyzer.atl.tests.api.AtlLoader.LoadException;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
@@ -22,7 +23,7 @@ import beautyocl.atl.api.UglyAnATLyzerExpression;
 public class TestUnshortCircuit extends Tester {
 
 	@Test
-	public void test() throws ATLCoreException {
+	public void test() throws LoadException {
 		TransformationRepository rep = configureRepo();
 	
 		AnalysisLoader.setStandaloneMode();
@@ -48,7 +49,7 @@ public class TestUnshortCircuit extends Tester {
 
 
 	@Test
-	public void test2() throws ATLCoreException {
+	public void test2() throws LoadException {
 		TransformationRepository rep = configureRepo();
 	
 		AnalysisLoader.setStandaloneMode();
@@ -82,7 +83,7 @@ public class TestUnshortCircuit extends Tester {
 	
 
 	@Test
-	public void test3() throws ATLCoreException {
+	public void test3() throws LoadException {
 		TransformationRepository rep = configureRepo();
 	
 		AnalysisLoader.setStandaloneMode();
@@ -107,7 +108,7 @@ public class TestUnshortCircuit extends Tester {
 	}
 	
 	@Test
-	public void testKindOf_HSM2FSM_Failure() throws ATLCoreException {	
+	public void testKindOf_HSM2FSM_Failure() throws LoadException {	
 		TransformationRepository rep = configureRepo();
 		
 		UglyAnATLyzerExpression exp = loadExpressionHSM2FSM("files/unshort/hsm2fsm_failure.atl");

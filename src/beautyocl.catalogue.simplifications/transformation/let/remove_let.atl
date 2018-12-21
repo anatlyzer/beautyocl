@@ -19,6 +19,7 @@ helper context OCL!OperatorCallExp def: isSimpleExpression() : Boolean =
 	not (self.source.oclIsKindOf(OCL!IfExp) or self.arguments.oclIsKindOf(OCL!IfExp));
 
 
+-- @lib find-ocurrences
 helper context OCL!OclExpression def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = Set { };
 helper context OCL!VariableExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
 	if self.varDcl = v then Set { self } else Set { } endif;

@@ -3,6 +3,7 @@ package beautyocl.actions;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,8 +45,20 @@ public class ActionsEngine {
 		CloneScope scope = new CloneScope();
 		
 		for(Clone c : getActions(a.getActions(), Clone.class))  {
+			if ( c.getReplaceReferenceTo().size() != c.getWithReplacement().size() ) 
+				throw new IllegalArgumentException();
+			
+			Map<EObject, EObject> bindings = new HashMap<>();
+			int size = c.getReplaceReferenceTo().size();
+			for(int i = 0; i < size; i++) {
+				EObject key = c.getReplaceReferenceTo().get(i);
+				EObject value = c.getWithReplacement().get(i);
+				bindings.put(key, value);
+			}
+			
 			CustomCopier copier = new CustomCopier(c.getSource()).
-					withIgnoredReferences(c.getIgnoredProperties());
+					withIgnoredReferences(c.getIgnoredProperties()).
+					withReplacementBindings(bindings);
 			
 			EObject result = copier.copyFull();
 			scope.put(c, result);			
@@ -140,9 +153,10 @@ public class ActionsEngine {
 	}
 	
 	private EObject setValue(Match match, SetP action, CloneScope cloneScope) {
-		EObject obj = getTarget(action.getSource(), cloneScope);
-		setPropertyValue(obj, action.getValue(), action.getPropertyName());
-		return obj;
+		EObject source = getTarget(action.getSource(), cloneScope);
+		EObject value  = getTarget(action.getValue(), cloneScope);
+		setPropertyValue(source, value, action.getPropertyName());
+		return source;
 	}
 
 	private void changeRootIfNeeded(Match m, EObject source, EObject tgt) {

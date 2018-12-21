@@ -222,6 +222,24 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getClone_ReplaceReferenceTo() {
+		return (EReference)cloneEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getClone_WithReplacement() {
+		return (EReference)cloneEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getCompositeAction() {
 		return compositeActionEClass;
 	}
@@ -303,6 +321,8 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 		cloneEClass = createEClass(CLONE);
 		createEAttribute(cloneEClass, CLONE__IGNORED_PROPERTIES);
 		createEReference(cloneEClass, CLONE__VALUES);
+		createEReference(cloneEClass, CLONE__REPLACE_REFERENCE_TO);
+		createEReference(cloneEClass, CLONE__WITH_REPLACEMENT);
 
 		compositeActionEClass = createEClass(COMPOSITE_ACTION);
 		createEReference(compositeActionEClass, COMPOSITE_ACTION__ACTIONS);
@@ -360,6 +380,8 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 		initEClass(cloneEClass, Clone.class, "Clone", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getClone_IgnoredProperties(), ecorePackage.getEString(), "ignoredProperties", null, 0, -1, Clone.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getClone_Values(), ecorePackage.getEObject(), null, "values", null, 0, -1, Clone.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getClone_ReplaceReferenceTo(), ecorePackage.getEObject(), null, "replaceReferenceTo", null, 0, -1, Clone.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getClone_WithReplacement(), ecorePackage.getEObject(), null, "withReplacement", null, 0, -1, Clone.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(compositeActionEClass, CompositeAction.class, "CompositeAction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getCompositeAction_Actions(), this.getInPlaceAction(), null, "actions", null, 0, -1, CompositeAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -4,28 +4,25 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.junit.Test;
 
-import anatlyzer.atl.analyser.AnalysisResult;
 import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
+import anatlyzer.atl.tests.api.AtlLoader.LoadException;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
 import beautyocl.actions.MatchPhase.Match;
 import beautyocl.api.common.Beautyfier;
 import beautyocl.api.common.TransformationRepository;
-import beautyocl.atl.api.ATLTransformation;
-import beautyocl.atl.api.ATLTransformation.VM;
-import beautyocl.atl.api.utils.BeautyATLUtils;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
+import beautyocl.atl.api.utils.BeautyATLUtils;
 
 public class TestIfElse extends Tester {
 
 	@Test
-	public void test() throws ATLCoreException {
+	public void test() throws LoadException {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
 		rep.add(BeautyATLUtils.SIMP_IF_SAME_EXPR);
@@ -52,7 +49,7 @@ public class TestIfElse extends Tester {
 	}
 
 	@Test
-	public void test2() throws ATLCoreException {
+	public void test2() throws LoadException {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
 		rep.add(BeautyATLUtils.SIMP_IF_SAME_EXPR);
@@ -79,7 +76,7 @@ public class TestIfElse extends Tester {
 	}
 
 	@Test
-	public void testIntroCall() throws ATLCoreException {	
+	public void testIntroCall() throws LoadException {	
 		TransformationRepository rep = new TransformationRepository();
 		rep.add(BeautyATLUtils.SIMP_IF_INTRO_CALL);
 		
@@ -96,7 +93,7 @@ public class TestIfElse extends Tester {
 	}
 
 	@Test
-	public void testIntroCall_HSM2FSM() throws ATLCoreException {	
+	public void testIntroCall_HSM2FSM() throws LoadException {	
 		TransformationRepository rep = new TransformationRepository();
 		rep.add(BeautyATLUtils.SIMP_IF_INTRO_CALL);
 		
@@ -136,7 +133,7 @@ public class TestIfElse extends Tester {
 	}
 
 	@Test
-	public void testIfFusion_HSM2FSM() throws ATLCoreException {	
+	public void testIfFusion_HSM2FSM() throws LoadException {	
 		TransformationRepository rep = new TransformationRepository();
 		rep.add(BeautyATLUtils.SIMP_IF_FUSION);
 		
@@ -174,4 +171,22 @@ public class TestIfElse extends Tester {
 		System.out.println("Before: " + before);
 		System.out.println("After: " + after);
 	}
+	
+	@Test
+	public void testPullUpConditional() throws LoadException {	
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.PULL_UP_CONDITIONAL);
+		
+		UglyAnATLyzerExpression exp = loadExpression("files/ifelse/pull_up_conditional.atl");
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
+
 }

@@ -261,13 +261,31 @@ public interface ActionsPackage extends EPackage {
 	int CLONE__VALUES = IN_PLACE_ACTION_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Replace Reference To</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLONE__REPLACE_REFERENCE_TO = IN_PLACE_ACTION_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>With Replacement</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLONE__WITH_REPLACEMENT = IN_PLACE_ACTION_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Clone</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CLONE_FEATURE_COUNT = IN_PLACE_ACTION_FEATURE_COUNT + 2;
+	int CLONE_FEATURE_COUNT = IN_PLACE_ACTION_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Clone</em>' class.
@@ -506,6 +524,28 @@ public interface ActionsPackage extends EPackage {
 	EReference getClone_Values();
 
 	/**
+	 * Returns the meta object for the reference list '{@link beautyocl.actions.Clone#getReplaceReferenceTo <em>Replace Reference To</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Replace Reference To</em>'.
+	 * @see beautyocl.actions.Clone#getReplaceReferenceTo()
+	 * @see #getClone()
+	 * @generated
+	 */
+	EReference getClone_ReplaceReferenceTo();
+
+	/**
+	 * Returns the meta object for the reference list '{@link beautyocl.actions.Clone#getWithReplacement <em>With Replacement</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>With Replacement</em>'.
+	 * @see beautyocl.actions.Clone#getWithReplacement()
+	 * @see #getClone()
+	 * @generated
+	 */
+	EReference getClone_WithReplacement();
+
+	/**
 	 * Returns the meta object for class '{@link beautyocl.actions.CompositeAction <em>Composite Action</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -668,6 +708,22 @@ public interface ActionsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CLONE__VALUES = eINSTANCE.getClone_Values();
+
+		/**
+		 * The meta object literal for the '<em><b>Replace Reference To</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CLONE__REPLACE_REFERENCE_TO = eINSTANCE.getClone_ReplaceReferenceTo();
+
+		/**
+		 * The meta object literal for the '<em><b>With Replacement</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CLONE__WITH_REPLACEMENT = eINSTANCE.getClone_WithReplacement();
 
 		/**
 		 * The meta object literal for the '{@link beautyocl.actions.impl.CompositeActionImpl <em>Composite Action</em>}' class.

@@ -10,6 +10,7 @@ binding superimposed2atl {
 	class UnaryOperatorCallExp to OperatorCallExp when self.arguments->isEmpty() 
     class VariableExp to VariableExp
     class IteratorExp to IteratorExp
+	class Iterator to Iterator
      
     feature OperationCallExp.name  is operationName
     feature OperatorCallExp.name  is operationName
@@ -27,4 +28,5 @@ binding superimposed2atl {
 
 	feature VariableExp.varDcl is referredVariable	
 	
+	feature Iterator.name is varName
 }

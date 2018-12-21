@@ -2,16 +2,16 @@ package beautyocl.atl.tests;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.m2m.atl.core.ATLCoreException;
 
 import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
+import anatlyzer.atl.tests.api.AtlLoader.LoadException;
 import beautyocl.actions.ActionsPackage;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
-public class Tester {
+public abstract class Tester {
 	static {
 		standalone();
 	}
@@ -21,7 +21,7 @@ public class Tester {
 		EPackage.Registry.INSTANCE.put(TypwrapperPackage.eNS_URI, TypwrapperPackage.eINSTANCE);
 	}
 	
-	protected UglyAnATLyzerExpression loadExpression(String trafo) throws ATLCoreException {
+	protected UglyAnATLyzerExpression loadExpression(String trafo) throws LoadException {
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load(trafo);
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/ABCD.ecore", "metamodels/WXYZ.ecore"}, new String[] { "ABCD", "WXYZ"} ); 
@@ -32,7 +32,7 @@ public class Tester {
 	}
 	
 
-	protected UglyAnATLyzerExpression loadExpressionPNML(String trafo) throws ATLCoreException {
+	protected UglyAnATLyzerExpression loadExpressionPNML(String trafo) throws LoadException {
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load(trafo);
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
@@ -43,7 +43,7 @@ public class Tester {
 	}
 	
 
-	protected UglyAnATLyzerExpression loadExpressionHSM2FSM(String trafo) throws ATLCoreException {
+	protected UglyAnATLyzerExpression loadExpressionHSM2FSM(String trafo) throws LoadException {
 		AnalysisLoader.setStandaloneMode();
 		Resource r = AtlLoader.load(trafo);
 		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/HSM.ecore", "metamodels/FSM.ecore"}, new String[] { "HSM", "FSM"} ); 

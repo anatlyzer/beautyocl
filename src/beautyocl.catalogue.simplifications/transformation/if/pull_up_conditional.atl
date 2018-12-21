@@ -1,0 +1,97 @@
+
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+--
+-- @category idiomatic
+--
+-- Given:
+--    col->select(if X then true else Y)
+--    col->select(X)->select(Y)
+-- or
+--    col->reject(if X then true else EXP) with
+--    col->reject(X)->reject(EXP)
+
+module "pull_up_conditional";
+create OUT : ACT, OUT2 : OCLt from IN : OCL; 
+
+helper context OCL!BooleanExp    def: isTrue() : Boolean = self.booleanSymbol;
+helper context OCL!OclExpression def: isTrue() : Boolean = false;
+
+helper context OCL!OclExpression def: isConditionalTrueBranch() : Boolean = false;
+helper context OCL!IfExp def: isConditionalTrueBranch() : Boolean = 
+	self.thenExpression.isTrue();
+
+-- @ignore invalid-assignment-imperative-binding
+-- @ignore found-in-subtype
+rule matchSelectReject {
+	from o : OCL!IteratorExp (
+		if o.name = 'select' or o.name = 'reject' then
+			o.body.isConditionalTrueBranch()
+		else
+			false
+		endif
+		
+	)
+    -- col->select(if X then true else Y)
+    -- col->select(X)->select(Y)
+	
+	-- select(if X ...)
+	--   col
+	--   
+	
+	-- select(y)
+	--   select(X)
+	--     col
+	to c : ACT!CompositeAction (
+		actions <- Sequence { select_body, set_body, change_body, 
+			--replace_select, 
+			set_source,
+			change_source } 	
+		
+	),
+	iteratorExp : OCLt!IteratorExp (
+		name <- o.name,
+		iteratorVar <- iterator
+	), iterator : OCLt!Iterator (
+		name <- o.iteratorVar.name	
+	),
+	set_body : ACT!SetP (
+		propertyName <- 'body'		
+	),
+	change_body : ACT!SetP (
+		propertyName <- 'body'
+	),
+	--replace_select : ACT!Replace (
+	--
+	--),
+	set_source : ACT!SetP (
+		propertyName <- 'source'	
+	),
+	change_source : ACT!SetP (
+		propertyName <- 'source'	
+	),
+	select_body : ACT!Clone
+	do {
+		set_body.source <- iteratorExp;
+		set_body.value <- select_body;
+		
+		change_body.source <- o;
+		change_body.value <- o.body.elseExpression;
+		
+		--replace_select.source <- o;
+		--replace_select.target <- iteratorExp;
+		
+		set_source.source <- iteratorExp;
+		set_source.value <- o.source;
+		
+		change_source.source <- o;
+		change_source.value <- iteratorExp;
+		
+		select_body.source <- o.body.condition;
+		select_body.replaceReferenceTo <- Sequence { o.iteratorVar };
+		select_body.withReplacement <- Sequence { iterator };
+	
+		c.source <- o;
+	}
+}

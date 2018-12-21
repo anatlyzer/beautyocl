@@ -17,6 +17,8 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link beautyocl.actions.Clone#getIgnoredProperties <em>Ignored Properties</em>}</li>
  *   <li>{@link beautyocl.actions.Clone#getValues <em>Values</em>}</li>
+ *   <li>{@link beautyocl.actions.Clone#getReplaceReferenceTo <em>Replace Reference To</em>}</li>
+ *   <li>{@link beautyocl.actions.Clone#getWithReplacement <em>With Replacement</em>}</li>
  * </ul>
  *
  * @see beautyocl.actions.ActionsPackage#getClone()
@@ -55,5 +57,37 @@ public interface Clone extends InPlaceAction {
 	 * @generated
 	 */
 	EList<EObject> getValues();
+
+	/**
+	 * Returns the value of the '<em><b>Replace Reference To</b></em>' reference list.
+	 * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Replace Reference To</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Replace Reference To</em>' reference list.
+	 * @see beautyocl.actions.ActionsPackage#getClone_ReplaceReferenceTo()
+	 * @model
+	 * @generated
+	 */
+	EList<EObject> getReplaceReferenceTo();
+
+	/**
+	 * Returns the value of the '<em><b>With Replacement</b></em>' reference list.
+	 * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>With Replacement</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>With Replacement</em>' reference list.
+	 * @see beautyocl.actions.ActionsPackage#getClone_WithReplacement()
+	 * @model
+	 * @generated
+	 */
+	EList<EObject> getWithReplacement();
 
 } // Clone

@@ -2,8 +2,10 @@ package beautyocl.actions;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -17,6 +19,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class CustomCopier extends EcoreUtil.Copier {
 
 	protected Set<String> ignoredReferences = new HashSet<>();
+	protected Map<EObject, EObject> replacementBindings = new HashMap<>();
 	
 	public CustomCopier(EObject root) {
 		this.root = root;
@@ -26,6 +29,13 @@ public class CustomCopier extends EcoreUtil.Copier {
 		ignoredReferences.addAll(names);
 		return this;
 	}
+	
+	public CustomCopier withReplacementBindings(Map<EObject, EObject> bindings) {
+		replacementBindings.putAll(bindings);
+		this.putAll(bindings);
+		return this;
+	}
+
 	
 	@Override
 	protected void copyContainment(EReference eReference, EObject eObject, EObject copyEObject) {
@@ -213,9 +223,11 @@ public class CustomCopier extends EcoreUtil.Copier {
       }
     }
 
+    
     protected void copyPerformed(EObject src, EObject copy) {
 		// Call back method to be implemented by subclasses
 	}
+
 	
 	
 }

@@ -15,7 +15,10 @@ helper context OCL!OclExpression def: isKindOf() : Boolean = false;
 -- @ignore undefined-value
 helper context OCL!OperationCallExp def: isKindOf() : Boolean = 
 	if self.name = 'oclIsKindOf' then
-		thisModule.typ.isSameType(self.source, self.arguments->first())
+		thisModule.typ.isSameType(self.source, self.arguments->first()) 
+		or 
+		-- To simplify: b.oclIsKindOf(A) when A is a supertype of B
+		thisModule.typ.isSuperType(self.source, self.arguments->first()) 
 	else
 		false
 	endif;

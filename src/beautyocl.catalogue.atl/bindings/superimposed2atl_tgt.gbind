@@ -7,6 +7,12 @@ target binding superimposed2atl_tgt {
 	-- class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 
 	-- class UnaryOperatorCallExp to OperatorCallExp when self.arguments->isEmpty() 
     class VariableExp to VariableExp
+
+	class Iterator to Iterator
+	class IteratorExp to IteratorExp
+	
+	-- This is valid because it is in the target
+    feature IteratorExp.iteratorVar is iterators
      
     feature OperationCallExp.name is operationName
     feature OperatorCallExp.name  is operationName
@@ -19,6 +25,7 @@ target binding superimposed2atl_tgt {
 
 	--feature UnaryOperatorCallExp.source  is source
 
-
 	feature VariableExp.varDcl is referredVariable	
+
+	feature Iterator.name is varName
 }

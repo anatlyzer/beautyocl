@@ -18,6 +18,11 @@ Require-Bundle: org.junit,
  org.eclipse.ocl,
  org.eclipse.emf.ecore.xmi,
  beautyocl.catalogue.emfocl,
- beautyocl.atl.api
+ beautyocl.atl.api,
+ anatlyzer.testing.difftesting;bundle-version="1.0.0",
+ anatlyzer.testing.common,
+ org.eclipse.jdt.annotation,
+ anatlyzer.testing.launching;bundle-version="1.0.0",
+ anatlyzer.testing.comparison.emfcompare
 Bundle-ClassPath: lib/org.objectweb.asm_3.3.1.v201105211655.jar,
  .

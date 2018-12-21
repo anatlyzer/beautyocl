@@ -38,7 +38,8 @@ public class Scheduler {
 
 			TRY_TRAFO:
 			while ( it.hasNext() ) {
-				List<Match> matches = it.next().getMatches().stream().filter(m -> engine.isWithinScope(m)).collect(Collectors.toList());
+				MatchPhase matchPhase = it.next();
+				List<Match> matches = matchPhase.getMatches().stream().filter(m -> engine.isWithinScope(m)).collect(Collectors.toList());
 			
 				for(Match m : matches) {
 					EObject result = null;

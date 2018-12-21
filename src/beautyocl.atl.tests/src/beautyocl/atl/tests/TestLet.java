@@ -11,6 +11,7 @@ import anatlyzer.atl.analyser.AnalysisResult;
 import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
+import anatlyzer.atl.tests.api.AtlLoader.LoadException;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
@@ -25,7 +26,7 @@ import beautyocl.atl.api.UglyAnATLyzerExpression;
 public class TestLet extends Tester {
 
 	@Test
-	public void testLet() throws ATLCoreException {	
+	public void testLet() throws LoadException {	
 		TransformationRepository rep = new TransformationRepository();
 		rep.add(BeautyATLUtils.SIMP_REMOVE_LET);
 		

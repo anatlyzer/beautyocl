@@ -9,6 +9,7 @@ import org.junit.Test;
 import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
+import anatlyzer.atl.tests.api.AtlLoader.LoadException;
 import anatlyzer.atl.util.ATLSerializer;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
@@ -22,7 +23,7 @@ import beautyocl.atl.api.UglyAnATLyzerExpression;
 public class TestInteger extends Tester {
 
 	@Test
-	public void test() throws ATLCoreException {
+	public void test() throws LoadException {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
 		rep.add(BeautyATLUtils.SIMP_INTEGERS);

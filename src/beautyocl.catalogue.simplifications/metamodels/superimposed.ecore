@@ -58,8 +58,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="IteratorExp" eSuperTypes="#//LoopExp">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iteratorVar" lowerBound="1"
-        eType="#//VariableDeclaration" containment="true"/>
+        eType="#//Iterator" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//VariableDeclaration"/>
   <eClassifiers xsi:type="ecore:EClass" name="PrimitiveExp" abstract="true" eSuperTypes="#//OclExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="StringExp" eSuperTypes="#//PrimitiveExp">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="stringSymbol" lowerBound="1"
