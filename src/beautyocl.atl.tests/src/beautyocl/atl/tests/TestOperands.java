@@ -32,4 +32,21 @@ public class TestOperands extends Tester {
 		System.out.println("After: " + after);
 	}
 
+	@Test
+	public void testEqualitySequenceAnd() throws LoadException {	
+		String trafo = "files/operands/equality_sequence_and.atl";
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.SIMP_EQUALITY_SEQUENCE);
+		
+		UglyAnATLyzerExpression exp = loadExpression(trafo);
+		
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+			
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
 }

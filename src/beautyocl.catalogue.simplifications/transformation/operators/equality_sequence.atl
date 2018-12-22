@@ -22,8 +22,8 @@ helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->fi
 helper def : MIN_SIZE : Integer = 4;
 
 
-helper context OCL!OclExpression   def: isEquality() : Boolean =  false;
-helper context OCL!BinaryOperatorCallExp def: isEquality() : Boolean =  self.name = '=';
+helper context OCL!OclExpression   def: isEquality(eqs : Set(String)) : Boolean =  false;
+helper context OCL!BinaryOperatorCallExp def: isEquality(eqs : Set(String)) : Boolean =  eqs->includes(self.name);
 
 -- The precondition is that it is an equality (checked with isEquality)
 -- Returns the values for which the key are the same
@@ -37,24 +37,24 @@ helper context OCL!BinaryOperatorCallExp def: isSame(exp : OCL!OclExpression) : 
 		else OclUndefined endif endif;
 
 -- @force-declared-return-type
-helper context OCL!OclExpression def: operatorSequence : Sequence(OCL!BinaryOperatorCallExp) = 
-	if self.isEquality() then
+helper context OCL!OclExpression def: operatorSequence(operator : String, eqs : Set(String)) : Sequence(OCL!BinaryOperatorCallExp) = 
+	if self.isEquality(eqs) then
 		Sequence { self }
 	else
 		Sequence { }
 	endif;
 
 -- @force-declared-return-type
-helper context OCL!BinaryOperatorCallExp def: operatorSequence : Sequence(OCL!BinaryOperatorCallExp) = 
-	if self.name = 'or' and self.argument.isEquality() then
-		Sequence { self.argument }->union(self.source.operatorSequence)
+helper context OCL!BinaryOperatorCallExp def: operatorSequence(operator : String, eqs : Set(String)) : Sequence(OCL!BinaryOperatorCallExp) = 
+	if self.name = operator and self.argument.isEquality(eqs) then
+		Sequence { self.argument }->union(self.source.operatorSequence(operator, eqs))
 	else
 		Sequence { }
 	endif;
 	
-helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = 
-	let seq : Sequence(OCL!BinaryOperatorCallExp) = self.operatorSequence in
-		if seq->size() >= thisModule.MIN_SIZE then
+helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : String, eqs : Set(String), min_size : Integer) : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = 
+	let seq : Sequence(OCL!BinaryOperatorCallExp) = self.operatorSequence(operator, eqs) in
+		if seq->size() >= min_size then
 			-- seq has equalities x = y
 			let left  : OCL!OclExpression = seq->first().source in
 			let right : OCL!OclExpression = seq->first().argument in
@@ -79,9 +79,9 @@ helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame : TupleType
 --             source: exp = value1 
 
 -- @ignore invalid-assignment-imperative-binding
-rule find_sequence_of_operations {
+rule find_sequence_of_operations_or {
 	from o : OCL!BinaryOperatorCallExp (
-		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame 
+		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE) 
 		 in seq <> OclUndefined 
 		 -- TODO: Check with refImmediateComposite if this is the larger one
 	)
@@ -108,10 +108,28 @@ rule find_sequence_of_operations {
 		
 		set_includes_arguments.propertyName <- 'arguments';
 		set_includes_arguments.source <- includesOp;
-		set_includes_arguments.value <- o.operatorSequenceIfSame.value;
+		set_includes_arguments.value <- o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE).value;
 		
 		set_elements.propertyName <- 'elements';
 		set_elements.source <- set_exp;
-		set_elements.value <- o.operatorSequenceIfSame.keys;
+		set_elements.value <- o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE).keys;
 	}
 }
+
+-- @ignore invalid-assignment-imperative-binding
+rule find_sequence_of_operations_and{
+	from o : OCL!BinaryOperatorCallExp (
+		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'=', '<>'}, 1) 
+		 in seq <> OclUndefined 
+		 -- TODO: Check with refImmediateComposite if this is the larger one
+	)
+	to a : ACT!Replace,
+	true_value : OCLt!BooleanExp (
+		booleanSymbol <- false
+	)
+	do {
+		a.source <- o;
+		a.target <- true_value;
+	}
+}
+
