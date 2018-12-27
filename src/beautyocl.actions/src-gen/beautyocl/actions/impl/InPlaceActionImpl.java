@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * </p>
  * <ul>
  *   <li>{@link beautyocl.actions.impl.InPlaceActionImpl#getTransformation <em>Transformation</em>}</li>
+ *   <li>{@link beautyocl.actions.impl.InPlaceActionImpl#getRule <em>Rule</em>}</li>
  *   <li>{@link beautyocl.actions.impl.InPlaceActionImpl#getSource <em>Source</em>}</li>
  * </ul>
  *
@@ -46,6 +47,24 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 	 * @ordered
 	 */
 	protected String transformation = TRANSFORMATION_EDEFAULT;
+	/**
+	 * The default value of the '{@link #getRule() <em>Rule</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRule()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String RULE_EDEFAULT = null;
+	/**
+	 * The cached value of the '{@link #getRule() <em>Rule</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRule()
+	 * @generated
+	 * @ordered
+	 */
+	protected String rule = RULE_EDEFAULT;
 	/**
 	 * The cached value of the '{@link #getSource() <em>Source</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -101,6 +120,27 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getRule() {
+		return rule;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setRule(String newRule) {
+		String oldRule = rule;
+		rule = newRule;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ActionsPackage.IN_PLACE_ACTION__RULE, oldRule, rule));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EObject getSource() {
 		if (source != null && source.eIsProxy()) {
 			InternalEObject oldSource = (InternalEObject)source;
@@ -144,6 +184,8 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 		switch (featureID) {
 			case ActionsPackage.IN_PLACE_ACTION__TRANSFORMATION:
 				return getTransformation();
+			case ActionsPackage.IN_PLACE_ACTION__RULE:
+				return getRule();
 			case ActionsPackage.IN_PLACE_ACTION__SOURCE:
 				if (resolve) return getSource();
 				return basicGetSource();
@@ -161,6 +203,9 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 		switch (featureID) {
 			case ActionsPackage.IN_PLACE_ACTION__TRANSFORMATION:
 				setTransformation((String)newValue);
+				return;
+			case ActionsPackage.IN_PLACE_ACTION__RULE:
+				setRule((String)newValue);
 				return;
 			case ActionsPackage.IN_PLACE_ACTION__SOURCE:
 				setSource((EObject)newValue);
@@ -180,6 +225,9 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 			case ActionsPackage.IN_PLACE_ACTION__TRANSFORMATION:
 				setTransformation(TRANSFORMATION_EDEFAULT);
 				return;
+			case ActionsPackage.IN_PLACE_ACTION__RULE:
+				setRule(RULE_EDEFAULT);
+				return;
 			case ActionsPackage.IN_PLACE_ACTION__SOURCE:
 				setSource((EObject)null);
 				return;
@@ -197,6 +245,8 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 		switch (featureID) {
 			case ActionsPackage.IN_PLACE_ACTION__TRANSFORMATION:
 				return TRANSFORMATION_EDEFAULT == null ? transformation != null : !TRANSFORMATION_EDEFAULT.equals(transformation);
+			case ActionsPackage.IN_PLACE_ACTION__RULE:
+				return RULE_EDEFAULT == null ? rule != null : !RULE_EDEFAULT.equals(rule);
 			case ActionsPackage.IN_PLACE_ACTION__SOURCE:
 				return source != null;
 		}
@@ -215,6 +265,8 @@ public abstract class InPlaceActionImpl extends MinimalEObjectImpl.Container imp
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (transformation: ");
 		result.append(transformation);
+		result.append(", rule: ");
+		result.append(rule);
 		result.append(')');
 		return result.toString();
 	}

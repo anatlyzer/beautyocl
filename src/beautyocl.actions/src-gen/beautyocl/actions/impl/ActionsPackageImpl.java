@@ -150,8 +150,17 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getInPlaceAction_Rule() {
+		return (EAttribute)inPlaceActionEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getInPlaceAction_Source() {
-		return (EReference)inPlaceActionEClass.getEStructuralFeatures().get(1);
+		return (EReference)inPlaceActionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -310,6 +319,7 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 		// Create classes and their features
 		inPlaceActionEClass = createEClass(IN_PLACE_ACTION);
 		createEAttribute(inPlaceActionEClass, IN_PLACE_ACTION__TRANSFORMATION);
+		createEAttribute(inPlaceActionEClass, IN_PLACE_ACTION__RULE);
 		createEReference(inPlaceActionEClass, IN_PLACE_ACTION__SOURCE);
 
 		replaceEClass = createEClass(REPLACE);
@@ -369,6 +379,7 @@ public class ActionsPackageImpl extends EPackageImpl implements ActionsPackage {
 		// Initialize classes, features, and operations; add parameters
 		initEClass(inPlaceActionEClass, InPlaceAction.class, "InPlaceAction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInPlaceAction_Transformation(), ecorePackage.getEString(), "transformation", null, 0, 1, InPlaceAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInPlaceAction_Rule(), ecorePackage.getEString(), "rule", null, 0, 1, InPlaceAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getInPlaceAction_Source(), ecorePackage.getEObject(), null, "source", null, 1, 1, InPlaceAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(replaceEClass, Replace.class, "Replace", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link beautyocl.actions.InPlaceAction#getTransformation <em>Transformation</em>}</li>
+ *   <li>{@link beautyocl.actions.InPlaceAction#getRule <em>Rule</em>}</li>
  *   <li>{@link beautyocl.actions.InPlaceAction#getSource <em>Source</em>}</li>
  * </ul>
  *
@@ -48,6 +49,32 @@ public interface InPlaceAction extends EObject {
 	 * @generated
 	 */
 	void setTransformation(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Rule</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Rule</em>' attribute.
+	 * @see #setRule(String)
+	 * @see beautyocl.actions.ActionsPackage#getInPlaceAction_Rule()
+	 * @model
+	 * @generated
+	 */
+	String getRule();
+
+	/**
+	 * Sets the value of the '{@link beautyocl.actions.InPlaceAction#getRule <em>Rule</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Rule</em>' attribute.
+	 * @see #getRule()
+	 * @generated
+	 */
+	void setRule(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Source</b></em>' reference.

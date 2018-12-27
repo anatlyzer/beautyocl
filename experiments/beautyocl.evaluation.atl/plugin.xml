@@ -18,4 +18,14 @@
       </experiment>
    </extension>
 
+   <extension
+         id="simplification.experiment.executionperformance"
+         point="anatlyzer.experiments.newExperiment">
+      <experiment
+            delegate="beautyocl.atl.evaluation.PerformanceExecutionExperiment"
+            resourceType="file:atl">
+      </experiment>
+   </extension>
+
+
 </plugin>

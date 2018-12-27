@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import beautyocl.actions.MatchPhase.Match;
 
@@ -40,12 +41,23 @@ public class Scheduler {
 			while ( it.hasNext() ) {
 				MatchPhase matchPhase = it.next();
 				List<Match> matches = matchPhase.getMatches().stream().filter(m -> engine.isWithinScope(m)).collect(Collectors.toList());
-			
+				List<EObject> affectedElements = new ArrayList<EObject>();
+				
+				PROCESS_MATCH:
 				for(Match m : matches) {
 					EObject result = null;
 					try {
-						tracer.preApply(m, m.getAction().getSource());
+						EObject source = m.getAction().getSource();
+						// Check conflicts, this is a naive way. 
+						for (EObject obj : affectedElements) {
+							if ( EcoreUtil.isAncestor(obj, source) )
+								continue PROCESS_MATCH;
+						}
+						
+						tracer.preApply(m, source);
 						result = engine.apply(m);
+						affectedElements.add(source);
+						
 						applied = true;
 					} catch ( Throwable e ) {
 						if ( tracer.onError(e) ) {

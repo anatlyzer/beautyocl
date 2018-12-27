@@ -3,6 +3,7 @@ package actions;
 
 abstract class InPlaceAction {
 	attr String[0..1] transformation;
+	attr String[0..1] rule;
 	ref EObject[1] source;
 }
 

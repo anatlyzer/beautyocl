@@ -56,13 +56,29 @@ helper context OCL!PropertyCallExp def: allUsages(subExpr : OCL!OclExpression) :
 		Set { }
 	endif;
 	
-helper def: checkUnshortCondition(outerExp : OCL!OclExpression, inner : OCL!OclExpression) : Boolean = 
-	let outer: TupleType(source : OCL!OclExpression, type : TYP!CClass) = outerExp.kindOfType() 
-	in if outer <> OclUndefined then
-		let innerUsages : Set(TYP!CClass) = inner.allUsages(outer.source) 
-		in innerUsages->forAll(c | c.superClasses->includes(outer.type) )
-	   else false endif	
-	;
+
+	
+helper def: checkUnshortCondition(outerExpP : OCL!OclExpression, inner : OCL!OclExpression) : Boolean = 
+	outerExpP.getOperationCalls()->forAll(outerExp |	
+		let outer: TupleType(source : OCL!OclExpression, type : TYP!CClass) = outerExp.kindOfType() 
+		in if outer <> OclUndefined then
+			let innerUsages : Set(TYP!CClass) = inner.allUsages(outer.source) 
+			in innerUsages->forAll(c | c.superClasses->includes(outer.type) )
+		   else false endif	
+	);
+
+helper context OCL!OclExpression def: getOperationCalls() : Set(OCL!OclExpression) = Set { };
+helper context OCL!OperationCallExp def: getOperationCalls() : Set(OCL!OclExpression) = 
+	if self.name = 'oclIsKindOf' then
+		Set { self }
+	else
+		Set { }
+	endif;
+helper context OCL!PropertyCallExp def: getOperationCalls() : Set(OCL!OclExpression) = self.source.getOperationCalls();
+helper context OCL!BinaryOperatorCallExp def: getOperationCalls() : Set(OCL!OclExpression) = 
+	self.source.getOperationCalls()->union(self.argument.getOperationCalls());
+
+--self.oclIsKindOf(OCL!OperationCallExp)
 
 
 --
@@ -130,4 +146,127 @@ rule unshortCircuit {
 		a.target <- newIf;
 	}
 }
+
+
+-- OR version
+
+rule unshortCircuit_or {
+	from i : OCL!IfExp (
+		if i.elseExpression.oclIsKindOf(OCL!IfExp) then
+			if thisModule.checkUnshortCondition(i.condition, i.elseExpression.condition) 
+				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+				or (not i.condition.hasShortThing())
+			then
+				thisModule.comp.isSameExpr(i.thenExpression, i.elseExpression.thenExpression)
+			else
+				false
+			endif
+		else
+			false
+		endif 
+	)
+	to c : ACT!CompositeAction (
+			actions <- Sequence { a, s1, s2, s3, s4, s5 }
+	   ),	
+	   a : ACT!Replace, 
+	   s1 : ACT!"SetP", s2 : ACT!"SetP", s3 : ACT!"SetP", s4 : ACT!"SetP", s5 : ACT!"SetP",
+		-- Should be BinaryOperator??
+	   r : OCLt!OperatorCallExp (
+			name <- 'or'
+	   ),
+	   newIf : OCLt!IfExp (
+			--s1: -- condition <- r
+			--, AnATLyzer should raise an invalid assignment error!
+			--s2: --thenExpression <- i.thenExpression.thenExpression,
+			--s3: --elseExpression <- i.thenExpression.elseExpression
+	   )
+	do {
+		c.source <- i;
+		
+		s1.source <- newIf;
+		s2.source <- newIf;
+		s3.source <- newIf;
+		
+		s1.value <- r;
+		s2.value <- i.elseExpression.thenExpression;
+		s3.value <- i.elseExpression.elseExpression;
+
+		s1.propertyName <- 'condition';
+		s2.propertyName <- 'thenExpression';
+		s3.propertyName <- 'elseExpression';
+		
+		
+		-- s4 -- r.source <- i.condition;
+		-- s5 -- r.arguments <- i.thenExpression.condition;
+		s4.source <- r;
+		s5.source <- r;
+		
+		s4.value <- i.condition;
+		s5.value <- i.elseExpression.condition;
+		
+		s4.propertyName <- 'source';
+		s5.propertyName <- 'arguments';
+		
+		a.source <- i;
+		a.target <- newIf;
+	}
+}
+
+
+helper context OCL!IfExp def: simplyEnoughToInline() : Boolean = false;
+helper context OCL!LetExp def: simplyEnoughToInline() : Boolean = false;
+helper context OCL!OclExpression def: simplyEnoughToInline() : Boolean = true;
+
+-- Deals with the case:
+-- if exp then
+--    true
+-- else            
+--    exp2 
+-- endif
+--
+-- ==> exp or exp2
+--  
+-- when short circuit is not needed for exp2
+--
+--
+-- @ignore invalid-assignment-imperative-binding
+rule unshortCircuit_or_other_case {
+	from i : OCL!IfExp (
+		if i.thenExpression.isBooleanExpr(true) and i.elseExpression.simplyEnoughToInline() then
+			thisModule.checkUnshortCondition(i.condition, i.elseExpression) 
+				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+				or (not i.condition.hasShortThing())			
+		else
+			false
+		endif 
+	)
+	to c : ACT!CompositeAction (
+			actions <- Sequence { s4, s5, a }
+	   ),	
+	   a : ACT!Replace, 
+	   s4 : ACT!"SetP", s5 : ACT!"SetP",
+		-- Should be BinaryOperator??
+	   r : OCLt!OperatorCallExp (
+			name <- 'or'
+	   )
+	do {
+		c.source <- i;
+		c.rule = 'unshortCircuit_or_other_case';
+		
+		s4.source <- r;
+		s5.source <- r;
+		
+		s4.value <- i.condition;
+		s5.value <- i.elseExpression;
+		
+		s4.propertyName <- 'source';
+		s5.propertyName <- 'arguments';
+		
+		a.source <- i;
+		a.target <- r;
+	}
+}
+
+
+
 

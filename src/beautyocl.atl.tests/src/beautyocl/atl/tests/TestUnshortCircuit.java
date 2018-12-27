@@ -106,7 +106,32 @@ public class TestUnshortCircuit extends Tester {
 		System.out.println("After: " + after);
 		
 	}
+
+	@Test
+	public void test_unshort_or() throws LoadException {
+		TransformationRepository rep = configureRepo();
 	
+		AnalysisLoader.setStandaloneMode();
+		Resource r = AtlLoader.load("files/unshort/unshort_or.atl");
+		AnalysisLoader loader = AnalysisLoader.fromResource(r, new String[] { "metamodels/PNML_simplified.ecore", "metamodels/PetriNet.ecore"}, new String[] { "PNML", "PetriNet"} ); 
+		IAnalyserResult analysis = loader.analyse().getAnalyser();
+		
+		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(analysis, loader.getAtlTransformation().getRoot());
+		
+		String before = ATLSerializer.serialize(exp.getRoot());
+		
+		Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+		ExecutionInfo result = beauty.applyAll(exp);
+		
+		String after = ATLSerializer.serialize(exp.getRoot());
+		
+		assertNotEquals(before, after);
+		
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+		
+	}
+
 	@Test
 	public void testKindOf_HSM2FSM_Failure() throws LoadException {	
 		TransformationRepository rep = configureRepo();

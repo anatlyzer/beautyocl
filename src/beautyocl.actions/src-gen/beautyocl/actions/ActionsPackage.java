@@ -76,13 +76,22 @@ public interface ActionsPackage extends EPackage {
 	int IN_PLACE_ACTION__TRANSFORMATION = 0;
 
 	/**
+	 * The feature id for the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IN_PLACE_ACTION__RULE = 1;
+
+	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_PLACE_ACTION__SOURCE = 1;
+	int IN_PLACE_ACTION__SOURCE = 2;
 
 	/**
 	 * The number of structural features of the '<em>In Place Action</em>' class.
@@ -91,7 +100,7 @@ public interface ActionsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IN_PLACE_ACTION_FEATURE_COUNT = 2;
+	int IN_PLACE_ACTION_FEATURE_COUNT = 3;
 
 	/**
 	 * The number of operations of the '<em>In Place Action</em>' class.
@@ -120,6 +129,15 @@ public interface ActionsPackage extends EPackage {
 	 * @ordered
 	 */
 	int REPLACE__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REPLACE__RULE = IN_PLACE_ACTION__RULE;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
@@ -178,6 +196,15 @@ public interface ActionsPackage extends EPackage {
 	int DELETE_MOVE_CHILDREN__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
 
 	/**
+	 * The feature id for the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_MOVE_CHILDREN__RULE = IN_PLACE_ACTION__RULE;
+
+	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -232,6 +259,15 @@ public interface ActionsPackage extends EPackage {
 	 * @ordered
 	 */
 	int CLONE__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLONE__RULE = IN_PLACE_ACTION__RULE;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
@@ -317,6 +353,15 @@ public interface ActionsPackage extends EPackage {
 	int COMPOSITE_ACTION__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
 
 	/**
+	 * The feature id for the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COMPOSITE_ACTION__RULE = IN_PLACE_ACTION__RULE;
+
+	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -371,6 +416,15 @@ public interface ActionsPackage extends EPackage {
 	 * @ordered
 	 */
 	int SET_P__TRANSFORMATION = IN_PLACE_ACTION__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SET_P__RULE = IN_PLACE_ACTION__RULE;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
@@ -437,6 +491,17 @@ public interface ActionsPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getInPlaceAction_Transformation();
+
+	/**
+	 * Returns the meta object for the attribute '{@link beautyocl.actions.InPlaceAction#getRule <em>Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Rule</em>'.
+	 * @see beautyocl.actions.InPlaceAction#getRule()
+	 * @see #getInPlaceAction()
+	 * @generated
+	 */
+	EAttribute getInPlaceAction_Rule();
 
 	/**
 	 * Returns the meta object for the reference '{@link beautyocl.actions.InPlaceAction#getSource <em>Source</em>}'.
@@ -638,6 +703,14 @@ public interface ActionsPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute IN_PLACE_ACTION__TRANSFORMATION = eINSTANCE.getInPlaceAction_Transformation();
+
+		/**
+		 * The meta object literal for the '<em><b>Rule</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IN_PLACE_ACTION__RULE = eINSTANCE.getInPlaceAction_Rule();
 
 		/**
 		 * The meta object literal for the '<em><b>Source</b></em>' reference feature.
