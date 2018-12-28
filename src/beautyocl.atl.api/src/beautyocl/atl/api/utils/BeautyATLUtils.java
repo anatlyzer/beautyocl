@@ -1,5 +1,6 @@
 package beautyocl.atl.api.utils;
 
+import beautyocl.api.common.IATLTransformation;
 import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.ATLTransformation;
 import beautyocl.atl.api.ATLTransformation.VM;
@@ -39,6 +40,8 @@ public class BeautyATLUtils {
 		rep.add(SIMP_REMOVE_LET);
 		
 		rep.add(PULL_UP_CONDITIONAL);
+		
+		rep.add(SIMP_EQUALITY_SEQUENCE);
 		return rep;
 	}
 

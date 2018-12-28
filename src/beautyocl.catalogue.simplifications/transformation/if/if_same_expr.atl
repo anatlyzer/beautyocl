@@ -43,3 +43,14 @@ rule replacleByThen {
 		a.children <- i.thenExpression;
 	}
 }
+
+rule replacleWhenBranchesEqual {
+	from i : OCL!IfExp (
+		thisModule.comp.isSameExpr(i.thenExpression, i.elseExpression)
+	)
+	to a : ACT!DeleteMoveChildren
+	do {
+		a.source <- i;
+		a.children <- i.thenExpression;
+	}
+}
