@@ -5,8 +5,10 @@ target binding superimposed2atl_tgt {
 	class OperationCallExp to OperationCallExp
 	class OperatorCallExp to OperatorCallExp
 	class CollectionOperationCallExp to CollectionOperationCallExp
-	-- class BinaryOperatorCallExp to OperatorCallExp when self.arguments->notEmpty() 
+
+	class BinaryOperatorCallExp to OperatorCallExp -- Not supported by the target (and probably not needed): when self.arguments->notEmpty() 
 	-- class UnaryOperatorCallExp to OperatorCallExp when self.arguments->isEmpty() 
+
     class VariableExp to VariableExp
 
 	class Iterator to Iterator
@@ -22,8 +24,11 @@ target binding superimposed2atl_tgt {
     --feature BinaryOperatorCallExp.name  is operationName
     --feature UnaryOperatorCallExp.name   is operationName
 
+	feature BinaryOperatorCallExp.name is operationName
+	-- This fails for operator-sequence. TODO: check
+	
 	--feature BinaryOperatorCallExp.source  is source
-	--feature BinaryOperatorCallExp.argument = self.argument->first()
+	--feature BinaryOperatorCallExp.argument is arguments -- because this is an allowed assignment -- = self.argument->first()
 
 	--feature UnaryOperatorCallExp.source  is source
 

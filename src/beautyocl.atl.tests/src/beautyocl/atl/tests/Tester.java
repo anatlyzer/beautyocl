@@ -1,5 +1,11 @@
 package beautyocl.atl.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.io.File;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -7,7 +13,12 @@ import anatlyzer.atl.analyser.IAnalyserResult;
 import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
 import anatlyzer.atl.tests.api.AtlLoader.LoadException;
+import anatlyzer.atl.util.ATLSerializer;
+import anatlyzer.atl.util.ATLUtils;
 import beautyocl.actions.ActionsPackage;
+import beautyocl.actions.IExecutionTracer;
+import beautyocl.api.common.Beautyfier;
+import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
@@ -51,5 +62,36 @@ public abstract class Tester {
 		
 		UglyAnATLyzerExpression exp = new UglyAnATLyzerExpression(analysis, loader.getAtlTransformation().getRoot());
 		return exp;
+	}
+	
+
+	protected void doTest(TransformationRepository rep, File sourceFile) throws LoadException {
+		
+		UglyAnATLyzerExpression exp;
+		// Use some conventions to know which metamodel to load
+		if ( sourceFile.getName().toLowerCase().contains("pnml") ) {
+			exp = loadExpressionPNML(sourceFile.getAbsolutePath());
+		} else {
+			exp = loadExpression(sourceFile.getAbsolutePath());
+		}
+		
+		List<String> values = ATLUtils.findCommaTags(exp.getAnalysis().getATLModel().getRoot(), "@test");
+		
+		
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		
+
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+
+		if ( values.contains("no-change") ) {
+			assertEquals(before, after);	
+		} else {
+			assertNotEquals(before, after);
+		}
+
 	}
 }

@@ -1,0 +1,11 @@
+name: Performance of the execution of the code after simplifications
+extensionID: simplification.experiment.executionperformance
+options: {
+ only_trafos_with_qfxs : true,
+ timeout : 2500,
+ datafile : /beautyocl.evaluation.configuration/ecmfa2018-results/qfx-data/quickfixes_zoo.data
+ 
+}
+projects: 
+-  name: Ant2Maven
+-  name: Bibtex2Docbook

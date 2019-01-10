@@ -1,0 +1,35 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+module equalitysequence;
+create OUT : WXYZ from IN : ABCD;
+
+rule model2model {
+	from m1 : ABCD!Model
+	to   m2 : WXYZ!Model (
+		name <- if (m1.elements->isEmpty() 
+			or m1.name = 'a') 
+			or m1.name = 'b' 
+			or m1.name = 'c' 
+			or m1.name = 'd' 
+			or m1.name = 'e' 
+			or m1.name = 'f' 
+			or m1.name = 'a' then 
+				'pepito' 
+			else 
+				'juanito'
+			endif
+	)
+}
+
+--rule model2model {
+--	from m1 : ABCD!Model
+--	to   m2 : WXYZ!Model (
+--		name <- if m1.oclIsKindOf(XML!Model) or not m1.elements->isEmpty() or m1.name = 'a' or m1.name = 'b' or m1.elements->isEmpty() or m1.name = 'c' or m1.name = 'd' or m1.name = 'e' or m1.name = 'f' or m1.name = 'g' then 
+--				'pepito' 
+--			else 
+--				'juanito'
+--			endif
+--	)
+--}

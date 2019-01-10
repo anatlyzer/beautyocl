@@ -25,21 +25,21 @@ import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.UglyAnATLyzerExpression;
 import beautyocl.atl.api.utils.BeautyATLUtils;
 @RunWith(Parameterized.class)
-public class TestOperands extends Tester {
+public class TestIterators extends Tester {
 	
 	@Parameter
 	public File sourceFile;
 	
 	@Parameters(name="{0}")
 	public static Iterable<? extends Object> data() throws IOException {
-		return Files.list(Paths.get("files/operands")).map(p -> p.toFile()).collect(Collectors.toList());
+		return Files.list(Paths.get("files/iterators")).map(p -> p.toFile()).collect(Collectors.toList());
 	}
 
 	
 	@Test
-	public void testOperands() throws LoadException {	
+	public void testUnboundIterators() throws LoadException {	
 		TransformationRepository rep = new TransformationRepository();
-		rep.add(BeautyATLUtils.SIMP_EQUALITY_SEQUENCE);
+		rep.add(BeautyATLUtils.SIMP_UNBOUND_ITERATOR);
 		
 		doTest(rep, sourceFile);	
 	}

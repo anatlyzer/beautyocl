@@ -53,6 +53,22 @@ public class TestKindOf extends Tester {
 	}
 
 	@Test
+	public void testKindOfTrue_PNML() throws LoadException {	
+		String trafo = "files/kindof/kind_of_true_pnml2petrinet.atl";
+		TransformationRepository rep = configureRepoSimpleKindOf();
+		
+		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
+		
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+			
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
+	@Test
 	public void testKindOf_Inheritance() throws LoadException {	
 		String trafo = "files/kindof/if_kind_of_inheritance.atl";
 		TransformationRepository rep = configureRepoSimpleKindOf();

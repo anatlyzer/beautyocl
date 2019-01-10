@@ -48,6 +48,7 @@ import beautyocl.actions.IExecutionTracer;
 import beautyocl.actions.MatchPhase.Match;
 import beautyocl.atl.anatlyzer.simplifier.BeautyOCLAnatlyzer;
 import beautyocl.atl.evaluation.export.ExportToExcel;
+import beautyocl.atl.evaluation.raw.AbstractSimplificable;
 import beautyocl.atl.evaluation.raw.BEData;
 import beautyocl.atl.evaluation.raw.BEProblem;
 import beautyocl.atl.evaluation.raw.BEQuickfix;
@@ -73,6 +74,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 	
 	public SimplifyQuickfixesExperiment() {
 		try {
+			AbstractSimplificable.resetCounter();
 			writer = new PrintWriter(new File("/tmp/qfx.log"));
 		} catch (FileNotFoundException e) {			
 			e.printStackTrace();
@@ -131,6 +133,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 					}
 					
 					BEQuickfix expQfx = new BEQuickfix();
+					System.out.println("Qfx id: " + expQfx.getExpId());
 					expQfx.setName(quickfix.getClass().getSimpleName());
 					try {
 						expQfx.setDescription(quickfix.getDisplayString());

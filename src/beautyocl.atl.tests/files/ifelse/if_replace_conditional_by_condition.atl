@@ -1,0 +1,33 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+module "if_replace_conditional_by_condition";
+create OUT : WXYZ from IN : ABCD;
+
+rule model2model {
+	from m1 : ABCD!Model (
+		if m1.name = 'something' then
+			true
+		else
+			false
+		endif	
+	)
+	to   m2 : WXYZ!Model (
+		name <- 'targetModel'
+	)
+}
+
+-- Simplifies to 'm1.name = 'something'
+rule model2model_with_not {
+	from m1 : ABCD!Model (
+		if not (m1.name = 'something') then
+			false
+		else
+			true
+		endif	
+	)
+	to   m2 : WXYZ!Model (
+		name <- 'targetModel'
+	)
+}

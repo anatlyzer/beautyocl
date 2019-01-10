@@ -1,0 +1,39 @@
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+
+library findocurrences;
+
+-- The problem here is that if an OCL variant has more elements then it can be difficult 
+-- to cover everything
+-- Maybe it is better to typ.findOcurrences()
+
+-- @lib find-ocurrences
+helper context OCL!OclExpression def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = Set { };
+helper context OCL!VariableExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	if self.varDcl = v then Set { self } else Set { } endif;
+
+helper context OCL!PropertyCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v);
+
+helper context OCL!NavigationCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v);
+
+helper context OCL!OperationCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
+
+helper context OCL!OperatorCallExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
+
+helper context OCL!IfExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.condition.findOcurrences(v)->
+		union(self.thenExpression.findOcurrences(v))->
+		union(self.elseExpression.findOcurrences(v))->
+		flatten();
+
+helper context OCL!IteratorExp def: findOcurrences(v : OCL!VariableDeclaration) : Set(OCL!VariableExp) = 
+	self.source.findOcurrences(v)->
+		union(self.body.findOcurrences(v))->
+		flatten();
+
+-- @end-of find-ocurrences
+
+-- Be careful that IterateExp is not handled. It is better to use a reflective approach

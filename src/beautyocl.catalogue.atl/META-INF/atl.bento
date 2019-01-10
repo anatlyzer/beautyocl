@@ -11,6 +11,7 @@ composite component beautyocl.atl {
 	
 	// Iterators
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_remove_iterator.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_unbound_iterator.bento"
 	// If	                          	
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_else.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_if_introduce_call.bento"
@@ -50,6 +51,7 @@ composite component beautyocl.atl {
 		apply booleans(bindAll(in)) -> (act, bindAllTgt(out))
 		apply integers(bindAll(in)) -> (act, bindAllTgt(out))
 		apply iterator(bindAll(in)) -> (act, bindAllTgt(out))
+		apply unbounditerator(bindAll(in), bindTyping(in2),  bindComparison(in3)) -> (act, bindAllTgt(out))
 		apply ifelse(bindAll(in)) -> (act, bindAllTgt(out))
 		apply iftruefalse(bindAll(in)) -> (act, bindAllTgt(out))		
 		apply ifintrocall(bindAll(in)) -> (act, bindAllTgt(out))

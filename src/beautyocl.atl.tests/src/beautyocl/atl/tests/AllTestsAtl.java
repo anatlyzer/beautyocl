@@ -11,7 +11,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestKindOf.class, 
 	TestLet.class, 
 	TestUnshortCircuit.class,
-	TestOperands.class})
+	TestOperands.class,
+	TestIterators.class,
+	TestCombinations.class})
 public class AllTestsAtl {
 
 }

@@ -32,6 +32,7 @@ public class Scheduler {
 		ActionsEngine engine = new ActionsEngine();
 		ExecutionInfo info = new ExecutionInfo();
 		
+		MAIN_LOOP:
 		while ( true ) {
 			TrafoIterator it = supplier.get();
 			
@@ -48,6 +49,7 @@ public class Scheduler {
 					EObject result = null;
 					try {
 						EObject source = m.getAction().getSource();
+						System.out.println("Applying source" + source);
 						// Check conflicts, this is a naive way. 
 						for (EObject obj : affectedElements) {
 							if ( EcoreUtil.isAncestor(obj, source) )
@@ -59,6 +61,9 @@ public class Scheduler {
 						affectedElements.add(source);
 						
 						applied = true;
+						tracer.postApply(m, result);
+
+						continue MAIN_LOOP;
 					} catch ( Throwable e ) {
 						if ( tracer.onError(e) ) {
 							// Continue with another trafo
@@ -66,7 +71,6 @@ public class Scheduler {
 						}
 					}
 					
-					tracer.postApply(m, result);
 				}				
 			}
 			

@@ -1,0 +1,17 @@
+-- @path PNML=/beautyocl.atl.tests/metamodels/PNML_simplified.ecore
+-- @path PetriNet=/beautyocl.atl.tests/metamodels/PetriNet.ecore
+
+
+module PNML2PetriNet;
+create OUT : PetriNet from IN : PNML;
+ 
+-- We have to make sure that this reduces properly regardless of the order of 
+-- applying if-fusion and kind-of-true
+
+helper  def: genPrecondition() : Boolean = PNML!NetContent.allInstances()->
+	select(v | v.oclIsKindOf(PNML!Arc))->forAll(v | 
+		if v.oclIsKindOf(PNML!Arc) then
+			true 
+		else
+			false
+		endif);

@@ -4,7 +4,16 @@
 -- @path COMP=/beautyocl.catalogue.simplifications/metamodels/comparison.ecore
 -- @path TYP=/beautyocl.catalogue.simplifications/metamodels/typing.ecore
 
-module "replaceLet";
+-- 
+-- XML!Element.allInstances()->forAll(i | XML!Element.allInstances()->forAll(d | not i.parent.oclIsUndefined()));
+-- 
+-- => 
+--
+-- XML!Element.allInstances()->forAll(i | not i.parent.oclIsUndefined());
+--
+-- because d is not referred to in the body of the forAll
+
+module "unbounditerator";
 create OUT : ACT, OUT2 : OCLt from IN : OCL, IN2 : TYP, IN3 : COMP; 
 
 helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
@@ -46,52 +55,25 @@ helper context OCL!IteratorExp def: findOcurrences(v : OCL!VariableDeclaration) 
 	self.source.findOcurrences(v)->
 		union(self.body.findOcurrences(v))->
 		flatten();
+
 -- @end-of find-ocurrences
 	
 
 -- @ignore invalid-assignment-imperative-binding
-rule replaceLet {
-	from i : OCL!LetExp (
-		if i.variable.initExpression.oclIsUndefined() then 
+rule unboundIterator {
+	from i : OCL!IteratorExp (
+		if Set { 'forAll', 'exists' }->includes(i.name) then
+			i.body.findOcurrences(i.iteratorVar)->isEmpty()  
+		else
 			false
-		else 
-			if i.variable.initExpression.isSimpleExpression() then
-				let occ : Set(OCL!VariableExp) = i.in_.findOcurrences(i.variable) 
-				in occ->size() <= 2
-			else
-				false
-			endif
 		endif
 	)
-	to c : ACT!CompositeAction (
-			actions <- i.in_.findOcurrences(i.variable)->collect(v |
-				let clone : ACT!Clone = thisModule.createClone(i.variable.initExpression) in
-					Sequence { clone, thisModule.createReplace(v, clone) })->flatten(),
-			actions <- Sequence { mov }
-	   ),	
+	to 	
 	   mov : ACT!DeleteMoveChildren
 	do {
-		c.source <- i;
-		
 		mov.source <- i;
-		mov.children <- i.in_;
+		mov.children <- i.body;
 	}
 }
 
-rule createClone(o : OCL!OclExpression) {
-     to iTgt : ACT!Clone 
-	 do {
-	 	iTgt.source <- o;
-	 	iTgt;		
-	 }
-}
-
-rule createReplace(ve : OCL!VariableExp, c : ACT!Clone) {
-	to 
-		s : ACT!Replace		
-	do {
-		s.source <- ve;
-		s.target <- c;		
-		s;
-	}
-}
+-- TODO: Implement the select variant

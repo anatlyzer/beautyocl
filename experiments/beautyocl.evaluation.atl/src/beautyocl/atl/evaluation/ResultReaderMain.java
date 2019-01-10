@@ -30,24 +30,33 @@ public class ResultReaderMain {
 
 		BEData data = serializer.read(BEData.class, source);
 		
-		for (BETransformation t : data.getTransformations()) {
-			for (BEProblem p : t.getProblems()) {
-				for (BEQuickfix qfx : p.getQuickfixes()) {
-					if ( qfx.getExpId() == expId ) {
-						System.out.println("Transformation: " + t.getName());
-						show(qfx);
+		int originalId = expId;
+		for(int i = 0; i < 10; i++) {
+			
+			for (BETransformation t : data.getTransformations()) {
+				for (BEProblem p : t.getProblems()) {
+					for (BEQuickfix qfx : p.getQuickfixes()) {
+						if ( qfx.getExpId() == expId ) {
+							System.out.println("Transformation: " + t.getName());
+							show(qfx);
+							System.out.println("Found expId = " + expId + "(" + originalId + ")");
+							return;
+						}
 					}
 				}
-			}
-			
-			for (BEInvariant inv : t.getInvariants()) {
-				if ( inv.getExpId() == expId ) {
-					show(inv);
+				
+				for (BEInvariant inv : t.getInvariants()) {
+					if ( inv.getExpId() == expId ) {
+						show(inv);
+						System.out.println("Found expId = " + expId + "(" + originalId + ")");
+						return;
+					}
 				}
+				
 			}
-			
-		}
 
+			expId++;
+		}
 		
 		
 	}
@@ -57,6 +66,7 @@ public class ResultReaderMain {
 		System.out.println("--");
 		System.out.println("Final: \n" + inv.getFinalExpression());
 		System.out.println("---");
+		System.out.println("Original: " + inv.getOriginalNumNodes() + " - Simplified: " + inv.getSimplifiedNumNodes());
 		System.out.println("Simplifications:");
 		for (BESimplification s : inv.getSimplifications()) {
 			System.out.println(" * " + s.getName());

@@ -4,6 +4,14 @@ options: {
  only_trafos_with_qfxs : true,
  timeout : 2500
 }
+#-  name: Ant2Maven
+#-  name: Bibtex2Docbook
+#-  name: Book2Publication
+#-  name: Class2Relational
+
 projects: 
--  name: Ant2Maven
--  name: Bibtex2Docbook
+-  name: CPL2SPL
+-  name: DSLBridge
+   ignoredFiles: [ ATL-KM22SimpleExample.atl ]
+-  name: EMF2KM3
+-  name: Families2Persons

@@ -10,6 +10,7 @@ public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_BOOLEANS = new ATLTransformation("booleans", pathTo("beautyocl.simplifications.booleans.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_ELSE = new ATLTransformation("if-else", pathTo("beautyocl.simplifications.ifelse.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_ITERATORS = new ATLTransformation("iterators", pathTo("beautyocl.simplifications.iterator.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_UNBOUND_ITERATOR = new ATLTransformation("unbound-iterator", pathTo("beautyocl.simplifications.unbounditerator.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_SAME_EXPR = new ATLTransformation("if-same-expr", pathTo("beautyocl.simplifications.ifsameexpr.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_FUSION = new ATLTransformation("if-fusion", pathTo("beautyocl.simplifications.iffusion.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_UNSHORT_CIRCUIT = new ATLTransformation("unshort", pathTo("beautyocl.simplifications.unshortcircuit.asm"), VM.STANDARD);	
@@ -28,18 +29,20 @@ public class BeautyATLUtils {
 		rep.add(SIMP_INTEGERS);
 		rep.add(SIMP_BOOLEANS);
 		rep.add(SIMP_SAME_OPERAND);
+		rep.add(SIMP_KIND_OF_TRUE);
 		rep.add(SIMP_ITERATORS);
+		rep.add(SIMP_UNBOUND_ITERATOR);
 		rep.add(SIMP_IF_ELSE);
 		rep.add(SIMP_IF_SAME_EXPR);
 		rep.add(SIMP_IF_FUSION);
 		rep.add(SIMP_UNSHORT_CIRCUIT);
-		rep.add(SIMP_KIND_OF_TRUE);
 		rep.add(SIMP_KIND_OF_FULL);
 		rep.add(SIMP_IF_TRUE_FALSE);
 		//rep.add(SIMP_IF_INTRO_CALL);
 		rep.add(SIMP_REMOVE_LET);
 		
-		rep.add(PULL_UP_CONDITIONAL);
+		// This is idiomatic, should be in a last round with all the idiomatic stuff
+		// rep.add(PULL_UP_CONDITIONAL);
 		
 		rep.add(SIMP_EQUALITY_SEQUENCE);
 		return rep;

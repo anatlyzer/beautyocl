@@ -39,6 +39,10 @@ public class UglyAnATLyzerExpression implements UglyExpression {
 		this.obj = obj;
 	}
 	
+	public IAnalyserResult getAnalysis() {
+		return result;
+	}
+	
 	@Override
 	public Resource getResource() {
 		if ( obj != null ) {

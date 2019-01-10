@@ -49,10 +49,35 @@ helper context OCL!BinaryOperatorCallExp def: operatorSequence(operator : String
 	if self.name = operator and self.argument.isEquality(eqs) then
 		Sequence { self.argument }->union(self.source.operatorSequence(operator, eqs))
 	else
+		if self.isEquality(eqs) then
+			Sequence { self } 
+		else		
+			Sequence { }
+		endif
+	endif;
+
+
+-- @force-declared-return-type
+helper context OCL!OclExpression def: operatorSequenceIndependentArgs(operator : String, eqs : Set(String)) : Sequence(OCL!OclExpression) = 
+	if self.isEquality(eqs) then
 		Sequence { }
+	else
+		Sequence { self }
+	endif;
+
+-- @force-declared-return-type
+helper context OCL!BinaryOperatorCallExp def: operatorSequenceIndependentArgs(operator : String, eqs : Set(String)) : Sequence(OCL!OclExpression) = 
+	if self.name = operator and self.argument.isEquality(eqs) then
+		self.source.operatorSequenceIndependentArgs(operator, eqs)
+	else
+		--if self.isEquality(eqs) then
+		--	Sequence { self } 
+		--else		
+			Sequence { }
+		--endif
 	endif;
 	
-helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : String, eqs : Set(String), min_size : Integer) : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = 
+helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : String, eqs : Set(String), min_size : Integer) : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression), independent : Sequence(OCL!OclExpression)) = 
 	let seq : Sequence(OCL!BinaryOperatorCallExp) = self.operatorSequence(operator, eqs) in
 		if seq->size() >= min_size then
 			-- seq has equalities x = y
@@ -61,9 +86,9 @@ helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : 
 			let samesLeft  : Sequence(OCL!OclExpression) = seq->collect(e | e.isSame(left))->excluding(OclUndefined) in
 			let samesRight : Sequence(OCL!OclExpression) = seq->collect(e | e.isSame(right))->excluding(OclUndefined) in
 			if samesLeft->size() = seq->size() then
-				Tuple { value = left, keys = samesLeft }
+				Tuple { value = left, keys = samesLeft, independent = self.operatorSequenceIndependentArgs(operator, eqs) }
 			else if samesRight->size() = seq->size() then
-				Tuple { value = right, keys = samesRight }
+				Tuple { value = right, keys = samesRight, independent = self.operatorSequenceIndependentArgs(operator, eqs) }
 			else OclUndefined endif endif
 		else
 			OclUndefined
@@ -79,19 +104,71 @@ helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : 
 --             source: exp = value1 
 
 -- @ignore invalid-assignment-imperative-binding
+rule fill(main : OCLt!BinaryOperatorCallExp, list : Sequence(OCL!OclExpression), operator : String, input : OCL!BinaryOperatorCallExp) {
+	-- argument of main is already set by the caller
+	to 
+		c : ACT!CompositeAction,
+		binary : OCLt!BinaryOperatorCallExp (
+			name <- operator
+		),
+		set_argument : ACT!SetP (
+			propertyName <- 'arguments' 
+		),
+		set_source : ACT!SetP (
+			propertyName <- 'source' 
+		)		
+	do {
+		c.source <- input;
+		
+		if ( list->size() = 1 ) {
+			-- main.source <- list->first();
+			set_source.source <- main;
+			set_source.value <- list->first();					
+
+			c.actions <- Sequence { set_source };
+		} else {
+			-- main.source <- binary;			
+			set_source.source <- main;
+			set_source.value <- binary;
+			
+			-- binary.argument <- list->first();
+			set_argument.source <- binary;
+			set_argument.value <- list->first();
+		
+			
+			c.actions <- Sequence { set_argument, set_source,
+						thisModule.fill(binary, list->subSequence(2, list->size()), operator, input) };
+		}
+		
+		c;
+	}
+}
+
+-- @ignore invalid-assignment-imperative-binding
 rule find_sequence_of_operations_or {
 	from o : OCL!BinaryOperatorCallExp (
-		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE) 
+		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression), independent : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE) 
 		 in seq <> OclUndefined 
 		 -- TODO: Check with refImmediateComposite if this is the larger one
 	)
+    using {
+		seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression), independent : Sequence(OCL!OclExpression)) = 
+			o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE);	
+    }
 	to c : ACT!CompositeAction (
-		actions <- Sequence { set_elements, set_includes_source, set_includes_arguments, a }	
+		actions <- Sequence { set_elements, set_includes_source, set_includes_arguments }->
+			union(if seq.independent->isEmpty() then Sequence { } else Sequence { set_argument_additional } endif)->
+			including(a)	
 	),
 	a : ACT!Replace, 
 	includesOp : OCLt!CollectionOperationCallExp (
 		name <- 'includes'
 	),
+	additional : OCLt!BinaryOperatorCallExp (
+		name <- 'or'
+	),
+	set_argument_additional  : ACT!SetP,
+	
 	set_exp : OCLt!SetExp,
 	set_elements  : ACT!SetP,
 	set_includes_source    : ACT!SetP,
@@ -100,7 +177,18 @@ rule find_sequence_of_operations_or {
 		c.source <- o;
 		
 		a.source <- o;
-		a.target <- includesOp;
+		if ( seq.independent->isEmpty() ) {
+			a.target <- includesOp;
+		} else {
+			a.target <- additional;
+		}
+	
+		if ( seq.independent->notEmpty() ) {
+			c.actions <- c.actions->prepend(thisModule.fill(additional, seq.independent, 'or', o));
+			set_argument_additional.propertyName <- 'arguments'; -- Probably argument
+			set_argument_additional.source <- additional;
+			set_argument_additional.value <- includesOp;			
+		}
 		
 		set_includes_source.propertyName <- 'source';
 		set_includes_source.source <- includesOp;
@@ -108,18 +196,18 @@ rule find_sequence_of_operations_or {
 		
 		set_includes_arguments.propertyName <- 'arguments';
 		set_includes_arguments.source <- includesOp;
-		set_includes_arguments.value <- o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE).value;
+		set_includes_arguments.value <- seq.value;
 		
 		set_elements.propertyName <- 'elements';
 		set_elements.source <- set_exp;
-		set_elements.value <- o.operatorSequenceIfSame('or', Set {'='}, thisModule.MIN_SIZE).keys;
+		set_elements.value <- seq.keys;
 	}
 }
 
 -- @ignore invalid-assignment-imperative-binding
 rule find_sequence_of_operations_and{
 	from o : OCL!BinaryOperatorCallExp (
-		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'=', '<>'}, 1) 
+		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'=', '<>'}, 2) 
 		 in seq <> OclUndefined 
 		 -- TODO: Check with refImmediateComposite if this is the larger one
 	)

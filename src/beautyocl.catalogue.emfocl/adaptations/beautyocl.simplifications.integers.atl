@@ -1,0 +1,78 @@
+-- @path EMF=/beautyocl.catalogue.emfocl/metamodels/OCLEcore.ecore
+-- @path EMF=/beautyocl.catalogue.emfocl/metamodels/OCLEcore.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+module simplify_integers;
+create OUT : ACT, OUT2 : EMF from IN : EMF;
+
+helper context EMF!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context EMF!OperationCallExp def: argument : OclAny = self.refInvokeOperation('getArgument', Sequence { })->first();
+
+helper context EMF!OperationCallExp def: name : OclAny = self.referredOperation.name;
+
+helper context EMF!OperationCallExp def: name : OclAny = self.referredOperation.name;
+
+helper context EMF!OperationCallExp def: name : OclAny = self.referredOperation.name;
+
+helper context EMF!OperationCallExp def: arguments : OclAny = self.refInvokeOperation('getArgument', Sequence { });
+
+helper context EMF!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper  def: relationalOps : Set(String) = Set {'<', '<=', '>', '>=', '=' };
+
+helper  def: arithmeticOps : Set(String) = Set {'+', '-', '*', '/' };
+
+rule binaryIntegerRelational {
+   from o : EMF!OperationCallExp( o.source.oclIsKindOf(EMF!IntegerLiteralExp) and o.argument.oclIsKindOf(EMF!IntegerLiteralExp) and thisModule.relationalOps->includes(o.name) and o.BinaryOperatorCallExp__filter__ )
+     to a : ACT!Replace, r : EMF!BooleanLiteralExp (
+			booleanSymbol <- if o.name = '<' then
+				o.source.integerSymbol < o.argument.integerSymbol
+			else
+				if o.name = '<=' then
+				o.source.integerSymbol <= o.argument.integerSymbol
+			else
+				if o.name = '>' then
+				o.source.integerSymbol > o.argument.integerSymbol
+			else
+				if o.name = '>=' then
+				o.source.integerSymbol >= o.argument.integerSymbol
+			else
+				o.source.integerSymbol = o.argument.integerSymbol
+			endif
+			endif
+			endif
+			endif
+		)
+do {
+   a.source <- o;
+   a.target <- r;
+}
+}
+
+rule binaryIntegerArithmetic {
+   from o : EMF!OperationCallExp( o.source.oclIsKindOf(EMF!IntegerLiteralExp) and o.argument.oclIsKindOf(EMF!IntegerLiteralExp) and thisModule.arithmeticOps->includes(o.name) and o.BinaryOperatorCallExp__filter__ )
+     to a : ACT!Replace, r : EMF!IntegerLiteralExp (
+				integerSymbol <- if o.name = '+' then
+					o.source.integerSymbol + o.argument.integerSymbol
+				else
+					if o.name = '-' then
+					o.source.integerSymbol - o.argument.integerSymbol
+				else
+					if o.name = '*' then
+					o.source.integerSymbol * o.argument.integerSymbol
+				else
+					o.source.integerSymbol / o.argument.integerSymbol
+				endif
+				endif
+				endif
+			)
+do {
+   a.source <- o;
+   a.target <- r;
+}
+}
+
+helper context EMF!OperationCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context EMF!OperationCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

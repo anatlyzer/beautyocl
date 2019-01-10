@@ -1,0 +1,17 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+module integerrel;
+create OUT : WXYZ from IN : ABCD;
+
+rule model2model {
+	from m1 : ABCD!Model 
+	to   m2 : WXYZ!Model (
+		-- @simplifiesTo ABCD!Model.allInstances()->select(m | m.name = 'a' )->size().toString()
+		name <- ABCD!Model.allInstances()->select(m | ABCD!A.allInstances()->forAll(a | m.name = 'a') )->size().toString(),
+
+		-- @simplifiesTo ABCD!Model.allInstances()->select(m | m.name = 'a' )->size().toString()
+		name <- ABCD!Model.allInstances()->select(m | ABCD!A.allInstances()->exists(a | m.name = 'a') )->size().toString()
+	)
+}

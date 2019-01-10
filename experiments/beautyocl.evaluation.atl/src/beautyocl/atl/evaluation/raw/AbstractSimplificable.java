@@ -33,6 +33,10 @@ public abstract class AbstractSimplificable {
 		expId = ++idCounter;
 	}
 	
+	public static void resetCounter() {
+		idCounter = 0;
+	}
+	
 	public int getExpId() {
 		return expId;
 	}
