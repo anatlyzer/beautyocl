@@ -10,8 +10,5 @@ options: {
 #-  name: Class2Relational
 
 projects: 
--  name: CPL2SPL
 -  name: DSLBridge
    ignoredFiles: [ ATL-KM22SimpleExample.atl ]
--  name: EMF2KM3
--  name: Families2Persons

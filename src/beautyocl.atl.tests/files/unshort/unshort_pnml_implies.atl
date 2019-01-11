@@ -1,0 +1,14 @@
+-- @path PNML=/beautyocl.atl.tests/metamodels/PNML_simplified.ecore
+-- @path PetriNet=/beautyocl.atl.tests/metamodels/PetriNet.ecore
+
+
+module PNML2PetriNet;
+create OUT : PetriNet from IN : PNML;
+
+helper def : testSimple() : Boolean =
+	-- @simplifiesTo PNML!NetElement.allInstances()->forAll(t | t.location = '77:0' implies not t.document.oclIsUndefined()) 
+	PNML!NetElement.allInstances()->forAll(t | if t.location = '77:0' then
+		not t.document.oclIsUndefined()
+	else
+		true
+	endif);

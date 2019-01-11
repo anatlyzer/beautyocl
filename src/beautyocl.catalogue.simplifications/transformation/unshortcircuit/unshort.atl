@@ -76,13 +76,73 @@ helper context OCL!OperationCallExp def: getOperationCalls() : Set(OCL!OclExpres
 	endif;
 helper context OCL!PropertyCallExp def: getOperationCalls() : Set(OCL!OclExpression) = self.source.getOperationCalls();
 helper context OCL!BinaryOperatorCallExp def: getOperationCalls() : Set(OCL!OclExpression) = 
-	self.source.getOperationCalls()->union(self.argument.getOperationCalls());
+	-- FIXME: This is to prevent a bug in the adapter from BinaryOperatorCallExp => OperatorCallExp
+	if self.argument.oclIsUndefined() then
+		self.source.getOperationCalls()
+	else
+		self.source.getOperationCalls()->union(self.argument.getOperationCalls())
+	endif;
 
---self.oclIsKindOf(OCL!OperationCallExp)
 
 
 --
--- if exp then exp else true endif => true
+-- if <c1> then 
+--      <bt1>
+-- else
+--      true   => unshort(c1, bt1)
+-- endif
+--
+-- @ignore invalid-assignment-imperative-binding
+rule unshortCircuit_simple {
+	from i : OCL!IfExp (
+		if thisModule.checkUnshortCondition(i.condition, i.thenExpression) 
+			-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+			or (not i.condition.hasShortThing())
+		then
+			i.elseExpression.isBooleanExpr(true) or i.elseExpression.isBooleanExpr(false) 
+		else
+			false
+		endif
+	)
+	to c : ACT!CompositeAction (
+			actions <- Sequence { a, s4, s5 }
+	   ),	
+	   a : ACT!Replace, 
+	   s4 : ACT!"SetP", s5 : ACT!"SetP",
+		-- Should be BinaryOperator??
+	   r : OCLt!OperatorCallExp (
+			name <- if i.elseExpression.isBooleanExpr(true) then 'implies' else 'and' endif
+	   )	   
+	do {
+		c.source <- i;
+		
+		s4.source <- r;
+		s5.source <- r;
+		
+		s4.value <- i.condition;
+		s5.value <- i.thenExpression;
+		
+		s4.propertyName <- 'source';
+		s5.propertyName <- 'arguments';
+		
+		a.source <- i;
+		a.target <- r;
+	}
+}
+
+
+--
+-- if <c1> then 
+--    if <c2> then
+--      <bt2>
+--    else
+--      <bf2>
+--    endif
+-- else 
+--    <bf1>  =====> if unshort(c1, c2) && same(bf2, bf1) merge <c1> and <c2>
+-- endif
+--
+--
 --
 -- @ignore invalid-assignment-imperative-binding
 rule unshortCircuit {

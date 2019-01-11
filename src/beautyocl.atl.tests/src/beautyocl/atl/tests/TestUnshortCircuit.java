@@ -147,5 +147,22 @@ public class TestUnshortCircuit extends Tester {
 		System.out.println("Before: " + before);
 		System.out.println("After: " + after);
 	}
+
+	@Test
+	public void testPNML_Unshort_Implies() throws LoadException {	
+		TransformationRepository rep = configureRepo();
+		
+		UglyAnATLyzerExpression exp = loadExpressionPNML("files/unshort/unshort_pnml_implies.atl");
+
+		String before = ATLSerializer.serialize(exp.getRoot());		
+			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+			beauty.applyAll(exp);
+		String after = ATLSerializer.serialize(exp.getRoot());
+		assertNotEquals(before, after);
+				
+		System.out.println("Before: " + before);
+		System.out.println("After: " + after);
+	}
+
 	
 }
