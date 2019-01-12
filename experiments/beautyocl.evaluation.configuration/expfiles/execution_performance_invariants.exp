@@ -1,0 +1,11 @@
+name: Performance of the execution of the code after simplifications
+extensionID: simplification.experiment.executionperformance
+options: {
+ timeout : 2500,
+ datafile : /beautyocl.evaluation.configuration/ecmfa2018-results/inv-data/invariants.data
+ 
+}
+
+projects: 
+-  name: anatlyzer.evaluation.preconditions
+
