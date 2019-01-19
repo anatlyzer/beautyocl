@@ -1,0 +1,11 @@
+name: Correctness of the execution of the code after simplifications
+extensionID: simplification.experiment.equivalencemodelfinder
+options: {
+ timeout : 60000,
+ datafile : /beautyocl.evaluation.configuration/inv-data/invariants.data
+ 
+}
+
+projects: 
+-  name: anatlyzer.evaluation.preconditions
+

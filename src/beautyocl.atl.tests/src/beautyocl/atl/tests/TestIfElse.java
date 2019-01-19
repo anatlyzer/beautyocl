@@ -2,6 +2,8 @@ package beautyocl.atl.tests;
 
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.File;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
@@ -11,6 +13,9 @@ import anatlyzer.atl.tests.api.AnalysisLoader;
 import anatlyzer.atl.tests.api.AtlLoader;
 import anatlyzer.atl.tests.api.AtlLoader.LoadException;
 import anatlyzer.atl.util.ATLSerializer;
+import anatlyzer.atl.util.ATLUtils;
+import anatlyzer.atl.util.AnalyserUtils;
+import anatlyzer.atlext.ATL.LocatedElement;
 import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
 import beautyocl.actions.MatchPhase.Match;
@@ -106,17 +111,8 @@ public class TestIfElse extends Tester {
 	public void testIntroCall() throws LoadException {	
 		TransformationRepository rep = new TransformationRepository();
 		rep.add(BeautyATLUtils.SIMP_IF_INTRO_CALL);
-		
-		UglyAnATLyzerExpression exp = loadExpression("files/ifelse/intro_call1.atl");
 
-		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-			beauty.applyAll(exp);
-		String after = ATLSerializer.serialize(exp.getRoot());
-		assertNotEquals(before, after);
-				
-		System.out.println("Before: " + before);
-		System.out.println("After: " + after);
+		doTest(rep, new File("files/ifelse/intro_call1.atl"));
 	}
 
 	@Test
@@ -139,6 +135,8 @@ public class TestIfElse extends Tester {
 
 				@Override
 				public void postApply(Match m, EObject transformed) {
+					System.out.println(AnalyserUtils.toTree((LocatedElement) transformed));
+					
 					String exp = ATLSerializer.serialize(transformed);
 					System.out.println("After " + m.getTransformationName() + "\n" + exp);					
 				}

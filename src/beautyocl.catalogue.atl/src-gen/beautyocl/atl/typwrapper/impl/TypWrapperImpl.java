@@ -5,10 +5,16 @@ package beautyocl.atl.typwrapper.impl;
 import anatlyzer.atl.model.TypingModel;
 import anatlyzer.atl.types.Metaclass;
 import anatlyzer.atl.types.Type;
+import anatlyzer.atlext.ATL.PatternElement;
+import anatlyzer.atlext.ATL.RuleVariableDeclaration;
+import anatlyzer.atlext.OCL.Iterator;
+import anatlyzer.atlext.OCL.NavigationOrAttributeCallExp;
+import anatlyzer.atlext.OCL.OCLPackage;
 import anatlyzer.atlext.OCL.OclExpression;
 
 import anatlyzer.atlext.OCL.PropertyCallExp;
 import anatlyzer.atlext.OCL.VariableDeclaration;
+import anatlyzer.atlext.OCL.VariableExp;
 import beautyocl.atl.typwrapper.TypWrapper;
 import beautyocl.atl.typwrapper.TypwrapperPackage;
 
@@ -20,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
@@ -67,6 +74,43 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 	 */
 	public boolean isSuperType(OclExpression e1_subtype, OclExpression e2_supertype) {
 		return TypingModel.isCompatible(e1_subtype.getInferredType(), e2_supertype.getInferredType());
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated NOT
+	 */
+	public boolean isNonNull(OclExpression e) {
+		if ( e instanceof NavigationOrAttributeCallExp ) {
+			NavigationOrAttributeCallExp nav = (NavigationOrAttributeCallExp ) e;
+			EStructuralFeature f = (EStructuralFeature) nav.getUsedFeature();
+			if ( f != null ) {
+				return f.isRequired();
+			}
+		} 
+		else if ( e instanceof VariableExp ) {
+			VariableExp exp = (VariableExp) e;
+			VariableDeclaration varDcl = exp.getReferredVariable();
+			if ( varDcl.eContainingFeature() == OCLPackage.Literals.LET_EXP__VARIABLE ) {
+				return isNonNull(varDcl.getInitExpression());
+			}		
+			else if ( varDcl instanceof Iterator ) {
+				// Ok, this may introduce an issue in case the collection has OclUndefined
+				// elements... 
+				// Alternatives:
+				// 1. Resort on the correctness procedure at runtime?
+				// 2. Analyse this further checking if the source may generate OclUndefined somehow
+				//    maybe with a simple procedure like checking if it uses optionals and/or OclUndefined
+				return true;
+			} else if ( varDcl instanceof PatternElement ) {
+				return true;
+			} else if ( varDcl instanceof RuleVariableDeclaration ) {
+				return isNonNull(varDcl.getInitExpression());
+			}			
+		}
+		
+		return false;
 	}
 
 	/**
@@ -129,6 +173,8 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 				return isSameType((OclExpression)arguments.get(0), (OclExpression)arguments.get(1));
 			case TypwrapperPackage.TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION:
 				return isSuperType((OclExpression)arguments.get(0), (OclExpression)arguments.get(1));
+			case TypwrapperPackage.TYP_WRAPPER___IS_NON_NULL__OCLEXPRESSION:
+				return isNonNull((OclExpression)arguments.get(0));
 			case TypwrapperPackage.TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP:
 				return accessType((PropertyCallExp)arguments.get(0));
 			case TypwrapperPackage.TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION:

@@ -10,6 +10,9 @@
       <eParameters name="e1_subtype" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
       <eParameters name="e2_supertype" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
     </eOperations>
+    <eOperations name="isNonNull" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="e" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/OclExpression"/>
+    </eOperations>
     <eOperations name="accessType" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
       <eParameters name="exp" eType="ecore:EClass ../../anatlyzer.atl.typing/model/generated/merged.ecore#//OCL/PropertyCallExp"/>
     </eOperations>

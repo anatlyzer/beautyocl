@@ -93,13 +93,22 @@ public interface TypwrapperPackage extends EPackage {
 	int TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION = 1;
 
 	/**
+	 * The operation id for the '<em>Is Non Null</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYP_WRAPPER___IS_NON_NULL__OCLEXPRESSION = 2;
+
+	/**
 	 * The operation id for the '<em>Access Type</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP = 2;
+	int TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP = 3;
 
 	/**
 	 * The operation id for the '<em>Model Name</em>' operation.
@@ -108,7 +117,7 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION = 3;
+	int TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION = 4;
 
 	/**
 	 * The operation id for the '<em>Type Of</em>' operation.
@@ -117,7 +126,7 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER___TYPE_OF__OCLEXPRESSION = 4;
+	int TYP_WRAPPER___TYPE_OF__OCLEXPRESSION = 5;
 
 	/**
 	 * The number of operations of the '<em>Typ Wrapper</em>' class.
@@ -126,7 +135,7 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TYP_WRAPPER_OPERATION_COUNT = 5;
+	int TYP_WRAPPER_OPERATION_COUNT = 6;
 
 
 	/**
@@ -158,6 +167,16 @@ public interface TypwrapperPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getTypWrapper__IsSuperType__OclExpression_OclExpression();
+
+	/**
+	 * Returns the meta object for the '{@link beautyocl.atl.typwrapper.TypWrapper#isNonNull(anatlyzer.atlext.OCL.OclExpression) <em>Is Non Null</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Is Non Null</em>' operation.
+	 * @see beautyocl.atl.typwrapper.TypWrapper#isNonNull(anatlyzer.atlext.OCL.OclExpression)
+	 * @generated
+	 */
+	EOperation getTypWrapper__IsNonNull__OclExpression();
 
 	/**
 	 * Returns the meta object for the '{@link beautyocl.atl.typwrapper.TypWrapper#accessType(anatlyzer.atlext.OCL.PropertyCallExp) <em>Access Type</em>}' operation.
@@ -237,6 +256,14 @@ public interface TypwrapperPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION = eINSTANCE.getTypWrapper__IsSuperType__OclExpression_OclExpression();
+
+		/**
+		 * The meta object literal for the '<em><b>Is Non Null</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TYP_WRAPPER___IS_NON_NULL__OCLEXPRESSION = eINSTANCE.getTypWrapper__IsNonNull__OclExpression();
 
 		/**
 		 * The meta object literal for the '<em><b>Access Type</b></em>' operation.

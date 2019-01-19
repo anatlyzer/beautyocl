@@ -1,0 +1,21 @@
+-- @path KM3=/beautyocl.atl.tests/metamodels/KM3.ecore
+--
+-- @test no-change
+
+module KM3Test;
+create OUT : KM3 from IN : KM3;
+ 
+-- @precondition
+helper  def: genPrecondition() : Boolean = KM3!Package.allInstances()->select(p | not ( p.name = 'PrimitiveTypes' ))->forAll(p | p.contents->forAll(v | if v.oclIsKindOf(KM3!Attribute) then
+	v.type.oclIsTypeOf(KM3!DataType)
+else
+	false
+endif or v.oclIsKindOf(KM3!Reference) or if v.oclIsKindOf(KM3!Attribute) then
+	v.type.oclIsTypeOf(KM3!Enumeration)
+else
+	false
+endif or v.oclIsKindOf(KM3!Enumeration) or v.oclIsKindOf(KM3!EnumLiteral) or if v.oclIsKindOf(KM3!Package) then
+	not ( v.name = 'PrimitiveTypes' )
+else
+	false
+endif or v.oclIsKindOf(KM3!DataType) or v.oclIsKindOf(KM3!Class)));

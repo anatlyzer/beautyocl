@@ -70,11 +70,11 @@ helper context OCL!BinaryOperatorCallExp def: operatorSequenceIndependentArgs(op
 	if self.name = operator and self.argument.isEquality(eqs) then
 		self.source.operatorSequenceIndependentArgs(operator, eqs)
 	else
-		--if self.isEquality(eqs) then
-		--	Sequence { self } 
-		--else		
-			Sequence { }
-		--endif
+		if self.isEquality(eqs) then
+			Sequence{ }
+		else
+			Sequence { self }
+		endif
 	endif;
 	
 helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : String, eqs : Set(String), min_size : Integer) : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression), independent : Sequence(OCL!OclExpression)) = 
@@ -207,7 +207,7 @@ rule find_sequence_of_operations_or {
 -- @ignore invalid-assignment-imperative-binding
 rule find_sequence_of_operations_and{
 	from o : OCL!BinaryOperatorCallExp (
-		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'=', '<>'}, 2) 
+		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'='}, 2) 
 		 in seq <> OclUndefined 
 		 -- TODO: Check with refImmediateComposite if this is the larger one
 	)

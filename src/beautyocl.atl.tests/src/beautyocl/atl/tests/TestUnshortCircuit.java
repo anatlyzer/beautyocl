@@ -163,6 +163,5 @@ public class TestUnshortCircuit extends Tester {
 		System.out.println("Before: " + before);
 		System.out.println("After: " + after);
 	}
-
 	
 }

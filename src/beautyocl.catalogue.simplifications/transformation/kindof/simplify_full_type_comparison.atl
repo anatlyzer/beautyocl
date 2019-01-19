@@ -27,17 +27,26 @@ helper def : subclassesMap : Map(OclAny, Set(TYP!CClass)) =
 	);
 
 helper context TYP!CClass def: subclasses : Set(TYP!CClass) = thisModule.subclassesMap.get(self);
-helper context TYP!CClass def: allSubclasses : Set(TYP!CClass) = self.superClasses->collect(c | c.subclasses)->flatten();
+helper context TYP!CClass def: allSubclasses : Set(TYP!CClass) = 
+	self.subclasses->union(self.subclasses-> collect(c | c.subclasses)->flatten());
 
 helper context TYP!CClass def: isCoveredBy(types : Set(TYP!CClass)) : Boolean =
-	types->includes(self) or self.subclasses->forAll(c | c.isCoveredBy(types))
+	if types->includes(self) then
+		true 
+	else 
+		self.subclasses->notEmpty() and self.subclasses->forAll(c | c.isCoveredBy(types))
+	endif
 	;
 
 helper  def: findSuperType(param : Set(OCL!"OclType")) : TYP!CClass = 
 	-- Sort all classes by number of subclasses
 	let  types: Set(TYP!CClass) = param->collect(t | thisModule.typ.typeOf(t))->asSet() in -- assume is a CClass...
 	-- let sorted:  OclAny = TYP!CClass.allInstances()->sortedBy(c | c.allSubclasses->size())
-	let sorted:  OclAny = types->collect(c | c.superClasses)->flatten()->asSet()->sortedBy(c | c.allSubclasses->size())
+	
+	-- We only consider the set of common superclasses
+	let superclasses : Set(TYP!CClass) =
+		types->iterate(it; res: Set(TYP!CClass) = types->asSequence()->first().superClasses->asSet() | res->intersection(it.superClasses))
+	in let sorted:  OclAny = types->collect(c | superclasses->select(s | s.abstract))->flatten()->asSet()->sortedBy(c | c.allSubclasses->size())
 	in sorted->iterate(it; res: TYP!CClass = OclUndefined | 
 		if res.oclIsUndefined() then
 			if it.isCoveredBy(types) then

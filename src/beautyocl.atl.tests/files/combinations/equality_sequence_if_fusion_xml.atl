@@ -1,0 +1,62 @@
+-- @path XML=/beautyocl.atl.tests/metamodels/XML.ecore
+
+module XML2XML;
+create OUT : XML from IN : XML;
+
+
+-- @precondition
+helper  def: genPrecondition() : Boolean = 
+	XML!Element.allInstances()->select(iv | iv.name = 'xsl:value-of')->forAll(iv | iv.children->select(c | c.name <> 'select')->
+		forAll(v | if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:short'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:copy-of'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:choose'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:when'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:otherwise'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name <> 'xsl:otherwise' and v.name <> 'xsl:when' and v.name <> 'xsl:choose' and v.name <> 'xsl:copy-of' and v.name <> 'xsl:short' and v.name <> 'xsl:foreach' and v.name <> 'xsl:if' and v.name <> 'xsl:apply-templates' and v.name <> 'xsl:value-of' and v.name <> 'xsl:template' and v.name <> 'xsl:stylesheet'
+else
+	false
+endif or if v.oclIsKindOf(XML!Attribute) then
+	v.parent.name <> 'xsl:otherwise' and v.parent.name <> 'xsl:when' and v.parent.name <> 'xsl:choose' and v.parent.name <> 'xsl:copy-of' and v.parent.name <> 'xsl:short' and v.parent.name <> 'xsl:foreach' and v.parent.name <> 'xsl:if' and v.parent.name <> 'xsl:apply-templates' and v.parent.name <> 'xsl:value-of' and v.parent.name <> 'xsl:template' and v.parent.name <> 'xsl:stylesheet'
+else
+	false
+endif or v.oclIsKindOf(XML!TextNode) or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:template'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:value-of'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:apply-templates'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:if'
+else
+	false
+endif or if v.oclIsKindOf(XML!Root) then
+	v.name = 'xsl:stylesheet'
+else
+	false
+endif or if v.oclIsKindOf(XML!Element) then
+	v.name = 'xsl:foreach'
+else
+	false
+endif));

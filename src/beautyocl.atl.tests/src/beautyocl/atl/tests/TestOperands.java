@@ -44,6 +44,32 @@ public class TestOperands extends Tester {
 		doTest(rep, sourceFile);	
 	}
 	
+
+//	@Test
+//	public void test_EqualitySequence_Interleaved() throws LoadException {	
+//		TransformationRepository rep = new TransformationRepository();
+//		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
+//		//rep.add(BeautyATLUtils.SIMP_IF_ELSE);
+//		//rep.add(BeautyATLUtils.SIMP_KIND_OF_TRUE);
+//		//rep.add(BeautyATLUtils.SIMP_UNSHORT_CIRCUIT);
+//		rep.add(BeautyATLUtils.SIMP_EQUALITY_SEQUENCE);
+//		
+//		
+//		// TODO: Simplify true and XX
+//		
+//		UglyAnATLyzerExpression exp = loadExpressionXML("files/unshort/unshort_xml_interleaved.atl");
+//
+//		String before = ATLSerializer.serialize(exp.getRoot());		
+//			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
+//			beauty.applyAll(exp);
+//		String after = ATLSerializer.serialize(exp.getRoot());
+//		assertNotEquals(before, after);
+//				
+//		System.out.println("Before: " + before);
+//		System.out.println("After: " + after);
+//	}
+
+	
 	/*
 	@Test
 	public void testEqualitySequence() throws LoadException {	

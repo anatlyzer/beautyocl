@@ -1,0 +1,10 @@
+-- @path XHTML=/beautyocl.atl.tests/metamodels/XHTML.ecore
+-- @path XHTML=/beautyocl.atl.tests/metamodels/XHTML.ecore
+
+
+module XHTML;
+create OUT : XHTML from IN : XHTML;
+
+helper def : testOrKindOf_full() : Boolean = 
+	-- @simplifiesTo XHTML!HEAD.allInstances()->forAll(html | html.headMiscs->forAll(v | v.oclIsKindOf(XHTML!HeadMisc)))
+	XHTML!HEAD.allInstances()->forAll(html | html.headMiscs->forAll(v | v.oclIsKindOf(XHTML!LINK) or v.oclIsKindOf(XHTML!STYLE) or v.oclIsKindOf(XHTML!SCRIPT) or v.oclIsKindOf(XHTML!META) or v.oclIsKindOf(XHTML!OBJECT) ));

@@ -1,4 +1,4 @@
-package beautyocl.atl.evaluation;
+package beautyocl.atl.evaluation.main;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import beautyocl.atl.evaluation.raw.BEQuickfix;
 import beautyocl.atl.evaluation.raw.BESimplification;
 import beautyocl.atl.evaluation.raw.BETransformation;
 
-public class StatsGenerator {
+public class StatsGenerator extends AbstractMain {
 
 	public static void main(String[] args) throws Exception {
 		
@@ -112,28 +112,5 @@ public class StatsGenerator {
 		
 	}
 
-	public static String fixedLengthString(String string, int length) {
-	    return String.format("%1$"+length+ "s", string);
-	}
-	
-	public static String fixedLengthInt(int i, int length) {
-	    return String.format("%1$"+length+ "d", i);
-	}
-	
-	public static String fixedLengthDouble(double d, int length) {
-	    return String.format("%." + length + "f", d);
-	}
-	
-	private static void show(AbstractSimplificable inv) {
-		System.out.println("Original: \n" + inv.getOriginalExpression());
-		System.out.println("--");
-		System.out.println("Final: \n" + inv.getFinalExpression());
-		System.out.println("---");
-		System.out.println("Original: " + inv.getOriginalNumNodes() + " - Simplified: " + inv.getSimplifiedNumNodes());
-		System.out.println("Simplifications:");
-		for (BESimplification s : inv.getSimplifications()) {
-			System.out.println(" * " + s.getName());
-		}
-	}
-	
+		
 }

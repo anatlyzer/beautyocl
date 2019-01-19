@@ -10,18 +10,18 @@ module "introduce_call";
 create OUT : ACT, OUT2 : OCL2 from IN : OCL; 
 
 
-helper context OCL!OclExpression def: isComplexInlining() : Boolean = false;
-helper context OCL!OperationCallExp def: isComplexInlining() : Boolean = 
+helper context OCL!OclExpression def: isComplexInliningOnSource() : Boolean = false;
+helper context OCL!OperationCallExp def: isComplexInliningOnSource() : Boolean = 
 	self.arguments->exists(a | a.oclIsKindOf(OCL!IfExp));
-helper context OCL!OperatorCallExp def: isComplexInlining() : Boolean = 
-	self.source.oclIsKindOf(OCL!IfExp) or self.argument.oclIsKindOf(OCL!IfExp);
+helper context OCL!OperatorCallExp def: isComplexInliningOnSource() : Boolean = 
+	self.argument.oclIsKindOf(OCL!IfExp);
 
 rule convert {
 	from o : OCL!PropertyCallExp (
 		-- TODO: This is to avoid conflicts in the bindings. Should be handled differently in the binding, but there seems to be a bug
 		( not o.oclIsKindOf(OCL!OperatorCallExp) and
 		
-		o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInlining())
+		o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInliningOnSource())
 		-- TODO: Check args complexity
 	)
 	to c1 : ACT!Clone (		
@@ -62,7 +62,7 @@ rule convert {
 
 rule convertOperator {
 	from o : OCL!BinaryOperatorCallExp (
-		(o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInlining())
+		(o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInliningOnSource())
 	)
 	to c1 : ACT!Clone (		
 		ignoredProperties <- Sequence { 'source' }	

@@ -1,0 +1,17 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+-- @test no-change
+-- 
+-- Simplification kind-of-full should not be triggered because the 'or' expression doesn't
+-- cover the complete set of subclasses
+
+module ifkindof;
+create OUT : WXYZ from IN : ABCD;
+
+
+helper def : test() : Boolean = 
+	ABCD!Model.allInstances()->forAll(m |
+		m.elements->forAll(e | e.oclIsKindOf(ABCD!D1) or e.oclIsKindOf(ABCD!D2) )
+	);

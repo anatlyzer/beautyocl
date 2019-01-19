@@ -7,6 +7,7 @@ create OUT : WXYZ from IN : ABCD;
 
 rule model2model {
 	from m1 : ABCD!Model (
+		-- @simplifiesTo if m1.name = 'something' then 1 > 2 else 2 > 2 endif 
 		if m1.name = 'something' then
 			1
 		else

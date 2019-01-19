@@ -73,7 +73,7 @@ import beautyocl.atl.evaluation.raw.BEProblem;
 import beautyocl.atl.evaluation.raw.BEQuickfix;
 import beautyocl.atl.evaluation.raw.BETransformation;
 
-public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment implements IExperiment {
+public class PerformanceExecutionExperiment extends AbstractFunctionalFeaturesExperiment implements IExperiment {
 
 	protected static final String ORIGINAL_RESOURCE = "ORIGINAL_RESOURCE";
 	
@@ -88,94 +88,12 @@ public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment i
 		return true;
 	}
 	
-	@Override
-	public void openData(IFile expFile) {
-		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
-			    Display.getDefault().getActiveShell(), 
-			    new WorkbenchLabelProvider(), 
-			    new WorkbenchContentProvider() {
-		            @Override
-					public Object[] getChildren(Object obj) {
-		            	Object[] objs = super.getChildren(obj);
-		            	List<Object> selected = new ArrayList<Object>();
-		            	for (Object o : objs) {						
-			            	if ( o instanceof IProject ) {
-			            		IProject p = (IProject) o;
-			            		try {
-			            			ArrayList<IResource> resources = new ArrayList<IResource>();
-									p.accept(resource -> {
-										if ( resource.getLocation() != null && resource.getLocation().getFileExtension() != null && resource.getLocation().getFileExtension().equals("data") ) {
-											resources.add(resource);
-										}									
-										return true;
-									});
-									
-									if ( resources.isEmpty() ) {
-										continue;
-									} 
-								} catch (CoreException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									continue;
-								}
-			            	}
-			            	selected.add(o);
-		            	}
-		            	
-		            	return selected.toArray();
-		            }
-		        });
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		dialog.setInput(root);
-		if ( dialog.open() == Window.OK ) {
-			IFile f = (IFile) dialog.getResult()[0];
-			
-			Serializer serializer = new Persister();
-			File source = new File(f.getLocation().toOSString());
-
-			try {
-				BEData data = serializer.read(BEData.class, source);
-				this.expData = data;
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-			
-		};
-	}
-
- 	BEData expData = null;
-	private BEPerformanceData expPerformanceData;
- 	
-	@Override
-	protected void perform(IResource resource) {
-		perform(resource, new NullProgressMonitor());
-	}
-
- 	
+	private BEPerformanceData expPerformanceData = new BEPerformanceData();
+	
 	@Override
 	public void perform(IResource resource, IProgressMonitor monitor) {
-		if ( expData == null ) {
-			expPerformanceData = new BEPerformanceData();
-			
-			String path = (String) options.get("datafile");
-			if ( path == null )
-				throw new IllegalStateException("Please, use datafile option to set the datafile to analyse");
-			
-			Serializer serializer = new Persister();
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-			
-			File source = new File(file.getLocation().toOSString());
-			try {
-				BEData data = serializer.read(BEData.class, source);
-				this.expData = data;
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-			
-		}
-
+		loadExpDataIfNeeded();
+		
 		BETransformation found = null;
 		for (BETransformation t : expData.getTransformations()) {
 			if ( resource.getName().equals(t.getName()) ) {
@@ -204,7 +122,8 @@ public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment i
 			all.addAll(found.getInvariants());
 			for (AbstractSimplificable simplificable : all) {
 				String name = "<no-name>";
-
+				String kind = null;
+				
 				String exp = simplificable.getOriginalExpression();
 				String fin = simplificable.getFinalExpression();
 				
@@ -212,12 +131,14 @@ public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment i
 					name = ((BEQuickfix) simplificable).getName();
 					if ( ! name.toLowerCase().contains("precondition") ) {
 						continue;
-					}					
+					}				
+					kind = "quickfix";
 				} else if ( simplificable instanceof BEInvariant ) {
 					name = ((BEInvariant) simplificable).getName();
-				
-					exp = "-- @precondition\nhelper def: aPrecondition : Boolean = " + exp + ";";
-					fin = "-- @precondition\nhelper def: aPrecondition : Boolean = " + fin + ";";
+					kind = "invariant";
+					
+					exp = "-- @precondition\nhelper def: aPrecondition : Boolean = " + "not" + "(" + exp + ");";
+					fin = "-- @precondition\nhelper def: aPrecondition : Boolean = " + "not" + "(" + fin + ");";
 			
 					List<Helper> preconditions = ATLUtils.getPreconditionHelpers(data.getATLModel());
 					String previousPre = preconditions.stream().map(ATLSerializer::serialize).collect(Collectors.joining("\n"));
@@ -278,6 +199,7 @@ public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment i
 				printMessage("\n");
 				
 				BEPerformanceExecution exec = new BEPerformanceExecution();
+				exec.setKind(kind);
 				exec.setExpId(simplificable.getExpId());
 				exec.setOriginalExp(simplificable.getOriginalExpression());
 				exec.setOriginalNumNodes(simplificable.getOriginalNumNodes());
@@ -299,88 +221,6 @@ public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment i
 		
 	}
 
-	private AnalyserData analyse(String kind, String trafo1, IResource r) {
-		try {
-			ByteArrayInputStream stream = new ByteArrayInputStream(trafo1.getBytes());
-			EMFModel atlEMFModel = AtlEngineUtils.loadATLFile(null, stream, true);
-			if ( atlEMFModel.getResource().getErrors().size() > 0 ) {
-				printMessage("Parse error " + r.getName() + "\n");
-				printMessage(kind);
-				printMessage("Syntax errors:" + "\n");
-				for(Diagnostic d : atlEMFModel.getResource().getErrors()) {
-					printMessage(" * " + d.getMessage() + ":" + d.getLine() + ":" + d.getColumn() + "\n");
-				}
-				printMessage(trafo1 + "\n");
-				return null;
-			}
-			
-			ATLModel atlModel = new ATLModel(atlEMFModel.getResource());
-			
-			return new AnalyserExecutor().exec(null, atlModel, false);
-		} catch ( Exception e ) {
-			e.printStackTrace();
-			printMessage("Can't analyse generated code for resource " + r.getName() + "\n");
-			printMessage(e.getMessage());
-			printMessage(kind + "\n" );
-			printMessage(trafo1 + "\n");
-			return null;
-		}
-	
-	}
-
-	private void doModelFinding(IResource resource, AnalyserData data, PreconditionIssue pre1,
-			IFinderStatsCollector collector1) {
-		
-		// AnalysisIndex.getInstance().getConfiguration(resource)
-		TransformationConfiguration conf = TransformationConfiguration.getDefault();
-		IWitnessFinder wf = WitnessUtil.getFirstWitnessFinder(conf);
-		wf.setStatsCollector(collector1);
-		wf.checkDiscardCause(false);
-		ProblemStatus result = wf.find(pre1, data);
-		pre1.setAnalysisResult(result, wf.getFoundWitnessModel());
-	}
-
-	
-	private String sanitize(String expr) {
-		expr = expr.trim();
-		
-		Pattern p = Pattern.compile("^from.*\\((.+)\\)$");
-		Matcher m = p.matcher(expr);
-		if ( m.matches() ) {
-			String newExpr = m.group(0);
-			return newExpr;
-		}
-		
-		Pattern p2 = Pattern.compile("^helper.+Boolean.+=(.+);$");
-		Matcher m2 = p2.matcher(expr);
-		if ( m2.matches() ) {
-			String newExpr = m.group(0);
-			return newExpr;
-		}
-		
-		
-		return expr;
-	}
-
-	private boolean isInterestingPostcondition(PossibleInvariantViolationNode postcondition) {
-		return true;
-	}
-
-	private List<PossibleInvariantViolationNode> advancePostconditions (AnalyserData data) {
-		TargetInvariantAnalysis_SourceBased analysis = new TargetInvariantAnalysis_SourceBased(data.getATLModel(), data.getAnalyser());
-		List<PossibleInvariantViolationNode> target_invariants = analysis.perform();
-		return target_invariants;
-	}
-
-	
-	protected List<String> messages = new ArrayList<String>();
-
-	private void printMessage(String msg) {
-		System.out.println(msg);
-		messages.add(msg);
-		showMessage(msg);
-	}
-	
 	@Override
 	public void saveData(IFile expFile) {	
 		String fname = createDataFileName(expFile, "performance-data", "data");
@@ -394,40 +234,12 @@ public class PerformanceExecutionExperiment extends AbstractSimplifyExperiment i
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        
-//        String fname = createDataFileName(expFile, "inv-data", "data");
-//        
-//		// http://www.ibm.com/developerworks/library/x-simplexobjs/
-//		// http://simple.sourceforge.net/download/stream/doc/examples/examples.php
-//		Serializer serializer = new Persister();
-//        File result = new File(fname);
-//        try {
-//			serializer.write(expData, result);
-//			FileWriter fw = new FileWriter(new File(fname + ".txt"));
-//			fw.append(buffer.toString());
-//			fw.close();
-//        } catch (Exception e) {
-//			e.printStackTrace();
-//		}
-	};
+	}
 
 	@Override
 	public void exportToExcel(String fileName) throws IOException {
 
 	}
 
-	public static class ModuleSerializer extends ATLSerializer {
-		public static String serialize(EObject obj) {
-			ModuleSerializer s = new ModuleSerializer();
-			s.startVisiting(obj);
-			return s.g(obj);
-		}
-		
-		@Override
-		protected String serializeModuleElement(ModuleElement r) {
-			return "";
-		}
-	}
-	
 	
 }

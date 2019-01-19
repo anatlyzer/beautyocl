@@ -132,7 +132,7 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getTypWrapper__AccessType__PropertyCallExp() {
+	public EOperation getTypWrapper__IsNonNull__OclExpression() {
 		return typWrapperEClass.getEOperations().get(2);
 	}
 
@@ -141,7 +141,7 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getTypWrapper__ModelName__VariableDeclaration() {
+	public EOperation getTypWrapper__AccessType__PropertyCallExp() {
 		return typWrapperEClass.getEOperations().get(3);
 	}
 
@@ -150,8 +150,17 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getTypWrapper__TypeOf__OclExpression() {
+	public EOperation getTypWrapper__ModelName__VariableDeclaration() {
 		return typWrapperEClass.getEOperations().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getTypWrapper__TypeOf__OclExpression() {
+		return typWrapperEClass.getEOperations().get(5);
 	}
 
 	/**
@@ -185,6 +194,7 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		typWrapperEClass = createEClass(TYP_WRAPPER);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SAME_TYPE__OCLEXPRESSION_OCLEXPRESSION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_SUPER_TYPE__OCLEXPRESSION_OCLEXPRESSION);
+		createEOperation(typWrapperEClass, TYP_WRAPPER___IS_NON_NULL__OCLEXPRESSION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___ACCESS_TYPE__PROPERTYCALLEXP);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___MODEL_NAME__VARIABLEDECLARATION);
 		createEOperation(typWrapperEClass, TYP_WRAPPER___TYPE_OF__OCLEXPRESSION);
@@ -232,6 +242,9 @@ public class TypwrapperPackageImpl extends EPackageImpl implements TypwrapperPac
 		op = initEOperation(getTypWrapper__IsSuperType__OclExpression_OclExpression(), ecorePackage.getEBoolean(), "isSuperType", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getOclExpression(), "e1_subtype", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getOclExpression(), "e2_supertype", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getTypWrapper__IsNonNull__OclExpression(), ecorePackage.getEBoolean(), "isNonNull", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theOCLPackage.getOclExpression(), "e", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = initEOperation(getTypWrapper__AccessType__PropertyCallExp(), ecorePackage.getEClass(), "accessType", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theOCLPackage.getPropertyCallExp(), "exp", 0, 1, IS_UNIQUE, IS_ORDERED);

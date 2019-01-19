@@ -26,6 +26,14 @@
             resourceType="file:atl">
       </experiment>
    </extension>
+   <extension
+         id="simplification.experiment.equivalencemodelfinder"
+         point="anatlyzer.experiments.newExperiment">
+      <experiment
+            delegate="beautyocl.atl.evaluation.EquivalenceByModelFinderExperiment"
+            resourceType="file:atl">
+      </experiment>
+   </extension>
 
 
 </plugin>

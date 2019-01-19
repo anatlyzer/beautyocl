@@ -43,6 +43,14 @@ public interface TypWrapper extends EObject {
 	 * @model
 	 * @generated
 	 */
+	boolean isNonNull(OclExpression e);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
 	EClass accessType(PropertyCallExp exp);
 
 	/**

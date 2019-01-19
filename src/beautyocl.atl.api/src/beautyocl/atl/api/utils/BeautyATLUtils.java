@@ -31,7 +31,8 @@ public class BeautyATLUtils {
 		rep.add(SIMP_SAME_OPERAND);
 		rep.add(SIMP_KIND_OF_TRUE);
 		rep.add(SIMP_ITERATORS);
-		rep.add(SIMP_UNBOUND_ITERATOR);
+		//Not working yet and not sure if it is an improvement
+		//rep.add(SIMP_UNBOUND_ITERATOR);
 		rep.add(SIMP_IF_ELSE);
 		rep.add(SIMP_IF_SAME_EXPR);
 		rep.add(SIMP_IF_FUSION);

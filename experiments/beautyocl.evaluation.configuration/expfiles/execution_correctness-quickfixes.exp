@@ -1,9 +1,14 @@
-name: Quickfix simplifications
-extensionID: simplification.experiment.quickfixes
+name: Correctness of the execution of the code after simplifications
+extensionID: simplification.experiment.equivalencemodelfinder
 options: {
  only_trafos_with_qfxs : true,
- timeout : 1500
+ timeout : 15000,
+ datafile : /beautyocl.evaluation.configuration/qfx-data/quickfixes_zoo.data 
 }
+
+#projects: 
+#-  name: Ant2Maven
+#-  name: Bibtex2Docbook
 projects: 
 -  name: Ant2Maven
 -  name: Bibtex2Docbook

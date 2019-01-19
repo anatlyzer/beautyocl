@@ -87,13 +87,13 @@ public class InPlaceExecutorATL {
 		
 		//System.out.println("Pre");
 		//System.out.println( ATLSerializer.serialize(loadedModel.getResource().getContents().get(0)) );
-		System.out.println("Executing: " + transformationName);
+		//System.out.println("Executing: " + transformationName);
 		launcher.launch("run", null, launcherOptions, asmFile);
 
 		Resource r = newModel.getResource();
 		if ( r == null ) {
 			// No actions, thus nothing matched
-			System.out.println("Nothing applied! " + transformationName);
+			// System.out.println("Nothing applied! " + transformationName);
 		} else {
 			List<InPlaceAction> actions = new ArrayList<>();
 			newModel.getResource().getAllContents().forEachRemaining(o -> {

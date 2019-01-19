@@ -1,6 +1,10 @@
 package beautyocl.atl.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -40,16 +44,7 @@ public class TestKindOf extends Tester {
 		String trafo = "files/kindof/if_kind_of.atl";
 		TransformationRepository rep = configureRepoSimpleKindOf();
 		
-		UglyAnATLyzerExpression exp = loadExpression(trafo);
-		
-		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-			beauty.applyAll(exp);
-		String after = ATLSerializer.serialize(exp.getRoot());
-		assertNotEquals(before, after);
-			
-		System.out.println("Before: " + before);
-		System.out.println("After: " + after);
+		doTest(rep, new File(trafo));
 	}
 
 	@Test
@@ -57,32 +52,15 @@ public class TestKindOf extends Tester {
 		String trafo = "files/kindof/kind_of_true_pnml2petrinet.atl";
 		TransformationRepository rep = configureRepoSimpleKindOf();
 		
-		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
-		
-		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-			beauty.applyAll(exp);
-		String after = ATLSerializer.serialize(exp.getRoot());
-		assertNotEquals(before, after);
-			
-		System.out.println("Before: " + before);
-		System.out.println("After: " + after);
+		doTest(rep, new File(trafo));
 	}
+	
 	@Test
 	public void testKindOf_Inheritance() throws LoadException {	
 		String trafo = "files/kindof/if_kind_of_inheritance.atl";
 		TransformationRepository rep = configureRepoSimpleKindOf();
 		
-		UglyAnATLyzerExpression exp = loadExpression(trafo);
-		
-		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-			beauty.applyAll(exp);
-		String after = ATLSerializer.serialize(exp.getRoot());
-		assertNotEquals(before, after);
-			
-		System.out.println("Before: " + before);
-		System.out.println("After: " + after);
+		doTest(rep, new File(trafo));	
 	}
 
 	@Test
@@ -90,33 +68,41 @@ public class TestKindOf extends Tester {
 		String trafo = "files/kindof/if_kind_of_pnml2petrinet.atl";
 		TransformationRepository rep = configureRepoSimpleKindOf();
 		
-		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
-
-		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-			beauty.applyAll(exp);
-		String after = ATLSerializer.serialize(exp.getRoot());
-		assertNotEquals(before, after);
-				
-		System.out.println("Before: " + before);
-		System.out.println("After: " + after);
+		doTest(rep, new File(trafo));
 	}
 
+	@Test
+	public void testKindOf_True_KM3() throws LoadException {	
+		String trafo = "files/kindof/kind_of_true_km3.atl";
+		TransformationRepository rep = configureRepoSimpleKindOf();
+		
+		doTest(rep, new File(trafo));					
+	}
+
+	
 	@Test
 	public void testKindOf_Full_PNML2PetriNet() throws LoadException {	
 		String trafo = "files/kindof/if_kind_of_full_pnml2petrinet.atl";
 		TransformationRepository rep = configureRepoFullKindOf();
 		
-		UglyAnATLyzerExpression exp = loadExpressionPNML(trafo);
+		doTest(rep, new File(trafo));
+	}
 
-		String before = ATLSerializer.serialize(exp.getRoot());		
-			Beautyfier beauty = new Beautyfier(rep, IExecutionTracer.NULL);
-			beauty.applyAll(exp);
-		String after = ATLSerializer.serialize(exp.getRoot());
-		assertNotEquals(before, after);
-				
-		System.out.println("Before: " + before);
-		System.out.println("After: " + after);
+	
+	@Test
+	public void testKindOf_Full_Multiple_Inheritance_XHTML() throws LoadException {	
+		String trafo = "files/kindof/kind_of_full_multiple_inheritance_xhtml.atl";
+		TransformationRepository rep = configureRepoFullKindOf();
+		
+		doTest(rep, new File(trafo));
+	}
+
+	@Test
+	public void testKindOf_Full_NoChange() throws LoadException {	
+		String trafo = "files/kindof/kind_of_full_no_change.atl";
+		TransformationRepository rep = configureRepoFullKindOf();
+		
+		doTest(rep, new File(trafo));
 	}
 
 }

@@ -49,7 +49,7 @@ public class Scheduler {
 					EObject result = null;
 					try {
 						EObject source = m.getAction().getSource();
-						System.out.println("Applying source" + source);
+						//System.out.println("Applying source" + source);
 						// Check conflicts, this is a naive way. 
 						for (EObject obj : affectedElements) {
 							if ( EcoreUtil.isAncestor(obj, source) )

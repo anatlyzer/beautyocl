@@ -11,6 +11,8 @@ class TypWrapper {
   op boolean isSameType(atlext.OCL.OclExpression e1, atlext.OCL.OclExpression e2);
   op boolean isSuperType(atlext.OCL.OclExpression e1_subtype, atlext.OCL.OclExpression e2_supertype);
   
+  op boolean isNonNull(atlext.OCL.OclExpression e);
+  
   op ecore.EClass accessType(atlext.OCL.PropertyCallExp exp);
  
   op String modelName(atlext.OCL.VariableDeclaration vd);

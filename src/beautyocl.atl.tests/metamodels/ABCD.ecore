@@ -37,7 +37,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="C2" eSuperTypes="#//C">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="propOfC2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="D" eSuperTypes="#//A">
+  <eClassifiers xsi:type="ecore:EClass" name="D" abstract="true" eSuperTypes="#//A">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="propOfD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="D1" eSuperTypes="#//D">

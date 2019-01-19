@@ -1,0 +1,76 @@
+-- @path XML=/beautyocl.atl.tests/metamodels/XML.ecore
+
+module interleaved;
+create OUT : XML from IN : XML;
+
+-- @simplifiesTo helper  def: testInterleaved() : Boolean = XML!Element.allInstances()->forAll(v1 | Set {'xsl:otherwise', 'xsl:when', 'xsl:choose', 'xsl:copy-of', 'xsl:short' }->includes(v1.name) or (v1.name <> 'xsl:otherwise' and v1.name <> 'xsl:when') or Set {'xsl:if', 'xsl:apply-templates', 'xsl:value-of', 'xsl:template' }->includes(v1.name)); 
+helper def : testInterleaved() : Boolean =
+	XML!Element.allInstances()->forAll(v1 | 
+		(v1.name = 'xsl:short' or v1.name = 'xsl:copy-of' or v1.name = 'xsl:choose' or v1.name = 'xsl:when' or v1.name = 'xsl:otherwise')
+		or 
+		(v1.name <> 'xsl:otherwise' and v1.name <> 'xsl:when') 
+		or v1.name = 'xsl:template' or v1.name = 'xsl:value-of' or v1.name = 'xsl:apply-templates' or v1.name = 'xsl:if');
+		
+		
+		
+	--	(v1.name = 'xsl:short' or v1.name = 'xsl:copy-of' or v1.name = 'xsl:choose' or v1.name = 'xsl:when') 
+	--	and 
+	--	(v1.name <> 'xsl:otherwise' and v1.name <> 'xsl:when' and v1.name <> 'xsl:choose' and v1.name <> 'xsl:copy-of' and v1.name <> 'xsl:short' and v1.name <> 'xsl:foreach' and v1.name <> 'xsl:if' and v1.name <> 'xsl:apply-templates' and v1.name <> 'xsl:value-of' and v1.name <> 'xsl:template' and v1.name <> 'xsl:stylesheet')
+	--	and
+	--	(v1.name = 'xsl:templatexxxx' or v1.name = 'xsl:if' or v1.name = 'xsl:stylesheet' or v1.name = 'xsl:foreach') );
+		
+		
+
+--helper def : testInterleaved() : Boolean =
+--		XML!Root.allInstances()->select(iroot | iroot.name = 'xsl:stylesheet')->forAll(iroot | 
+--			let v1 : XML!Element = iroot.parent
+-- in if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:short'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:copy-of'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:choose'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:when'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:otherwise'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name <> 'xsl:otherwise' and v1.name <> 'xsl:when' and v1.name <> 'xsl:choose' and v1.name <> 'xsl:copy-of' and v1.name <> 'xsl:short' and v1.name <> 'xsl:foreach' and v1.name <> 'xsl:if' and v1.name <> 'xsl:apply-templates' and v1.name <> 'xsl:value-of' and v1.name <> 'xsl:template' and v1.name <> 'xsl:stylesheet'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:template'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:value-of'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:apply-templates'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:if'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Root) then
+--	v1.name = 'xsl:stylesheet'
+--else
+--	false
+--endif or if v1.oclIsKindOf(XML!Element) then
+--	v1.name = 'xsl:foreach'
+--else
+--	false
+--endif);
+	
