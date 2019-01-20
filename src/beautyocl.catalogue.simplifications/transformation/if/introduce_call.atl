@@ -10,19 +10,49 @@ module "introduce_call";
 create OUT : ACT, OUT2 : OCL2 from IN : OCL; 
 
 
-helper context OCL!OclExpression def: isComplexInliningOnSource() : Boolean = false;
-helper context OCL!OperationCallExp def: isComplexInliningOnSource() : Boolean = 
-	self.arguments->exists(a | a.oclIsKindOf(OCL!IfExp));
-helper context OCL!OperatorCallExp def: isComplexInliningOnSource() : Boolean = 
-	self.argument.oclIsKindOf(OCL!IfExp);
+helper context OCL!OclExpression def: isComplexInlining(ignore : Set(OCL!OclExpression)) : Boolean = false;
+
+helper context OCL!OperationCallExp def: isComplexInlining(ignore : Set(OCL!OclExpression)) : Boolean = 
+	self.arguments->exists(a | if ignore->excludes(a) then a.isComplexInlining(ignore->including(a)) else false endif)
+	or
+	if ignore->excludes(self.source) then self.source.isComplexInlining(ignore->including(self.source)) else false endif;
+		
+	
+helper context OCL!OperatorCallExp def: isComplexInlining(ignore : Set(OCL!OclExpression)) : Boolean = 
+-- TODO: This seems to make AnATLyzer crash...
+--	if self.argument.oclIsUndefined() then 
+--		false 
+--	else 
+--		(ignore->excludes(self.argument) implies self.argument.isComplexInlining(ignore->including(self.argument)))
+--	endif
+--	or
+	if self.argument.oclIsUndefined() then 
+		false
+	else
+		if ignore->excludes(self.argument) then self.argument.isComplexInlining(ignore->including(self.argument)) else false endif
+	endif
+	or	
+	if ignore->excludes(self.source) then self.source.isComplexInlining(ignore->including(self.source)) else false endif;
+
+helper context OCL!IfExp def: isComplexInlining(ignore : Set(OCL!OclExpression)) : Boolean = true;
+
+helper context OCL!IteratorExp def: isComplexInlining(ignore : Set(OCL!OclExpression)) : Boolean = 
+	if ignore->excludes(self.body) then self.body.isComplexInlining(ignore->including(self.body)) else false endif
+	or
+	if ignore->excludes(self.source) then self.source.isComplexInlining(ignore->including(self.source)) else false endif;
+
 
 rule convert {
 	from o : OCL!PropertyCallExp (
 		-- TODO: This is to avoid conflicts in the bindings. Should be handled differently in the binding, but there seems to be a bug
-		( not o.oclIsKindOf(OCL!OperatorCallExp) and
+		( not o.oclIsKindOf(OCL!OperatorCallExp) ) and
 		
-		o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInliningOnSource())
-		-- TODO: Check args complexity
+		if o.source.oclIsKindOf(OCL!IfExp) then 
+			not o.isComplexInlining(Set { o.source })
+		else
+			false
+		endif
+			
 	)
 	to c1 : ACT!Clone (		
 		ignoredProperties <- Sequence { 'source' }	
@@ -62,7 +92,12 @@ rule convert {
 
 rule convertOperator {
 	from o : OCL!BinaryOperatorCallExp (
-		(o.source.oclIsKindOf(OCL!IfExp) and not o.isComplexInliningOnSource())
+		if o.source.oclIsKindOf(OCL!IfExp) then
+			not o.isComplexInlining(Set { o.source })
+		else
+			false	
+		endif
+		
 	)
 	to c1 : ACT!Clone (		
 		ignoredProperties <- Sequence { 'source' }	

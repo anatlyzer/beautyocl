@@ -127,6 +127,8 @@ public class TestIfElse extends Tester {
 
 				@Override
 				public void preApply(Match m, EObject original) {
+					System.out.println(AnalyserUtils.toTree((LocatedElement) original));
+
 					System.out.println("A: " + m.getAction().getSource());
 					
 					String exp = ATLSerializer.serialize(original);
