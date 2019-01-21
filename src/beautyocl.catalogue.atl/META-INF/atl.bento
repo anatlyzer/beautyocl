@@ -4,6 +4,8 @@ composite component beautyocl.atl {
 	// Literals
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_integers.bento"
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_booleans.bento"
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_identity_element.bento"
+
 	// Type comparisons
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplify_full_type_comparison.bento"
 	
@@ -29,6 +31,9 @@ composite component beautyocl.atl {
 	// Operators	                         
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_same_operand.bento"	
 	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_equality_sequence.bento"	
+	
+	// builtinoperations
+	uses "platform:/resource/beautyocl.catalogue.simplifications/META-INF/simplification_built_in_operations.bento"	
 	                          
 	binding bindTyping    = "typing2atl.gbind"
 	binding bindComparison= "comparison2atl.gbind"
@@ -50,6 +55,8 @@ composite component beautyocl.atl {
 	compose seq  
 		apply booleans(bindAll(in)) -> (act, bindAllTgt(out))
 		apply integers(bindAll(in)) -> (act, bindAllTgt(out))
+		apply identityelement(bindAll(in)) -> (act, bindAllTgt(out))
+		
 		apply iterator(bindAll(in)) -> (act, bindAllTgt(out))
 		apply unbounditerator(bindAll(in), bindTyping(in2),  bindComparison(in3)) -> (act, bindAllTgt(out))
 		apply ifelse(bindAll(in)) -> (act, bindAllTgt(out))
@@ -71,5 +78,8 @@ composite component beautyocl.atl {
 
 		apply sameoperand(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
 		apply equalitysequence(bindAll(in), bindComparison(in3)) -> (act, bindAllTgt(out))
+
+		apply builtinoperations(bindAll(in), bindTyping(in2),  bindComparison(in3)) -> (act, bindAllTgt(out))
+
 }
 

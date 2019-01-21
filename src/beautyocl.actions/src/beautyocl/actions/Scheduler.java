@@ -65,7 +65,7 @@ public class Scheduler {
 
 						continue MAIN_LOOP;
 					} catch ( Throwable e ) {
-						if ( tracer.onError(e) ) {
+						if ( tracer.onError(m, e) ) {
 							// Continue with another trafo
 							continue TRY_TRAFO;
 						}

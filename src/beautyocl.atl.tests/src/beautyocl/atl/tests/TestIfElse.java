@@ -144,7 +144,7 @@ public class TestIfElse extends Tester {
 				}
 
 				@Override
-				public boolean onError(Throwable t) {
+				public boolean onError(Match m, Throwable t) {
 					t.printStackTrace();
 					// TODO Auto-generated method stub
 					return false;
@@ -184,7 +184,7 @@ public class TestIfElse extends Tester {
 				}
 
 				@Override
-				public boolean onError(Throwable t) {
+				public boolean onError(Match m, Throwable t) {
 					t.printStackTrace();
 					// TODO Auto-generated method stub
 					return false;

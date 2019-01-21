@@ -1,0 +1,10 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+module identityelement;
+create OUT : WXYZ from IN : ABCD;
+
+-- @simplifiesTo helper def : test() : Boolean = true
+helper def : test() : Boolean = OclUndefined.oclIsUndefined();
+

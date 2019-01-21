@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -43,6 +44,7 @@ public class StatsGenerator extends AbstractMain {
 		
 		long totalOriginalNodes = 0;
 		long totalSimplifiedNodes = 0;
+		
 		
 		for (BETransformation t : data.getTransformations()) {
 			for (BEProblem p : t.getProblems()) {
@@ -98,6 +100,7 @@ public class StatsGenerator extends AbstractMain {
 		
 		Collections.sort(simplificationsPerExpression);
 		int median =  simplificationsPerExpression.get(simplificationsPerExpression.size() / 2);
+		Collections.sort(reductionsPerExpression);
 		double medianSimp =  reductionsPerExpression.get(reductionsPerExpression.size() / 2);
 		
 		System.out.println("Simplifications: " + totalSimplifications);
@@ -107,7 +110,8 @@ public class StatsGenerator extends AbstractMain {
 		System.out.println();
 		System.out.println(" Original nodes: " + totalOriginalNodes);
 		System.out.println("Simplifi. nodes: " + totalSimplifiedNodes);
-		System.out.println("Avg simp. nodes: " + fixedLengthDouble((totalOriginalNodes - totalSimplifiedNodes)/ (double) totalOriginalNodes, 2));
+		//System.out.println("Avg simp. nodes: " + fixedLengthDouble((totalOriginalNodes - totalSimplifiedNodes)/ (double) totalOriginalNodes, 2));
+		System.out.println("Avg simp. nodes: " + fixedLengthDouble(reductionsPerExpression.stream().collect(Collectors.averagingDouble(d -> d)), 2));
 		System.out.println("Median simp.nod: " + fixedLengthDouble(medianSimp, 2));
 		
 	}

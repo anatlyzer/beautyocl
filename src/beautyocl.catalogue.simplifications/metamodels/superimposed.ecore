@@ -12,6 +12,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="varDcl" lowerBound="1"
         eType="#//VariableDeclaration"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OclUndefinedExp" eSuperTypes="#//OclExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="LetExp" eSuperTypes="#//OclExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
         eType="#//VariableDeclaration" containment="true"/>

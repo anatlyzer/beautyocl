@@ -28,6 +28,10 @@ public abstract class AbstractSimplifyExperiment extends AbstractATLExperiment {
 			this.currentSimplification.setName(m.getTransformationName());
 			this.currentSimplification.setOriginalExp(ATLSerializer.serialize(original));
 			this.currentSimplification.setOriginalNumNodes(countNodes(original));
+	
+			System.out.println("*** Before applying: " + m.getTransformationName());
+			System.out.println(this.currentSimplification.getOriginalExp());
+			System.out.println();
 		}
 
 		@Override
@@ -35,14 +39,19 @@ public abstract class AbstractSimplifyExperiment extends AbstractATLExperiment {
 			if ( transformed == null ) {				
 				throw new IllegalStateException("Cannot be null: " + m.getAction().getTransformation());
 			}
-			System.out.println(this.currentSimplification.getOriginalExp());
+			System.out.println("*** After applying: " + m.getTransformationName());
+			
 			this.currentSimplification.setSimplifiedExp(ATLSerializer.serialize(transformed));
 			this.currentSimplification.setSimplifiedNumNodes(countNodes(transformed));
 			this.simp.addSimplification(currentSimplification);
+			
+			System.out.println(this.currentSimplification.getSimplifiedExp());
+			System.out.println();
 		}
 
 		@Override
-		public boolean onError(Throwable t) {
+		public boolean onError(Match m, Throwable t) {
+			System.out.println("Error on : " + m.getTransformationName());
 			t.printStackTrace();
 			return false;
 		}

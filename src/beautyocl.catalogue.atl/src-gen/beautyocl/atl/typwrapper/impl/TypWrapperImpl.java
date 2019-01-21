@@ -4,6 +4,7 @@ package beautyocl.atl.typwrapper.impl;
 
 import anatlyzer.atl.model.TypingModel;
 import anatlyzer.atl.types.Metaclass;
+import anatlyzer.atl.types.TupleType;
 import anatlyzer.atl.types.Type;
 import anatlyzer.atlext.ATL.PatternElement;
 import anatlyzer.atlext.ATL.RuleVariableDeclaration;
@@ -87,6 +88,11 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 			EStructuralFeature f = (EStructuralFeature) nav.getUsedFeature();
 			if ( f != null ) {
 				return f.isRequired();
+			} else {
+				if ( nav.getSource().getInferredType() instanceof TupleType ) {
+					// As below. We would need some more analysis, but we assume that it is non-null.
+					return true;
+				}				
 			}
 		} 
 		else if ( e instanceof VariableExp ) {

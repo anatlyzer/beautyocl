@@ -8,16 +8,55 @@ create OUT: FSM from IN: HSM;
 
 helper def: fsm_state_multi_upper : Boolean = 
 HSM!RegularState.allInstances()->forAll(s | HSM!StateMachine.allInstances()->forAll(sm1 | HSM!StateMachine.allInstances()->forAll(sm2 | 
+	
 if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
-	false
-else 
 	true
-endif and (if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
-	s.stateMachine
 else
-	OclUndefined
-endif = sm2) ))) --  implies sm1 = sm2))) 
-;
+	false
+endif implies (sm1 = sm2) )));
+--
+--helper def: fsm_state_multi_upper : Boolean = 
+--HSM!RegularState.allInstances()->forAll(s | HSM!StateMachine.allInstances()->forAll(sm1 | HSM!StateMachine.allInstances()->forAll(sm2 | 
+--if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	false
+--else 
+--	true
+--endif and (if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s.stateMachine
+--else
+--	OclUndefined
+--endif = sm2) ))) --  implies sm1 = sm2))) 
+--;
+
+
+--helper def: fsm_state_multi_upper : Boolean = 
+--HSM!RegularState.allInstances()->forAll(s | HSM!StateMachine.allInstances()->forAll(sm1 | HSM!StateMachine.allInstances()->forAll(sm2 | if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s.stateMachine
+--else
+--	OclUndefined
+--endif = sm1 and if s.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s.stateMachine
+--else
+--	OclUndefined
+--endif = sm2 implies sm1 = sm2))) and HSM!InitialState.allInstances()->select(is1 | is1.compositeState.oclIsUndefined())->forAll(s1 | HSM!StateMachine.allInstances()->forAll(sm11 | HSM!StateMachine.allInstances()->forAll(sm21 | if s1.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s1.stateMachine
+--else
+--	OclUndefined
+--endif = sm11 and if s1.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s1.stateMachine
+--else
+--	OclUndefined
+--endif = sm21 implies sm11 = sm21))) and HSM!InitialState.allInstances()->select(is1 | not is1.compositeState.oclIsUndefined())->forAll(s2 | HSM!StateMachine.allInstances()->forAll(sm12 | HSM!StateMachine.allInstances()->forAll(sm22 | if s2.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s2.stateMachine
+--else
+--	OclUndefined
+--endif = sm12 and if s2.stateMachine.oclIsKindOf(HSM!StateMachine) then
+--	s2.stateMachine
+--else
+--	OclUndefined
+--endif = sm22 implies sm12 = sm22)));
+
+
 
 --helper def: fsm_state_multi_upper : Boolean = 
 --HSM!RegularState.allInstances()->forAll(s | HSM!StateMachine.allInstances()->forAll(sm1 | HSM!StateMachine.allInstances()->forAll(sm2 | 

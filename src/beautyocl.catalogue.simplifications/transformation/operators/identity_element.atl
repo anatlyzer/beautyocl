@@ -1,8 +1,11 @@
 -- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
 -- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
 -- @path ACT=/beautyocl.actions/model/actions.ecore
-
-module "simplify_booleans";
+--
+-- Apply identity elements to several categories, booleans, integers
+-- https://en.wikipedia.org/wiki/Identity_element
+--
+module "identityelement";
 create OUT : ACT, OUT2 : OCLt from IN : OCL; 
 
 
@@ -11,8 +14,9 @@ helper context OCL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = fal
 
 
 --
--- expr or false 
+-- expr or false => expr 
 --
+-- @ignore invalid-assignment-imperative-binding
 rule or_false {
 	from o : OCL!BinaryOperatorCallExp (
 		o.name = 'or' and
@@ -24,3 +28,21 @@ rule or_false {
 		a.children <- if o.source.isBooleanExpr(false) then o.argument else o.source endif;
 	}
 }
+
+
+--
+-- expr and true => expr 
+--
+-- @ignore invalid-assignment-imperative-binding
+rule and_true {
+	from o : OCL!BinaryOperatorCallExp (
+		o.name = 'and' and
+		(o.source.isBooleanExpr(true) or o.argument.isBooleanExpr(true))
+	)
+	to a : ACT!DeleteMoveChildren
+	do {
+		a.source <- o;
+		a.children <- if o.source.isBooleanExpr(true) then o.argument else o.source endif;
+	}
+}
+

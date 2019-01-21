@@ -16,6 +16,10 @@ class VariableExp extends OclExpression {
 }
 
 
+class OclUndefinedExp extends OclExpression {
+}
+
+
 class LetExp extends OclExpression {
     val VariableDeclaration[1] variable;
     val OclExpression[1] in_;

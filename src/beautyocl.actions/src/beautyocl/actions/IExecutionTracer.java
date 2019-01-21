@@ -20,7 +20,7 @@ public interface IExecutionTracer {
 		}
 
 		@Override
-		public boolean onError(Throwable t) {
+		public boolean onError(Match m, Throwable t) {
 			t.printStackTrace();			
 			return false;
 		}
@@ -31,5 +31,5 @@ public interface IExecutionTracer {
 
 	void postApply(Match m, EObject transformed);
 	
-	boolean onError(Throwable t);
+	boolean onError(Match m, Throwable t);
 }

@@ -1,0 +1,107 @@
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path TYP=/beautyocl.catalogue.simplifications/metamodels/typing.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+
+-- This simplification identifies a chain of "or" expressions
+-- checking the type of same source variable with oclIsKindOf.
+-- If the chain covers all the subtypes of a type, it is substituted by the type.
+-- <pre>
+--    v.oclIsKindOf(A) or v.oclIsKindOf(B) or v.oclIsKindOf(C) => or v.oclIsKindOf(SuperTypeOfABC)
+-- </pre>
+--
+-- The following pre-conditions holds:
+-- 		OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
+--
+module "builtin_operations";
+create OUT : ACT, OUT2 : OCLt from IN : OCL, IN2 : TYP; 
+
+helper def : typ : TYP!ExprTyping = TYP!ExprTyping.allInstances()->first();
+
+helper context OCL!OclExpression def: isSize() : Boolean = false;
+helper context OCL!CollectionOperationCallExp def: isSize() : Boolean = self.name = 'size';
+
+helper context OCL!OclExpression def: isZero() : Boolean = false;
+helper context OCL!IntegerExp def: isZero() : Boolean = self.integerSymbol = 0;
+
+
+--
+-- col->size() => 0   => true
+--
+-- @ignore invalid-assignment-imperative-binding
+rule size_greater_than_zero {
+	from o : OCL!BinaryOperatorCallExp (
+		o.name = '>=' and o.argument.isZero() and o.source.isSize()
+	)
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
+		 	booleanSymbol <- true
+	   )
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
+}
+
+---
+
+helper context OCL!OclExpression def: isOclUndefined()   : Boolean = false;
+helper context OCL!OclUndefinedExp def: isOclUndefined() : Boolean = true;
+
+helper context OCL!OclExpression def: isNonNullExpression() : Boolean = false;
+helper context OCL!OclUndefinedExp def: isNonNullExpression() : Boolean = self.integerSymbol = 0;
+
+
+
+--
+-- OclUndefined.oclIsUndefined()
+-- <something-null> =  OclUndefined => true
+-- <something-null> <> OclUndefined => false
+
+-- <something-non-null> <> OclUndefined
+--
+
+-- @ignore invalid-assignment-imperative-binding
+rule equal_is_ocl_undefined {
+	from o : OCL!BinaryOperatorCallExp (
+		o.name = '=' and o.source.isOclUndefined() and o.argument.isOclUndefined() 
+	)
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
+		 	booleanSymbol <- true
+	   )
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
+}
+
+-- @ignore invalid-assignment-imperative-binding
+rule distinct_is_ocl_undefined {
+	from o : OCL!BinaryOperatorCallExp (
+		o.name = '<>' and o.source.isOclUndefined() and o.argument.isOclUndefined() 
+	)
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
+		 	booleanSymbol <- false
+	   )
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
+}
+
+-- @ignore invalid-assignment-imperative-binding
+rule operation_is_ocl_undefined {
+	from o : OCL!OperationCallExp (
+		o.name = 'oclIsUndefined' and o.source.isOclUndefined() 
+	)
+	to a : ACT!Replace,
+	   r : OCLt!BooleanExp (
+		 	booleanSymbol <- true
+	   )
+	do {
+		a.source <- o;
+		a.target <- r;
+	}
+}

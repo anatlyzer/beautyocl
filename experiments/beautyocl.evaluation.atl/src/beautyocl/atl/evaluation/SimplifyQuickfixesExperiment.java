@@ -233,7 +233,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			System.out.println("Before:\n" + ATLSerializer.serialize(targetExpression)+"\n");
 			ExecutionInfo result = simplifier.simplify(original.getAnalyser(), targetExpression, new ExperimentTracer(expQfx) {
 				@Override
-				public boolean onError(Throwable t) {
+				public boolean onError(Match m, Throwable t) {
 					writer.append("SIMPLIFICATION ERROR: \n" + "  " + original.getATLModel().getMainFileLocation() + "\n   " + p + "\n   " + quickfix.getDisplayString());
 					return true;
 				}

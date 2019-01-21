@@ -1,4 +1,4 @@
-transformation component beautyocl.simplifications.builtinoperations {
+transformation component beautyocl.simplifications.unshortcircuit {
 	source concept OCL : "superimposed.ecore"
 	source concept OCL2 : "superimposed.ecore"
 	source concept COMP : "comparison.ecore"
@@ -11,7 +11,7 @@ transformation component beautyocl.simplifications.builtinoperations {
 	target model out : ACT
 	target model out2 : OCL2
 	
-	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/builtin/built_in_operations.atl" with
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/unshortcircuit/unshort.atl" with
 		IN : OCL = in,
 		IN2 : TYP = in2,		
 		IN3 : COMP = in3,

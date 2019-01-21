@@ -8,6 +8,7 @@ import beautyocl.atl.api.ATLTransformation.VM;
 public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_INTEGERS = new ATLTransformation("integers", pathTo("beautyocl.simplifications.integers.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_BOOLEANS = new ATLTransformation("booleans", pathTo("beautyocl.simplifications.booleans.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_IDENTITY_ELEMENT = new ATLTransformation("identity-element", pathTo("beautyocl.simplifications.identityelement.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_ELSE = new ATLTransformation("if-else", pathTo("beautyocl.simplifications.ifelse.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_ITERATORS = new ATLTransformation("iterators", pathTo("beautyocl.simplifications.iterator.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_UNBOUND_ITERATOR = new ATLTransformation("unbound-iterator", pathTo("beautyocl.simplifications.unbounditerator.asm"), VM.STANDARD);
@@ -22,12 +23,15 @@ public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_SAME_OPERAND = new ATLTransformation("same-operand", pathTo("beautyocl.simplifications.sameoperand.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_EQUALITY_SEQUENCE = new ATLTransformation("equality-sequence", pathTo("beautyocl.simplifications.equalitysequence.asm"), VM.STANDARD);
 	public static final ATLTransformation PULL_UP_CONDITIONAL = new ATLTransformation("pull-up-conditional", pathTo("beautyocl.simplifications.pullupconditional.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_BUILT_IN_OPERATIONS = new ATLTransformation("built-in-operations", pathTo("beautyocl.simplifications.builtinoperations.asm"), VM.STANDARD);
+	
 	
 	public static TransformationRepository getRepository() {
 		TransformationRepository rep = new TransformationRepository();
 		// rep.addEMFTVM("beautyocl.simplifications.integer.atl");
 		rep.add(SIMP_INTEGERS);
 		rep.add(SIMP_BOOLEANS);
+		rep.add(SIMP_IDENTITY_ELEMENT);
 		rep.add(SIMP_SAME_OPERAND);
 		rep.add(SIMP_KIND_OF_TRUE);
 		rep.add(SIMP_ITERATORS);
@@ -39,8 +43,10 @@ public class BeautyATLUtils {
 		rep.add(SIMP_UNSHORT_CIRCUIT);
 		rep.add(SIMP_KIND_OF_FULL);
 		rep.add(SIMP_IF_TRUE_FALSE);
-		//rep.add(SIMP_IF_INTRO_CALL);
+		rep.add(SIMP_IF_INTRO_CALL);
 		rep.add(SIMP_REMOVE_LET);
+		
+		rep.add(SIMP_BUILT_IN_OPERATIONS);
 		
 		// This is idiomatic, should be in a last round with all the idiomatic stuff
 		// rep.add(PULL_UP_CONDITIONAL);

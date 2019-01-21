@@ -39,7 +39,9 @@ public class CustomCopier extends EcoreUtil.Copier {
 	
 	@Override
 	protected void copyContainment(EReference eReference, EObject eObject, EObject copyEObject) {
-		if ( ignoredReferences.contains(eReference.getName() ))
+		if ( ignoredReferences.contains(eReference.getName()) && 
+				// Ignore the copy of only level 0 references. Copy the rest. This can be improved with a specification of the level (e.g., 0, 1, all)
+				(eObject == root) )
 			return;
 		
 		super.copyContainment(eReference, eObject, copyEObject);

@@ -12,7 +12,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestLet.class, 
 	TestUnshortCircuit.class,
 	TestOperands.class,
+	TestOperators.class,
 	TestIterators.class,
+	TestBuiltinOperations.class,
 	TestCombinations.class})
 public class AllTestsAtl {
 
