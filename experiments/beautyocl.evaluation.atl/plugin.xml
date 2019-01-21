@@ -17,6 +17,15 @@
             resourceType="file:atl">
       </experiment>
    </extension>
+   <extension
+         id="simplification.experiment.zoo"
+         point="anatlyzer.experiments.newExperiment">
+      <experiment
+            delegate="beautyocl.atl.evaluation.SimplifyZooExperiment"
+            resourceType="file:atl">
+      </experiment>
+   </extension>
+
 
    <extension
          id="simplification.experiment.executionperformance"

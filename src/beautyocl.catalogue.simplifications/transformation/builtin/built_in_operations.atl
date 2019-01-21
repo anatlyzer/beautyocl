@@ -48,10 +48,6 @@ rule size_greater_than_zero {
 helper context OCL!OclExpression def: isOclUndefined()   : Boolean = false;
 helper context OCL!OclUndefinedExp def: isOclUndefined() : Boolean = true;
 
-helper context OCL!OclExpression def: isNonNullExpression() : Boolean = false;
-helper context OCL!OclUndefinedExp def: isNonNullExpression() : Boolean = self.integerSymbol = 0;
-
-
 
 --
 -- OclUndefined.oclIsUndefined()

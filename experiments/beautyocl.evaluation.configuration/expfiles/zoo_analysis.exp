@@ -1,15 +1,8 @@
-name: Analyse type errors
-extensionID: typing.experiment.analyseTypeErrors
+name: Zoo simplifications
+extensionID: simplification.experiment.zoo
 options: {
- exclude_same_name : true,
- use_model_finder : true, 
- conflict_analysis : true,
- count_potential : false,
- witness_recursion_unfolding : false,
- witnessmode : "error-path",
- timeout : 120000
+ timeout : 1500
 }
-
 projects: 
 -  name: Ant2Maven
 -  name: Bibtex2Docbook

@@ -215,5 +215,12 @@ public class TestIfElse extends Tester {
 		System.out.println("Before: " + before);
 		System.out.println("After: " + after);
 	}
-	
+
+	@Test
+	public void testComplementary_expressions() throws LoadException {	
+		TransformationRepository rep = new TransformationRepository();
+		rep.add(BeautyATLUtils.SIMP_IF_COMPLEMENTARY_CONDITIONS);
+
+		doTest(rep, new File("files/ifelse/if_complementary_expressions.atl"));
+	}
 }

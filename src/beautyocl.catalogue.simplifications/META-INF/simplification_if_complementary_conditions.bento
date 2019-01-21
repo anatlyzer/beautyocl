@@ -1,4 +1,4 @@
-transformation component beautyocl.simplifications.ifcomplementaryconditions {
+transformation component beautyocl.simplifications.ifsameexpr {
 	source concept OCL : "superimposed.ecore"
 	source concept OCL2 : "superimposed.ecore"
 	source concept COMP : "comparison.ecore"
@@ -9,7 +9,7 @@ transformation component beautyocl.simplifications.ifcomplementaryconditions {
 	target model out : ACT
 	target model out2 : OCL2
 	
-	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/if/if_complementary_conditions.atl" with
+	definition atl "platform:/resource/beautyocl.catalogue.simplifications/transformation/if/if_same_expr.atl" with
 		IN : OCL = in,
 		IN3 : COMP = in3,
 		OUT : ACT = out,

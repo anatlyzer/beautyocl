@@ -1,6 +1,5 @@
 package beautyocl.atl.api.utils;
 
-import beautyocl.api.common.IATLTransformation;
 import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.ATLTransformation;
 import beautyocl.atl.api.ATLTransformation.VM;
@@ -13,6 +12,7 @@ public class BeautyATLUtils {
 	public static final ATLTransformation SIMP_ITERATORS = new ATLTransformation("iterators", pathTo("beautyocl.simplifications.iterator.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_UNBOUND_ITERATOR = new ATLTransformation("unbound-iterator", pathTo("beautyocl.simplifications.unbounditerator.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_IF_SAME_EXPR = new ATLTransformation("if-same-expr", pathTo("beautyocl.simplifications.ifsameexpr.asm"), VM.STANDARD);
+	public static final ATLTransformation SIMP_IF_COMPLEMENTARY_CONDITIONS = new ATLTransformation("if-complementary-conditions", pathTo("beautyocl.simplifications.ifcomplementaryconditions.asm"), VM.STANDARD);	
 	public static final ATLTransformation SIMP_IF_FUSION = new ATLTransformation("if-fusion", pathTo("beautyocl.simplifications.iffusion.asm"), VM.STANDARD);
 	public static final ATLTransformation SIMP_UNSHORT_CIRCUIT = new ATLTransformation("unshort", pathTo("beautyocl.simplifications.unshortcircuit.asm"), VM.STANDARD);	
 	public static final ATLTransformation SIMP_KIND_OF_TRUE = new ATLTransformation("kind-of-true", pathTo("beautyocl.simplifications.kindoftrue.asm"), VM.STANDARD);
@@ -44,6 +44,7 @@ public class BeautyATLUtils {
 		rep.add(SIMP_KIND_OF_FULL);
 		rep.add(SIMP_IF_TRUE_FALSE);
 		rep.add(SIMP_IF_INTRO_CALL);
+		rep.add(SIMP_IF_COMPLEMENTARY_CONDITIONS);		
 		rep.add(SIMP_REMOVE_LET);
 		
 		rep.add(SIMP_BUILT_IN_OPERATIONS);

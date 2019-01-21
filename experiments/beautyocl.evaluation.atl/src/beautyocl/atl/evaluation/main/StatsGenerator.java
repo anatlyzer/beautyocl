@@ -15,6 +15,7 @@ import org.simpleframework.xml.core.Persister;
 import beautyocl.atl.evaluation.raw.AbstractSimplificable;
 import beautyocl.atl.evaluation.raw.BEData;
 import beautyocl.atl.evaluation.raw.BEInvariant;
+import beautyocl.atl.evaluation.raw.BEModuleElement;
 import beautyocl.atl.evaluation.raw.BEProblem;
 import beautyocl.atl.evaluation.raw.BEQuickfix;
 import beautyocl.atl.evaluation.raw.BESimplification;
@@ -86,7 +87,26 @@ public class StatsGenerator extends AbstractMain {
 				
 				simplificationsPerExpression.add(inv.getSimplifications().size());
 			}
+
+			for (BEModuleElement me : t.getModuleElements()) {
+				totalExpressions++;
+
+				totalOriginalNodes += me.getOriginalNumNodes();
+				totalSimplifiedNodes += me.getSimplifiedNumNodes();
 				
+				double reduction = (me.getOriginalNumNodes() - me.getSimplifiedNumNodes())/ (double) me.getOriginalNumNodes();
+				reductionsPerExpression.add(reduction);
+
+				
+				for (BESimplification s : me.getSimplifications()) {
+					simplificationsByName.putIfAbsent(s.getName(), new ArrayList<BESimplification>());
+					simplificationsByName.get(s.getName()).add(s);
+					totalSimplifications++;
+				}				
+				
+				simplificationsPerExpression.add(me.getSimplifications().size());
+			}
+			
 		}
 		
 		for (String simp : simplificationsByName.keySet()) {

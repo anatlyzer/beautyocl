@@ -1,0 +1,55 @@
+
+-- @path OCL=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path OCLt=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path COMP=/beautyocl.catalogue.simplifications/metamodels/comparison.ecore
+
+-- Deals with cases like:
+--
+-- if x > 0 then
+--     <whatever>
+-- else if x <= 0 then
+--     <the condition is always true>
+-- endif
+--
+module "if_complementary_conditions";
+create OUT : ACT, OUT2 : OCLt from IN : OCL, IN3 : COMP; 
+
+helper def : comp : COMP!ExprComparator = COMP!ExprComparator.allInstances()->first();
+
+helper context OCL!BooleanExp    def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+helper context OCL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
+helper  def: isComplementary_Operator(e1 : OCL!OclExpression, e2 : OCL!OclExpression, op1 : String, op2 : String) : Boolean = 
+	if e1.oclIsKindOf(OCL!BinaryOperatorCallExp) and e2.oclIsKindOf(OCL!BinaryOperatorCallExp) then
+		if (e1.name = op1 and e2.name = op2) or (e1.name = op2 and e2.name = op1) then
+			thisModule.comp.isSameExpr(e1.source, e2.source) and
+			thisModule.comp.isSameExpr(e1.argument, e2.argument)			
+		else
+			false	
+		endif
+	else
+		false		
+	endif;
+
+
+
+-- @ignore invalid-assignment-imperative-binding
+-- @ignore found-in-subtype
+rule complementary_less_than {
+	from i : OCL!IfExp (
+		if i.elseExpression.oclIsKindOf(OCL!IfExp) then
+			thisModule.isComplementary_Operator(i.condition, i.elseExpression.condition, '<', '>=')
+			or
+			thisModule.isComplementary_Operator(i.condition, i.elseExpression.condition, '>', '<=')
+			or
+			thisModule.isComplementary_Operator(i.condition, i.elseExpression.condition, '=', '<>')
+		else
+			false
+		endif
+	)
+	to a : ACT!Replace, r : OCLt!BooleanExp ( booleanSymbol <- true  )
+	do { a.source <- i.elseExpression.condition; a.target <- r; }
+}
+
+
