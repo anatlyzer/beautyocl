@@ -1,5 +1,22 @@
 package beautyocl.atl.api.utils;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import anatlyzer.atl.types.Metaclass;
+import anatlyzer.atl.util.ATLUtils;
+import anatlyzer.atlext.OCL.Iterator;
+import anatlyzer.atlext.OCL.IteratorExp;
+import anatlyzer.atlext.OCL.OCLFactory;
+import anatlyzer.atlext.OCL.OclExpression;
+import anatlyzer.atlext.OCL.OclModel;
+import anatlyzer.atlext.OCL.OclModelElement;
+import anatlyzer.atlext.OCL.OperationCallExp;
+import anatlyzer.atlext.OCL.VariableDeclaration;
+import anatlyzer.atlext.OCL.VariableExp;
 import beautyocl.api.common.IATLTransformation;
 import beautyocl.api.common.TransformationRepository;
 import beautyocl.atl.api.ATLTransformation;
@@ -57,5 +74,92 @@ public class BeautyATLUtils {
 
 	private static String pathTo(String base) {
 		return "platform:/plugin/beautyocl.atl.api/resources/beautyocl/atl/api/" + base;
+	}
+	
+	/**
+	 * Given an expression it computes an object which gathers the elements (typicallyl VariableDeclaration)
+	 * which are "outside" the expression. The ExpressionCompletion object contains the algorithm to
+	 * create a proper context for the expression. 
+	 * 
+	 * @return null if the completion is not possible
+	 * 
+	 */
+	public static ExpressionCompletion getCompletion(OclExpression expression) {
+		Set<VariableDeclaration> varDcls = new HashSet<>();  
+		List<VariableExp> variables = ATLUtils.findAllVarExp(expression);
+		for (VariableExp v : variables) {
+			if ( ! EcoreUtil.isAncestor(expression, v.getReferredVariable()) ) {
+				varDcls.add(v.getReferredVariable());
+			}
+		}
+		
+		for (VariableDeclaration variableDeclaration : varDcls) {
+			if ( ! (variableDeclaration.getInferredType() instanceof Metaclass) ) {
+				return null;
+			}
+		}
+		
+		return new ExpressionCompletion(expression, varDcls);
+	}
+	
+	public static class ExpressionCompletion {
+		private OclExpression expression;
+		private Set<? extends VariableDeclaration> context;
+
+		public ExpressionCompletion(OclExpression expression, Set<? extends VariableDeclaration> context) {
+			this.expression = expression;
+			this.context = context;
+		}
+		
+		public OclExpression toExpressionContext() {
+			if ( context.size() == 0 )
+				return expression;
+			
+			List<VariableExp> variables = ATLUtils.findAllVarExp(expression);
+			IteratorExp outer = null;
+			
+			for (VariableDeclaration dcl : context) {
+				Iterator it = OCLFactory.eINSTANCE.createIterator();
+				it.setVarName(dcl.getVarName());
+
+				for (VariableExp vexp : variables) {
+					if ( vexp.getReferredVariable() == dcl ) {
+						vexp.setReferredVariable(it);
+					}
+				}
+				
+				IteratorExp iterator = OCLFactory.eINSTANCE.createIteratorExp();
+				iterator.getIterators().add(it);
+				iterator.setName("forAll");
+				
+				SOURCE:
+				{
+					OclModelElement me = OCLFactory.eINSTANCE.createOclModelElement();
+					
+					Metaclass metaclass = (Metaclass) dcl.getInferredType();
+					
+					me.setName(metaclass.getName());
+					OclModel m = OCLFactory.eINSTANCE.createOclModel();
+					m.setName(metaclass.getModel().getName());								
+					me.setModel(m);
+					
+					OperationCallExp allInstances = OCLFactory.eINSTANCE.createOperationCallExp();
+					allInstances.setOperationName("allInstances");
+					allInstances.setSource(me);
+					
+					iterator.setSource(allInstances);
+				}
+				
+				if ( outer == null ) {
+					outer = iterator;
+					outer.setBody(expression);
+				} else {
+					iterator.setBody(outer);
+					outer = iterator;
+				}
+			}
+			
+			return outer;
+		}
 	}
 }

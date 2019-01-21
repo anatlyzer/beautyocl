@@ -18,6 +18,13 @@ public abstract class AbstractSimplificable {
 	@Element(name="finalExpression", required=false)
 	private String finalExpression;
 
+	@Element(name="bestEffortVerifiableOriginalExpression", required=false)
+	private String bestEffortVerifiableOriginalExpression;
+
+	@Element(name="bestEffortVerifiableFinalExpression", required=false)
+	private String bestEffortVerifiableFinalExpression;
+
+	
 	@ElementList(name="simplifications")
 	protected List<BESimplification> simplifications = new ArrayList<BESimplification>();
 
@@ -83,5 +90,21 @@ public abstract class AbstractSimplificable {
 	
 	public int getSimplifiedNumNodes() {
 		return simplifiedNumNodes;
+	}
+	
+	public void setBestEffortVerifiableFinalExpression(String bestEffortVerifiableFinalExpression) {
+		this.bestEffortVerifiableFinalExpression = bestEffortVerifiableFinalExpression;
+	}
+	
+	public void setBestEffortVerifiableOriginalExpression(String bestEffortVerifiableOriginalExpression) {
+		this.bestEffortVerifiableOriginalExpression = bestEffortVerifiableOriginalExpression;
+	}
+	
+	public String getBestEffortVerifiableFinalExpression() {
+		return bestEffortVerifiableFinalExpression;
+	}
+	
+	public String getBestEffortVerifiableOriginalExpression() {
+		return bestEffortVerifiableOriginalExpression;
 	}
 }
