@@ -39,6 +39,7 @@ import anatlyzer.atl.quickfixast.QuickfixApplication.Action;
 import anatlyzer.atl.util.ATLSerializer;
 import anatlyzer.atl.util.AnalyserUtils;
 import anatlyzer.atl.witness.IWitnessFinder;
+import anatlyzer.atlext.OCL.OclExpression;
 import anatlyzer.experiments.extensions.IExperiment;
 import anatlyzer.experiments.typing.AbstractATLExperiment;
 import anatlyzer.experiments.typing.QuickfixEvaluationAbstract;
@@ -47,6 +48,8 @@ import beautyocl.actions.ExecutionInfo;
 import beautyocl.actions.IExecutionTracer;
 import beautyocl.actions.MatchPhase.Match;
 import beautyocl.atl.anatlyzer.simplifier.BeautyOCLAnatlyzer;
+import beautyocl.atl.api.utils.BeautyATLUtils;
+import beautyocl.atl.api.utils.BeautyATLUtils.ExpressionCompletion;
 import beautyocl.atl.evaluation.export.ExportToExcel;
 import beautyocl.atl.evaluation.raw.AbstractSimplificable;
 import beautyocl.atl.evaluation.raw.BEData;
@@ -225,7 +228,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			
 			Action actualAction = InDocumentSerializer.getActualAction(a);
 			EObject targetExpression = actualAction.getTgt();
-			
+						
 			expQfx.setOriginalExpression(ATLSerializer.serialize(targetExpression));
 			expQfx.setOriginalNumNodes(countNodes(targetExpression));
 			
@@ -243,6 +246,20 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			// TODO: Poner solo si se ha simplificado algo!
 			expQfx.setFinalExpression(ATLSerializer.serialize(result.getResult()));
 			expQfx.setSimplifiedNumNodes(countNodes(result.getResult()));
+			
+			
+			if ( targetExpression instanceof OclExpression && result.getResult() instanceof OclExpression ) {
+				System.out.println("Computing completions...");
+				ExpressionCompletion completionOriginal = BeautyATLUtils.getCompletion((OclExpression) targetExpression);
+				ExpressionCompletion completionResult   = BeautyATLUtils.getCompletion((OclExpression) result.getResult());				
+				
+				if ( completionOriginal != null && completionResult != null ) {
+					expQfx.setBestEffortVerifiableOriginalExpression( ATLSerializer.serialize(completionOriginal.toExpressionContext()) );
+					expQfx.setBestEffortVerifiableFinalExpression( ATLSerializer.serialize(completionResult.toExpressionContext()) );
+				}
+			}
+
+			
 		});
 		
 		return null;
@@ -312,5 +329,8 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 		return this.options.getOrDefault("only_trafos_with_qfxs", "true").equals("true");
 	}
 	
+//	public boolean getVerifyAll() {
+//		return this.options.getOrDefault("verify_all", "true").equals("true");
+//	}
 
 }
