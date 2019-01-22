@@ -24,6 +24,8 @@ public abstract class AbstractSimplificable {
 	@Element(name="bestEffortVerifiableFinalExpression", required=false)
 	private String bestEffortVerifiableFinalExpression;
 
+	@Element(name="additionalHelpers", required=false)
+	private String additionalHelpers;
 	
 	@ElementList(name="simplifications")
 	protected List<BESimplification> simplifications = new ArrayList<BESimplification>();
@@ -106,5 +108,13 @@ public abstract class AbstractSimplificable {
 	
 	public String getBestEffortVerifiableOriginalExpression() {
 		return bestEffortVerifiableOriginalExpression;
+	}
+	
+	public String getAdditionalHelpers() {
+		return additionalHelpers;
+	}
+	
+	public void setAdditionalHelpers(String additionalHelpers) {
+		this.additionalHelpers = additionalHelpers;
 	}
 }

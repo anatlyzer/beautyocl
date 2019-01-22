@@ -25,5 +25,6 @@ public class BEQuickfix extends AbstractSimplificable {
 		this.description = description;
 	}
 
+
 }
 

@@ -4,10 +4,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import anatlyzer.atl.types.Metaclass;
 import anatlyzer.atl.util.ATLUtils;
+import anatlyzer.atlext.ATL.Binding;
+import anatlyzer.atlext.ATL.InPattern;
 import anatlyzer.atlext.OCL.Iterator;
 import anatlyzer.atlext.OCL.IteratorExp;
 import anatlyzer.atlext.OCL.OCLFactory;
@@ -110,6 +113,17 @@ public class BeautyATLUtils {
 		public ExpressionCompletion(OclExpression expression, Set<? extends VariableDeclaration> context) {
 			this.expression = expression;
 			this.context = context;
+		}
+		
+		public static OclExpression getCompletable(EObject obj) {
+			if ( obj instanceof OclExpression ) {
+				return (OclExpression) obj;
+			} else if ( obj instanceof InPattern ) {
+				return ((InPattern) obj).getFilter();
+			} else if ( obj instanceof Binding ) {
+				return ((Binding) obj).getValue();
+			}
+			return null;
 		}
 		
 		public OclExpression toExpressionContext() {

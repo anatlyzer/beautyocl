@@ -84,42 +84,58 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 				String exp = simplificable.getOriginalExpression();
 				String fin = simplificable.getFinalExpression();
 				
+				String additionalHelpers = "";
 				if ( simplificable instanceof BEQuickfix ) {
 					name = ((BEQuickfix) simplificable).getName();
-					if ( ! name.toLowerCase().contains("precondition") ) {
+					
+					String bestEffortOri = simplificable.getBestEffortVerifiableOriginalExpression();
+					String bestEffortFin = simplificable.getBestEffortVerifiableFinalExpression();
+					
+					if ( name.toLowerCase().contains("precondition") ) {
+						// It is a precondition, we are fine like this
+						Pattern pattern = Pattern.compile("helper.*Boolean.?=(.+);", Pattern.DOTALL);
+						Matcher matcher = pattern.matcher(exp);
+						if (! matcher.find()) {
+							printMessage("Can't find match for " + exp);
+						}
+						
+						String bodyOriginal   = matcher.group(1);
+						
+						matcher.reset(fin);
+						if (! matcher.find()) {
+							printMessage("Can't find match for " + fin);
+						}
+						String bodySimplified = matcher.group(1);
+
+						exp = bodyOriginal;
+						fin = bodySimplified;
+					} else if (bestEffortOri != null && bestEffortFin != null) {
+						additionalHelpers = simplificable.getAdditionalHelpers();
+						if ( additionalHelpers == null )
+							additionalHelpers = "";
+						exp = bestEffortOri;
+						fin = bestEffortFin;
+					} else {
 						continue;
-					}					
+					}
+					
 					kind = "quickfix";
 				} else if ( simplificable instanceof BEInvariant ) {
 					name = ((BEInvariant) simplificable).getName();
 					kind = "invariant";
 					
-					exp = "-- @precondition\nhelper def: aPrecondition : Boolean = " + exp + ";";
-					fin = "-- @precondition\nhelper def: aPrecondition : Boolean = " + fin + ";";
+					// exp and fin are expressions already
 				}
 				
 				
 				
 				//Pattern pattern = Pattern.compile("helper.*=(.+);", Pattern.MULTILINE | Pattern.DOTALL);
 				
-				Pattern pattern = Pattern.compile("helper.*Boolean.?=(.+);", Pattern.DOTALL);
-				Matcher matcher = pattern.matcher(exp);
-				if (! matcher.find()) {
-					printMessage("Can't find match for " + exp);
-				}
-				
-				String bodyOriginal   = matcher.group(1);
-				
-				matcher.reset(fin);
-				if (! matcher.find()) {
-					printMessage("Can't find match for " + fin);
-				}
-				String bodySimplified = matcher.group(1);
-				
+								
 				String evaluate = "-- @precondition\nhelper def: aPrecondition : Boolean = " 
-						+ "let original : Boolean = (" + bodyOriginal + ") in \n" 
-						+ "let simplified : Boolean = (" + bodySimplified + ") in \n " 						
-						+ "not ((original implies simplified) and (simplified implies original));";
+						+ "let original : Boolean = (" + exp + ") in \n" 
+						+ "let simplified : Boolean = (" + fin + ") in \n " 						
+						+ "not ((original implies simplified) and (simplified implies original));" + "\n" + additionalHelpers;
 				
 				String trafo = (header.trim() + "\n" + evaluate).trim() + "\n";
 

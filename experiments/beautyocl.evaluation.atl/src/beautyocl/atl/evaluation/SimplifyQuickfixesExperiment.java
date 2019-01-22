@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -21,6 +22,8 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import anatlyzer.atl.analyser.AnalysisResult;
+import anatlyzer.atl.analyser.generators.ErrorSlice;
+import anatlyzer.atl.analyser.generators.OclSlice;
 import anatlyzer.atl.analyser.inc.IncrementalCopyBasedAnalyser;
 import anatlyzer.atl.editor.builder.AnalyserExecutor.AnalyserData;
 import anatlyzer.atl.editor.quickfix.AbstractAtlQuickfix;
@@ -37,8 +40,10 @@ import anatlyzer.atl.errors.atl_error.BindingWithoutRule;
 import anatlyzer.atl.quickfixast.InDocumentSerializer;
 import anatlyzer.atl.quickfixast.QuickfixApplication.Action;
 import anatlyzer.atl.util.ATLSerializer;
+import anatlyzer.atl.util.ATLUtils;
 import anatlyzer.atl.util.AnalyserUtils;
 import anatlyzer.atl.witness.IWitnessFinder;
+import anatlyzer.atlext.ATL.Helper;
 import anatlyzer.atlext.OCL.OclExpression;
 import anatlyzer.experiments.extensions.IExperiment;
 import anatlyzer.experiments.typing.AbstractATLExperiment;
@@ -247,15 +252,41 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			expQfx.setFinalExpression(ATLSerializer.serialize(result.getResult()));
 			expQfx.setSimplifiedNumNodes(countNodes(result.getResult()));
 			
+			OclExpression completableTargetExpression = ExpressionCompletion.getCompletable(targetExpression);
+			OclExpression completableResultExpression = ExpressionCompletion.getCompletable(result.getResult());
 			
-			if ( targetExpression instanceof OclExpression && result.getResult() instanceof OclExpression ) {
+			if ( completableTargetExpression != null && completableResultExpression != null) {
 				System.out.println("Computing completions...");
-				ExpressionCompletion completionOriginal = BeautyATLUtils.getCompletion((OclExpression) targetExpression);
-				ExpressionCompletion completionResult   = BeautyATLUtils.getCompletion((OclExpression) result.getResult());				
+				
+				ExpressionCompletion completionOriginal = BeautyATLUtils.getCompletion(completableTargetExpression);
+				ExpressionCompletion completionResult   = BeautyATLUtils.getCompletion(completableResultExpression);				
 				
 				if ( completionOriginal != null && completionResult != null ) {
 					expQfx.setBestEffortVerifiableOriginalExpression( ATLSerializer.serialize(completionOriginal.toExpressionContext()) );
 					expQfx.setBestEffortVerifiableFinalExpression( ATLSerializer.serialize(completionResult.toExpressionContext()) );
+
+					ErrorSlice slice = new ErrorSlice(original.getAnalyser(), new HashSet<>(), null);				
+					OclSlice.slice(slice, completableTargetExpression);
+
+					String allHelpers = "";
+					for (Helper helper : slice.getHelpers()) {
+						String h = ATLSerializer.serialize(helper);
+						allHelpers += "\n" + h;
+					}
+					
+					expQfx.setAdditionalHelpers( allHelpers );
+
+				} else {
+					printMessage("No completion: " + expQfx.getExpId()  + " " + targetExpression.getClass());
+					printMessage(expQfx.getOriginalExpression());
+				}
+
+			} else {
+				if ( targetExpression instanceof Helper && AnalyserUtils.isPrecondition((Helper) targetExpression) ) {
+					// Nothing, it is already checkeable
+				} else {
+					printMessage("No completable: " + expQfx.getExpId() + " " + targetExpression.getClass());
+					printMessage(expQfx.getOriginalExpression());
 				}
 			}
 
@@ -301,6 +332,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 	private void printMessage(String msg) {
 		System.out.println(msg);
 		messages.add(msg);
+		showMessage(msg + "\n");
 	}
 	
 	@Override
