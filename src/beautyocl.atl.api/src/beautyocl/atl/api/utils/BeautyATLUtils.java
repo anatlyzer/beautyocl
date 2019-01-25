@@ -93,11 +93,18 @@ public class BeautyATLUtils {
 		List<VariableExp> variables = ATLUtils.findAllVarExp(expression);
 		for (VariableExp v : variables) {
 			if ( ! EcoreUtil.isAncestor(expression, v.getReferredVariable()) ) {
-				varDcls.add(v.getReferredVariable());
+				VariableDeclaration varDcl = v.getReferredVariable();
+				if ( "thisModule".equals(varDcl.getVarName()) )
+					continue;
+				
+				varDcls.add(varDcl);				
 			}
 		}
 		
 		for (VariableDeclaration variableDeclaration : varDcls) {
+			if ( "thisModule".equals(variableDeclaration.getVarName()) )
+				continue;
+			
 			if ( ! (variableDeclaration.getInferredType() instanceof Metaclass) ) {
 				return null;
 			}

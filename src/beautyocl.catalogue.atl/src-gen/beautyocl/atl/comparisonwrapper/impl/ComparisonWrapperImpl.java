@@ -51,7 +51,10 @@ public class ComparisonWrapperImpl extends MinimalEObjectImpl.Container implemen
 	public boolean isSameExpr(OclExpression e1, OclExpression e2) {
 		if ( e1 == null || e2 == null )
 			return false;
-		return ATLSerializer.serialize(e1).equals(ATLSerializer.serialize(e2));
+		String s1 = ATLSerializer.serialize(e1);
+		String s2 = ATLSerializer.serialize(e2);
+		//System.out.println(s1.equals(s2));
+		return s1.equals(s2);
 	}
 
 	/**

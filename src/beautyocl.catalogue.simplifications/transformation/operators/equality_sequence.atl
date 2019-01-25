@@ -85,9 +85,9 @@ helper context OCL!BinaryOperatorCallExp def: operatorSequenceIfSame(operator : 
 			let right : OCL!OclExpression = seq->first().argument in
 			let samesLeft  : Sequence(OCL!OclExpression) = seq->collect(e | e.isSame(left))->excluding(OclUndefined) in
 			let samesRight : Sequence(OCL!OclExpression) = seq->collect(e | e.isSame(right))->excluding(OclUndefined) in
-			if samesLeft->size() = seq->size() then
+			if samesLeft->notEmpty() and samesLeft->size() = seq->size() then
 				Tuple { value = left, keys = samesLeft, independent = self.operatorSequenceIndependentArgs(operator, eqs) }
-			else if samesRight->size() = seq->size() then
+			else if samesRight->notEmpty() and samesRight->size() = seq->size() then
 				Tuple { value = right, keys = samesRight, independent = self.operatorSequenceIndependentArgs(operator, eqs) }
 			else OclUndefined endif endif
 		else
@@ -208,7 +208,11 @@ rule find_sequence_of_operations_or {
 rule find_sequence_of_operations_and{
 	from o : OCL!BinaryOperatorCallExp (
 		let seq : TupleType(value : OCL!OclExpression, keys : Sequence(OCL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'='}, 2) 
-		 in seq <> OclUndefined 
+		 in if seq <> OclUndefined then
+		 		seq.keys->forAll(k | k.oclIsKindOf(OCL!StringExp) or k.oclIsKindOf(OCL!IntegerExp))
+			else
+				false
+			endif
 		 -- TODO: Check with refImmediateComposite if this is the larger one
 	)
 	to a : ACT!Replace,

@@ -155,6 +155,9 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 						writer.append("ERROR: \n" + "  " + resource.getFullPath().toOSString() + "\n   " + p + "\n   " + quickfix.getDisplayString());						
 						e.printStackTrace(writer);
 						printMessage("ERROR when applying qfx: " + quickfix.getClass().getSimpleName() + " . File: " + resource.getName() + e.getMessage());
+						printMessage("ExpId: " + expQfx.getExpId());
+						printMessage(expQfx.getOriginalExpression());
+						
 						// TODO: Register the error in the raw experiment DOM
 						continue;
 					}
@@ -256,8 +259,7 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			OclExpression completableResultExpression = ExpressionCompletion.getCompletable(result.getResult());
 			
 			if ( completableTargetExpression != null && completableResultExpression != null) {
-				System.out.println("Computing completions...");
-				
+				System.out.println("Computing completions... for " + expQfx.getExpId());
 				ExpressionCompletion completionOriginal = BeautyATLUtils.getCompletion(completableTargetExpression);
 				ExpressionCompletion completionResult   = BeautyATLUtils.getCompletion(completableResultExpression);				
 				

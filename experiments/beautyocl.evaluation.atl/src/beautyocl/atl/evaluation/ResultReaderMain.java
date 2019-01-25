@@ -71,6 +71,10 @@ public class ResultReaderMain {
 		for (BESimplification s : inv.getSimplifications()) {
 			System.out.println(" * " + s.getName());
 		}
+		
+		System.out.println("Best effort ORIGINAL: \n" + inv.getBestEffortVerifiableOriginalExpression());
+		System.out.println("Best effort FINAL: \n" + inv.getBestEffortVerifiableOriginalExpression());
+		System.out.println("Helpers: \n" + inv.getAdditionalHelpers());
 	}
 	
 }

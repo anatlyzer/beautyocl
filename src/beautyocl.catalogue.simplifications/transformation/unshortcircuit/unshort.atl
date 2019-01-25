@@ -84,6 +84,21 @@ helper context OCL!BinaryOperatorCallExp def: getOperationCalls() : Set(OCL!OclE
 	endif;
 
 
+helper context OCL!IfExp def: simpleUnshortCondition() : Boolean = 
+		if self.elseExpression.oclIsKindOf(OCL!IfExp) or self.thenExpression.oclIsKindOf(OCL!IfExp) then
+			false
+		else
+			
+			
+		if thisModule.checkUnshortCondition(self.condition, self.thenExpression) 
+			-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+			or (not self.condition.hasShortThing())
+		then
+			self.elseExpression.isBooleanExpr(true) or self.elseExpression.isBooleanExpr(false) 
+		else
+			false
+		endif endif;
+
 
 --
 -- if <c1> then 
@@ -95,11 +110,8 @@ helper context OCL!BinaryOperatorCallExp def: getOperationCalls() : Set(OCL!OclE
 -- @ignore invalid-assignment-imperative-binding
 rule unshortCircuit_simple {
 	from i : OCL!IfExp (
-		if thisModule.checkUnshortCondition(i.condition, i.thenExpression) 
-			-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
-			or (not i.condition.hasShortThing())
-		then
-			i.elseExpression.isBooleanExpr(true) or i.elseExpression.isBooleanExpr(false) 
+		if i.simpleUnshortCondition() then
+			not (i.unshortCircuit_or_other_case_Condition() or i.unshortCircuitCondition())
 		else
 			false
 		endif
@@ -147,18 +159,7 @@ rule unshortCircuit_simple {
 -- @ignore invalid-assignment-imperative-binding
 rule unshortCircuit {
 	from i : OCL!IfExp (
-		if i.thenExpression.oclIsKindOf(OCL!IfExp) then
-			if thisModule.checkUnshortCondition(i.condition, i.thenExpression.condition) 
-				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
-				or (not i.condition.hasShortThing())
-			then
-				thisModule.comp.isSameExpr(i.elseExpression, i.thenExpression.elseExpression)
-			else
-				false
-			endif
-		else
-			false
-		endif 
+		i.unshortCircuitCondition() 
 	)
 	to c : ACT!CompositeAction (
 			actions <- Sequence { a, s1, s2, s3, s4, s5 }
@@ -207,9 +208,35 @@ rule unshortCircuit {
 	}
 }
 
+helper context OCL!IfExp def: unshortCircuitCondition() : Boolean = 
+	if self.thenExpression.oclIsKindOf(OCL!IfExp) then
+			
+			if thisModule.checkUnshortCondition(self.condition, self.thenExpression.condition) 
+				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+				or (not self.condition.hasShortThing())
+			then
+				thisModule.comp.isSameExpr(self.elseExpression, self.thenExpression.elseExpression)
+			else
+				false
+			endif
+		else
+			false
+		endif;
+
 
 -- OR version
 
+--
+-- if cond-1 else
+--    <exp-1>
+-- else
+--     if cond-2 then 
+--         <exp-2>            ===> <exp-1> equals <exp-2>
+--     else
+--         
+--     endif
+-- endif
+--
 rule unshortCircuit_or {
 	from i : OCL!IfExp (
 		if i.elseExpression.oclIsKindOf(OCL!IfExp) then
@@ -292,13 +319,7 @@ helper context OCL!OclExpression def: simplyEnoughToInline() : Boolean = true;
 -- @ignore invalid-assignment-imperative-binding
 rule unshortCircuit_or_other_case {
 	from i : OCL!IfExp (
-		if i.thenExpression.isBooleanExpr(true) and i.elseExpression.simplyEnoughToInline() then
-			thisModule.checkUnshortCondition(i.condition, i.elseExpression) 
-				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
-				or (not i.condition.hasShortThing())			
-		else
-			false
-		endif 
+		i.unshortCircuit_or_other_case_Condition() 
 	)
 	to c : ACT!CompositeAction (
 			actions <- Sequence { s4, s5, a }
@@ -326,6 +347,17 @@ rule unshortCircuit_or_other_case {
 		a.target <- r;
 	}
 }
+
+helper context OCL!IfExp def: unshortCircuit_or_other_case_Condition() : Boolean = 
+	
+		if self.thenExpression.isBooleanExpr(true) and self.elseExpression.simplyEnoughToInline() then
+			-- This is to avoid a potential rule conflict with rule simple_unshort
+			thisModule.checkUnshortCondition(self.condition, self.elseExpression) 
+				-- The other case is not to have any kind of checking (oclIsKind, OclUndefined, etc.)
+				or (not self.condition.hasShortThing())			
+		else
+			false
+		endif;
 
 
 

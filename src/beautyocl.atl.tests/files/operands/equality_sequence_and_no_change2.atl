@@ -1,0 +1,20 @@
+-- @atlcompiler atl2006
+-- @path ABCD=/beautyocl.atl.tests/metamodels/ABCD.ecore
+-- @path WXYZ=/beautyocl.atl.tests/metamodels/WXYZ.ecore
+
+-- @test no-change
+
+module equalitysequence;
+create OUT : WXYZ from IN : ABCD;
+
+helper def : test() : Boolean = 
+	ABCD!Model.allInstances()->select(i | i.oclIsTypeOf(ABCD!Model) 
+		and 
+		i.elements->select(c | c.oclIsTypeOf(ABCD!A))->size() = 0 
+		and 
+		i.elements->select(c | c.oclIsTypeOf(ABCD!B))->size() = 0 
+		and 
+		i.elements->select(c | c.oclIsTypeOf(ABCD!C))->size() = 0)->isEmpty();
+
+
+
