@@ -30,7 +30,14 @@ helper context OCL!OperationCallExp def: hasShortThing() : Boolean =
 helper context OCL!OclExpression def: kindOfType() : TupleType(source : OCL!OclExpression, type : TYP!CClass) =
 	if self.oclIsKindOf(OCL!OperationCallExp) then
 		if self.name = 'oclIsKindOf' then -- TODO: Check typeOf
-			Tuple { source = self.source, type = thisModule.typ.typeOf(self.arguments->first()).oclAsType(TYP!CClass) }
+			-- let t : TYP!CClass = thisModule.typ.typeOf(self.arguments->first()).oclAsType(TYP!CClass)
+			let t : TYP!CClass = thisModule.typ.typeOf(self.source).oclAsType(TYP!CClass)
+			in 
+				if t <> OclUndefined then
+					Tuple { source = self.source, type = t }
+				else
+					OclUndefined
+				endif
 		else 
 			OclUndefined	
 		endif
@@ -56,6 +63,18 @@ helper context OCL!PropertyCallExp def: allUsages(subExpr : OCL!OclExpression) :
 		Set { }
 	endif;
 	
+helper context OCL!BinaryOperatorCallExp def: allUsages(subExpr : OCL!OclExpression) : Set(TYP!CClass) = 
+	self.source.allUsages(subExpr)->union(if self.argument.oclIsUndefined() then 
+		Sequence {} 
+	else
+		self.argument.allUsages(subExpr)
+	endif);
+	
+helper context OCL!OperationCallExp def: allUsages(subExpr : OCL!OclExpression) : Set(TYP!CClass) = 
+	self.source.allUsages(subExpr)->union(self.arguments->collect(a | a.allUsages(subExpr))->flatten());
+
+helper context OCL!IteratorExp def: allUsages(subExpr : OCL!OclExpression) : Set(TYP!CClass) = 
+	self.source.allUsages(subExpr)->union(self.body.allUsages(subExpr));
 
 	
 helper def: checkUnshortCondition(outerExpP : OCL!OclExpression, inner : OCL!OclExpression) : Boolean = 
@@ -63,7 +82,7 @@ helper def: checkUnshortCondition(outerExpP : OCL!OclExpression, inner : OCL!Ocl
 		let outer: TupleType(source : OCL!OclExpression, type : TYP!CClass) = outerExp.kindOfType() 
 		in if outer <> OclUndefined then
 			let innerUsages : Set(TYP!CClass) = inner.allUsages(outer.source) 
-			in innerUsages->forAll(c | c.superClasses->includes(outer.type) )
+			in innerUsages->forAll(c | c = outer.type or outer.type.allSuperClasses->includes(c) )
 		   else false endif	
 	);
 

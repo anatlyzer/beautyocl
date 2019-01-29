@@ -81,6 +81,9 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 				String name = "<no-name>";
 				String kind = null;
 				
+//				if ( simplificable.getExpId() != 11 )
+//					continue;
+
 				String exp = simplificable.getOriginalExpression();
 				String fin = simplificable.getFinalExpression();
 				
@@ -194,6 +197,8 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 						exec.setStatus("validation-failure"); 
 					}
 				}
+				
+				exec.setSolvingTimeNanos(collector1.getSolvingTimeNanos());
 				
 				printMessage("Result: " + exec.getStatus());
 				expCorrectnessData.addExecution(exec);

@@ -2,6 +2,8 @@ package beautyocl.atl.tests;
 
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.File;
+
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.junit.Test;
@@ -162,6 +164,13 @@ public class TestUnshortCircuit extends Tester {
 				
 		System.out.println("Before: " + before);
 		System.out.println("After: " + after);
+	}
+
+
+	@Test
+	public void test_Unshort_Failing() throws LoadException {	
+		TransformationRepository rep = configureRepo();
+		doTest(rep, new File("files/unshort/unshort_no_change.atl"));
 	}
 	
 }

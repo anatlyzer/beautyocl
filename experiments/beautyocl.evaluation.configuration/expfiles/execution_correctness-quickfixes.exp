@@ -3,6 +3,7 @@ extensionID: simplification.experiment.equivalencemodelfinder
 options: {
  only_trafos_with_qfxs : true,
  timeout : 15000,
+ maxScope : 6,
  datafile : /beautyocl.evaluation.configuration/qfx-data/quickfixes_zoo.data 
 }
 

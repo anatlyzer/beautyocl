@@ -13,7 +13,7 @@ public class BECorrectnessExecution {
 	@Element
 	protected String simplifiedExp;
 
-	@Element
+	@Attribute
 	protected int expId;
 	
 	@Attribute
@@ -24,6 +24,9 @@ public class BECorrectnessExecution {
 	
 	@Attribute(required = false)
 	protected String reason = null;
+
+	@Attribute(required = false)
+	private long solvingTimeNanos = -1;
 	
 	
 	public String getName() {
@@ -81,6 +84,13 @@ public class BECorrectnessExecution {
 	public void setSimplifiedExp(String simplifiedExp) {
 		this.simplifiedExp = simplifiedExp;
 	}
+
+	public void setSolvingTimeNanos(long solvingTimeNanos) {
+		this.solvingTimeNanos = solvingTimeNanos;
+	}
 	
+	public long getSolvingTimeNanos() {
+		return solvingTimeNanos;
+	}
 	
 }

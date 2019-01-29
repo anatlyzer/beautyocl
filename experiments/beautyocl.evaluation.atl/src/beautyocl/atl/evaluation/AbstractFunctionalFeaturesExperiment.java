@@ -32,6 +32,7 @@ import anatlyzer.atl.analyser.batch.TargetInvariantAnalysis_SourceBased;
 import anatlyzer.atl.analyser.batch.PreconditionAnalysis.PreconditionIssue;
 import anatlyzer.atl.editor.builder.AnalyserExecutor;
 import anatlyzer.atl.editor.builder.AnalyserExecutor.AnalyserData;
+import anatlyzer.atl.editor.witness.EclipseUseWitnessFinder;
 import anatlyzer.atl.errors.ProblemStatus;
 import anatlyzer.atl.model.ATLModel;
 import anatlyzer.atl.util.ATLSerializer;
@@ -165,16 +166,25 @@ public abstract class AbstractFunctionalFeaturesExperiment extends AbstractSimpl
 		
 		// AnalysisIndex.getInstance().getConfiguration(resource)
 		TransformationConfiguration conf = TransformationConfiguration.getDefault();
-		conf.setTimeOut(getTimeOut());
+		conf.setTimeOut(getTimeOut());		
 		
-		
-		IWitnessFinder wf = WitnessUtil.getFirstWitnessFinder(conf);
+		int confMaxScope = getMaxScope();
+		IWitnessFinder wf = new EclipseUseWitnessFinder() {
+			@Override
+			protected int getMaxScope() {
+				return confMaxScope;
+			}
+		};
 		wf.setStatsCollector(collector1);
 		wf.checkDiscardCause(false);
+		wf.setMaxScope(confMaxScope);
 		ProblemStatus result = wf.find(pre1, data);
 		pre1.setAnalysisResult(result, wf.getFoundWitnessModel());
 	}
 
+	public int getMaxScope() {
+		return Integer.parseInt(((String) this.options.getOrDefault("maxScope", "5")));		
+	}
 	
 	protected String sanitize(String expr) {
 		expr = expr.trim();

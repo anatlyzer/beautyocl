@@ -2,10 +2,13 @@
  */
 package beautyocl.atl.typwrapper.impl;
 
+import anatlyzer.atl.model.TypeUtils;
 import anatlyzer.atl.model.TypingModel;
 import anatlyzer.atl.types.Metaclass;
 import anatlyzer.atl.types.TupleType;
 import anatlyzer.atl.types.Type;
+import anatlyzer.atl.types.UnionType;
+import anatlyzer.atl.util.ATLUtils;
 import anatlyzer.atlext.ATL.PatternElement;
 import anatlyzer.atlext.ATL.RuleVariableDeclaration;
 import anatlyzer.atlext.OCL.Iterator;
@@ -21,6 +24,7 @@ import beautyocl.atl.typwrapper.TypwrapperPackage;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -125,12 +129,20 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 	 * @generated NOT
 	 */
 	public EClass accessType(PropertyCallExp exp) {
-		Type t = exp.getNoCastedType();
-		if ( t instanceof Metaclass ) {
-			return ((Metaclass) t).getKlass();
+		EStructuralFeature e = (EStructuralFeature) exp.getUsedFeature();
+		if ( e != null ) {
+			return e.getEContainingClass();
 		}
+		// Implement some fallback?
 		return null;
-		// TODO: implement this method
+		
+// I had this, and I think it is wrong		
+//		Type t = exp.getNoCastedType();
+//		if ( t instanceof Metaclass ) {
+//			return ((Metaclass) t).getKlass();
+//		}
+//		return null;
+
 		// Ensure that you remove @generated or mark it @generated NOT
 		//throw new UnsupportedOperationException();
 	}
@@ -160,11 +172,19 @@ public class TypWrapperImpl extends MinimalEObjectImpl.Container implements TypW
 	public EClassifier typeOf(OclExpression e) {
 		if ( e.getInferredType() instanceof Metaclass ) {
 			return ((Metaclass) e.getInferredType()).getKlass();
+		} 
+		else if ( e.getInferredType() instanceof UnionType ) {
+			List<Metaclass> metaclasses = TypingModel.getInvolvedMetaclassesOfType(e.getInferredType());
+			if ( metaclasses.size() == 1 ) {
+				return metaclasses.get(0).getKlass();
+			}
 		}
+		
+		return null;
 		
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		//throw new UnsupportedOperationException("Type should be metaclass but it " + e.getInferredType() + " in expr. " + e);
 	}
 
 	/**

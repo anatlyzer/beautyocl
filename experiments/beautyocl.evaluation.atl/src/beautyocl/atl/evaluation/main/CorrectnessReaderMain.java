@@ -2,6 +2,7 @@ package beautyocl.atl.evaluation.main;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,6 +43,8 @@ public class CorrectnessReaderMain extends AbstractMain {
 		int notValidated = 0;
 		int timeout = 0;
 		
+		List<Long> solvingTimes = new ArrayList<>();
+		
 		List<AbstractSimplificable> invalids = new ArrayList<>();
 		
 		for (BECorrectnessExecution execution : cData.getExecutions()) {
@@ -51,12 +54,14 @@ public class CorrectnessReaderMain extends AbstractMain {
 				System.out.println("Can't find expId " + execution.getExpId());
 				continue;
 			}
-			
+		
 			if ( execution.getStatus().equals("correct") ) {
 				correct++;
+				solvingTimes.add(execution.getSolvingTimeNanos());				
 			} else if ( execution.getStatus().equals("invalid") ) {
 				invalid++;
 				invalids.add(simplificable);
+				solvingTimes.add(execution.getSolvingTimeNanos());				
 			} else if ( execution.getStatus().equals("validation-failure") ) {
 				notValidated++;
 			}  else if ( execution.getStatus().equals("timeout") ) {
@@ -73,6 +78,14 @@ public class CorrectnessReaderMain extends AbstractMain {
 		System.out.println("Invalid: " + invalid);
 		System.out.println("Timeout: " + timeout);
 		System.out.println("Failure: " + notValidated);
+		
+		System.out.println();
+		DoubleSummaryStatistics summary = solvingTimes.stream().collect(Collectors.summarizingDouble(x -> x * 1e-9));
+		System.out.println("Average solving time: " + summary.getAverage());
+		System.out.println("    Max solving time: " + summary.getMax());
+		System.out.println("    Min solving time: " + summary.getMin());
+		System.out.println("   Mean solving time: " + solvingTimes.get(solvingTimes.size() / 2) * 1e-9);
+		
 		
 		System.out.println();
 		System.out.println("Invalid list");
