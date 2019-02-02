@@ -175,6 +175,8 @@ public abstract class AbstractFunctionalFeaturesExperiment extends AbstractSimpl
 				return confMaxScope;
 			}
 		};
+		WitnessUtil.configureFinder(conf, wf);
+
 		wf.setStatsCollector(collector1);
 		wf.checkDiscardCause(false);
 		wf.setMaxScope(confMaxScope);

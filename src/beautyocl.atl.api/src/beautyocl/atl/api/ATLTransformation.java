@@ -22,6 +22,14 @@ public class ATLTransformation implements IATLTransformation {
 		return name;
 	}
 	
+	public VM getVm() {
+		return vm;
+	}
+	
+	public String getFileName() {
+		return fname;
+	}
+	
 	public enum VM {
 		STANDARD {
 			final String ext = ".asm";

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="anatlyzer.testing.coverage/lib" default="coverage">
+	<target name="coverage">
+		<anatlyzer.testing.coverage.CoverageTransformer 
+			inputfolder="../beautyocl.catalogue.atl/adaptations" 
+			outputfolder="resources" />
+	</target>
+</project>

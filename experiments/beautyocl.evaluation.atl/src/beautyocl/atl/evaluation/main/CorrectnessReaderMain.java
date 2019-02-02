@@ -43,6 +43,7 @@ public class CorrectnessReaderMain extends AbstractMain {
 		int notValidated = 0;
 		int timeout = 0;
 		
+		List<Long> solvingTimesNoTimeOut = new ArrayList<>();
 		List<Long> solvingTimes = new ArrayList<>();
 		
 		List<AbstractSimplificable> invalids = new ArrayList<>();
@@ -57,15 +58,18 @@ public class CorrectnessReaderMain extends AbstractMain {
 		
 			if ( execution.getStatus().equals("correct") ) {
 				correct++;
-				solvingTimes.add(execution.getSolvingTimeNanos());				
+				solvingTimes.add(execution.getSolvingTimeNanos());
+				solvingTimesNoTimeOut.add(execution.getSolvingTimeNanos());
 			} else if ( execution.getStatus().equals("invalid") ) {
 				invalid++;
 				invalids.add(simplificable);
-				solvingTimes.add(execution.getSolvingTimeNanos());				
+				solvingTimes.add(execution.getSolvingTimeNanos());
+				solvingTimesNoTimeOut.add(execution.getSolvingTimeNanos());
 			} else if ( execution.getStatus().equals("validation-failure") ) {
 				notValidated++;
 			}  else if ( execution.getStatus().equals("timeout") ) {
 				timeout++;
+				solvingTimes.add((long) (15 * 10e9));
 			}
 			
 			total++;
@@ -73,6 +77,7 @@ public class CorrectnessReaderMain extends AbstractMain {
 		
 		// TODO: Check which ones are due to syntatic failures in the generated code
 		
+		System.out.println(args[0]);
 		System.out.println("  Total: " + total);
 		System.out.println("Correct: " + correct);
 		System.out.println("Invalid: " + invalid);
@@ -81,11 +86,13 @@ public class CorrectnessReaderMain extends AbstractMain {
 		
 		System.out.println();
 		DoubleSummaryStatistics summary = solvingTimes.stream().collect(Collectors.summarizingDouble(x -> x * 1e-9));
+		DoubleSummaryStatistics summaryNoTimeOut = solvingTimesNoTimeOut.stream().collect(Collectors.summarizingDouble(x -> x * 1e-9));		
 		System.out.println("Average solving time: " + summary.getAverage());
-		System.out.println("    Max solving time: " + summary.getMax());
+		System.out.println("Average (no timeout): " + summaryNoTimeOut.getAverage());		
+		System.out.println("    Max solving time: " + summaryNoTimeOut.getMax());
 		System.out.println("    Min solving time: " + summary.getMin());
 		System.out.println("   Mean solving time: " + solvingTimes.get(solvingTimes.size() / 2) * 1e-9);
-		
+		System.out.println("   Mean (no timeout): " + solvingTimesNoTimeOut.get(solvingTimesNoTimeOut.size() / 2) * 1e-9);
 		
 		System.out.println();
 		System.out.println("Invalid list");
