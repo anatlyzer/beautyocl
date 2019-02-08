@@ -255,6 +255,12 @@ public class SimplifyQuickfixesExperiment extends AbstractSimplifyExperiment {
 			expQfx.setFinalExpression(ATLSerializer.serialize(result.getResult()));
 			expQfx.setSimplifiedNumNodes(countNodes(result.getResult()));
 			
+			if ( expQfx.getExpId() == 244 ) {
+				// This is known not be completable because arcSet is a free variable of type Sequence(Arc)
+				// An option would be to add a LetExp
+				System.out.println(expQfx.getOriginalExpression());
+			}
+			
 			OclExpression completableTargetExpression = ExpressionCompletion.getCompletable(targetExpression);
 			OclExpression completableResultExpression = ExpressionCompletion.getCompletable(result.getResult());
 			

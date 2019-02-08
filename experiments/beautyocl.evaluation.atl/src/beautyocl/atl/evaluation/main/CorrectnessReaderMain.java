@@ -22,6 +22,8 @@ import beautyocl.atl.evaluation.raw.BETransformation;
 
 public class CorrectnessReaderMain extends AbstractMain {
 
+	private static final int TIMEOUT_VALUE = 5;
+
 	public static void main(String[] args) throws Exception {
 		new CorrectnessReaderMain().run(args);
 	}
@@ -37,6 +39,31 @@ public class CorrectnessReaderMain extends AbstractMain {
 		BECorrectnessData cData = serializer.read(BECorrectnessData.class, new File(args[0]));
 		BEData eData = serializer.read(BEData.class, new File(args[1]));
 		
+//		int totalQfx = 0;
+//		for (BETransformation t : eData.getTransformations()) {
+//			for (BEProblem p : t.getProblems()) {
+//				for (BEQuickfix qfx : p.getQuickfixes()) {
+//					totalQfx++;
+//					
+//					boolean found = false;
+//					for (BECorrectnessExecution e : cData.getExecutions()) {
+//						if ( e.getExpId() == qfx.getExpId() ) {
+//							found = true;
+//							break;
+//						}
+//					}
+//					
+//					if ( ! found ) {
+//						System.out.println("Qfx: " + qfx.getExpId() + " has not been evaluated");
+//						System.out.println(qfx.getOriginalExpression());
+//						System.exit(-1);
+//					}
+//  				}
+//			}
+//		}
+//		
+//		System.out.println("Total qfx: " + totalQfx);
+
 		int total = 0;
 		int correct = 0;
 		int invalid = 0;
@@ -51,8 +78,15 @@ public class CorrectnessReaderMain extends AbstractMain {
 		for (BECorrectnessExecution execution : cData.getExecutions()) {
 			
 			AbstractSimplificable simplificable = findSimplificable(eData, execution.getExpId());
+			
 			if ( simplificable == null ) {
 				System.out.println("Can't find expId " + execution.getExpId());
+				continue;
+			}
+			
+			String orig = simplificable.getOriginalExpression();
+			String simp = simplificable.getFinalExpression();
+			if ( orig.trim().equals(simp.trim()) ) {
 				continue;
 			}
 		
@@ -65,11 +99,11 @@ public class CorrectnessReaderMain extends AbstractMain {
 				invalids.add(simplificable);
 				solvingTimes.add(execution.getSolvingTimeNanos());
 				solvingTimesNoTimeOut.add(execution.getSolvingTimeNanos());
-			} else if ( execution.getStatus().equals("validation-failure") ) {
+			} else if ( execution.getStatus().equals("validation-failure") || execution.getStatus().equals("construction-error") ) {
 				notValidated++;
 			}  else if ( execution.getStatus().equals("timeout") ) {
 				timeout++;
-				solvingTimes.add((long) (15 * 10e9));
+				solvingTimes.add((long) (TIMEOUT_VALUE * 10e9));
 			}
 			
 			total++;

@@ -72,7 +72,6 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 			String header = ModuleSerializer.serialize(data.getATLModel().getRoot());
 			
 			List<BEQuickfix> qfxs = found.getProblems().stream().flatMap(p -> p.getQuickfixes().stream()).collect(Collectors.toList());
-			found.getInvariants();
 			
 			ArrayList<AbstractSimplificable> all = new ArrayList<AbstractSimplificable>();
 			all.addAll(qfxs);
@@ -119,6 +118,7 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 						exp = bestEffortOri;
 						fin = bestEffortFin;
 					} else {
+						System.out.println("Both efforst-strs are null");
 						continue;
 					}
 					
@@ -142,24 +142,45 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 				
 				String trafo = (header.trim() + "\n" + evaluate).trim() + "\n";
 
-				AnalyserData newTrafo = analyse("original", trafo, resource);
-				if ( newTrafo == null ) {
-					printMessage(evaluate);
-					continue;
-				}
+				BECorrectnessExecution exec = new BECorrectnessExecution();
+				exec.setName(name);
+				exec.setKind(kind);
+				exec.setExpId(simplificable.getExpId());
+				exec.setOriginalExp(simplificable.getOriginalExpression());
+				exec.setSimplifiedExp(simplificable.getOriginalExpression());
 				
-				List<PreconditionIssue> preconditions1 = new PreconditionAnalysis(newTrafo.getAnalyser()).perform();
+				exec.setKind("model-finding");
 
-				if ( preconditions1.size() != 1 ) {
-					printMessage("Expected one precondition in " + name + "[" + resource.getName() + "] but found " + preconditions1.size());
-					continue;
+				AnalyserData newTrafo;
+				try {
+					newTrafo = analyse("original", trafo, resource);
+					if ( newTrafo == null ) {
+						printMessage(evaluate);
+	
+						exec.setStatus("construction-error");
+						expCorrectnessData.addExecution(exec);
+	
+						continue;
+					}
+				} catch ( Exception e ) {
+					exec.setStatus("construction-error");
+					expCorrectnessData.addExecution(exec);
+
+					continue;					
 				}
-				
-				PreconditionIssue pre1 = preconditions1.get(0);
 				
 				IFinderStatsCollector collector1 = new IFinderStatsCollector.DefaultFinderStatsCollector();
-				
+				PreconditionIssue pre1 = null;
 				try {
+					List<PreconditionIssue> preconditions1 = new PreconditionAnalysis(newTrafo.getAnalyser()).perform();
+	
+					if ( preconditions1.size() != 1 ) {
+						printMessage("Expected one precondition in " + name + "[" + resource.getName() + "] but found " + preconditions1.size());
+						throw new RuntimeException("More than one precondition"); // to force recording this as an error
+						// continue;
+					}
+					
+					pre1 = preconditions1.get(0);
 					doModelFinding(resource, newTrafo, pre1, collector1);
 				} catch ( Exception e ) {
 					e.printStackTrace();
@@ -178,20 +199,12 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 				printMessage("Original: " + collector1.getSolvingTimeSeconds() + "\n");
 				printMessage("\n");
 				
-				BECorrectnessExecution exec = new BECorrectnessExecution();
-				exec.setName(name);
-				exec.setKind(kind);
-				exec.setExpId(simplificable.getExpId());
-				exec.setOriginalExp(simplificable.getOriginalExpression());
-				exec.setSimplifiedExp(simplificable.getOriginalExpression());
-				
-				exec.setKind("model-finding");
-				if ( AnalyserUtils.isConfirmed(pre1.getAnalysisResult()) ) {
+				if ( pre1 != null && AnalyserUtils.isConfirmed(pre1.getAnalysisResult()) ) {
 					exec.setStatus("invalid"); // optimisation is wrong
-				} else if ( AnalyserUtils.isDiscarded(pre1.getAnalysisResult()) ) {
+				} else if ( pre1 != null && AnalyserUtils.isDiscarded(pre1.getAnalysisResult()) ) {
 					exec.setStatus("correct"); 
 				} else {
-					if ( pre1.getAnalysisResult() == ProblemStatus.USE_TIME_OUT ) {
+					if ( pre1 != null && pre1.getAnalysisResult() == ProblemStatus.USE_TIME_OUT ) {
 						exec.setStatus("timeout"); 
 					} else {
 						exec.setStatus("validation-failure"); 
@@ -207,6 +220,7 @@ public class EquivalenceByModelFinderExperiment extends AbstractFunctionalFeatur
 		} catch (IOException | CoreException | CannotLoadMetamodel | PreconditionParseError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			printMessage(e.getMessage());
 		}
 
 		

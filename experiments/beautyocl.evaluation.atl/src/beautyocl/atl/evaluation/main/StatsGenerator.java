@@ -131,8 +131,8 @@ public class StatsGenerator extends AbstractMain {
 		System.out.println(" Original nodes: " + totalOriginalNodes);
 		System.out.println("Simplifi. nodes: " + totalSimplifiedNodes);
 		//System.out.println("Avg simp. nodes: " + fixedLengthDouble((totalOriginalNodes - totalSimplifiedNodes)/ (double) totalOriginalNodes, 2));
-		System.out.println("Avg simp. nodes: " + fixedLengthDouble(reductionsPerExpression.stream().collect(Collectors.averagingDouble(d -> d)), 2));
-		System.out.println("Median simp.nod: " + fixedLengthDouble(medianSimp, 2));
+		System.out.println("Avg simp. nodes: " + fixedLengthDouble(reductionsPerExpression.stream().collect(Collectors.averagingDouble(d -> d)) * 100, 2));
+		System.out.println("Median simp.nod: " + fixedLengthDouble(medianSimp * 100, 2));
 		
 	}
 
