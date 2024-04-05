@@ -1,0 +1,86 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+module simplify_integers;
+create OUT : ACT, OUT2 : ATL from IN : ATL;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper  def: relationalOps : Set(String) = Set {'<', '<=', '>', '>=', '=' };
+
+helper  def: arithmeticOps : Set(String) = Set {'+', '-', '*', '/' };
+
+rule binaryIntegerRelational {
+   from o : ATL!OperatorCallExp( if o.BinaryOperatorCallExp__filter__ then
+		o.source.oclIsKindOf(ATL!IntegerExp) and o.argument.oclIsKindOf(ATL!IntegerExp) and thisModule.relationalOps->includes(o.name)
+	else
+		false
+	endif )
+     to a : ACT!Replace, r : ATL!BooleanExp (
+			booleanSymbol <- if o.name = '<' then
+				o.source.integerSymbol < o.argument.integerSymbol
+			else
+				if o.name = '<=' then
+				o.source.integerSymbol <= o.argument.integerSymbol
+			else
+				if o.name = '>' then
+				o.source.integerSymbol > o.argument.integerSymbol
+			else
+				if o.name = '>=' then
+				o.source.integerSymbol >= o.argument.integerSymbol
+			else
+				o.source.integerSymbol = o.argument.integerSymbol
+			endif
+			endif
+			endif
+			endif
+		)
+do {
+   a.source <- o;
+   a.target <- r;
+}
+}
+
+rule binaryIntegerArithmetic {
+   from o : ATL!OperatorCallExp( if o.BinaryOperatorCallExp__filter__ then
+			o.source.oclIsKindOf(ATL!IntegerExp) and o.argument.oclIsKindOf(ATL!IntegerExp) and thisModule.arithmeticOps->includes(o.name)
+		else
+			false
+		endif )
+     to a : ACT!Replace, r : ATL!IntegerExp (
+				integerSymbol <- if o.name = '+' then
+					o.source.integerSymbol + o.argument.integerSymbol
+				else
+					if o.name = '-' then
+					o.source.integerSymbol - o.argument.integerSymbol
+				else
+					if o.name = '*' then
+					o.source.integerSymbol * o.argument.integerSymbol
+				else
+					o.source.integerSymbol / o.argument.integerSymbol
+				endif
+				endif
+				endif
+			)
+do {
+   a.source <- o;
+   a.target <- r;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

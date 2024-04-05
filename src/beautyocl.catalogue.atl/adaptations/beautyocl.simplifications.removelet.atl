@@ -1,0 +1,104 @@
+-- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path CWRAP=/beautyocl.catalogue.atl/metamodels/comparison_wrapper.ecore
+-- @path WRAP=/beautyocl.catalogue.atl/metamodels/typing_wrapper.ecore
+module replaceLet;
+create OUT : ACT, OUT2 : ATL from IN : ATL, IN2 : WRAP, IN3 : CWRAP, IN_ECORE : ECORE;
+
+helper context ECORE!EClass def: allSuperClasses : OclAny = self.eAllSuperTypes;
+
+helper context ECORE!EClass def: superClasses : OclAny = self.eSuperTypes;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper  def: comp : CWRAP!ComparisonWrapper = CWRAP!ComparisonWrapper.allInstances()->first();
+
+helper  def: typ : WRAP!TypWrapper = WRAP!TypWrapper.allInstances()->first();
+
+helper context OclAny def: oclAsType(t : ATL!"OclType") : OclAny = self;
+
+helper context ATL!OclExpression def: isSimpleExpression() : Boolean = true;
+
+helper context ATL!OperationCallExp def: isSimpleExpression() : Boolean = not self.arguments->exists(a | a.oclIsKindOf(ATL!IfExp));
+
+helper context ATL!OperatorCallExp def: isSimpleExpression() : Boolean = not ( self.source.oclIsKindOf(ATL!IfExp) or self.arguments.oclIsKindOf(ATL!IfExp) );
+
+-- -- @lib find-ocurrences
+helper context ATL!OclExpression def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = Set { };
+
+helper context ATL!VariableExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = if self.varDcl = v then
+	Set {self }
+else
+	Set { }
+endif;
+
+helper context ATL!PropertyCallExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = self.source.findOcurrences(v);
+
+helper context ATL!NavigationOrAttributeCallExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = self.source.findOcurrences(v);
+
+helper context ATL!OperationCallExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
+
+helper context ATL!OperatorCallExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = self.source.findOcurrences(v)->union(self.arguments->collect(a | a.findOcurrences(v)))->flatten();
+
+helper context ATL!IfExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = self.condition.findOcurrences(v)->union(self.thenExpression.findOcurrences(v))->union(self.elseExpression.findOcurrences(v))->flatten();
+
+helper context ATL!IteratorExp def: findOcurrences(v : ATL!VariableDeclaration) : Set(ATL!VariableExp) = self.source.findOcurrences(v)->union(self.body.findOcurrences(v))->flatten();
+
+rule replaceLet {
+   from i : ATL!LetExp( if i.variable.initExpression.oclIsUndefined() then
+		false
+	else
+		if i.variable.initExpression.isSimpleExpression() then
+		let occ : Set(ATL!VariableExp) = i.in_.findOcurrences(i.variable)
+ in occ->size() <= 2
+	else
+		false
+	endif
+	endif )
+     to c : ACT!CompositeAction (
+		actions <- i.in_.findOcurrences(i.variable)->collect(v | let clone : ACT!Clone = thisModule.createClone(i.variable.initExpression)
+ in Sequence {clone, thisModule.createReplace(v, clone) })->flatten(),
+		actions <- Sequence {mov }
+	), mov : ACT!DeleteMoveChildren
+do {
+   c.source <- i;
+   mov.source <- i;
+   mov.children <- i.in_;
+}
+}
+
+rule createClone( o : ATL!OclExpression) {
+     to iTgt : ACT!Clone
+do {
+   iTgt.source <- o;
+   iTgt;
+}
+}
+
+rule createReplace( ve : ATL!VariableExp, c : ACT!Clone) {
+     to s : ACT!Replace
+do {
+   s.source <- ve;
+   s.target <- c;
+   s;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

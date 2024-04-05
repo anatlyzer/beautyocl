@@ -1,0 +1,61 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+module remove_iterator;
+create OUT : ACT, OUT2 : ATL from IN : ATL;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!BooleanExp def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+
+helper context ATL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
+rule trueSelect {
+   from it : ATL!IteratorExp( it.name = 'select' and it.body.isBooleanExpr(true) )
+     to a : ACT!DeleteMoveChildren
+do {
+   a.source <- it;
+   a.children <- it.source;
+}
+}
+
+rule unnededCollect {
+   from it : ATL!IteratorExp( if it.name = 'collect' and it.body.oclIsKindOf(ATL!VariableExp) then
+	it.body.varDcl = it.iteratorVar
+else
+	false
+endif )
+     to a : ACT!DeleteMoveChildren
+do {
+   a.source <- it;
+   a.children <- it.source;
+}
+}
+
+rule simplifyForAllExists {
+   from it : ATL!IteratorExp( ( it.name = 'forAll' or it.name = 'exists' ) and it.body.oclIsKindOf(ATL!BooleanExp) )
+     to a : ACT!Replace, r : ATL!BooleanExp (
+			booleanSymbol <- it.body.booleanSymbol
+		)
+do {
+   a.source <- it;
+   a.target <- r;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

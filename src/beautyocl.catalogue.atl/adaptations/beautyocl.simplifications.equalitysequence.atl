@@ -1,0 +1,198 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path CWRAP=/beautyocl.catalogue.atl/metamodels/comparison_wrapper.ecore
+-- --
+-- -- Given a sequence of or operations like:
+-- --  
+-- --    exp = value1 or exp = value1 or exp.value2
+-- --
+-- -- We generate:
+-- --
+-- --    Set { value1, value2, value3 }->includes(exp)
+-- --
+module equality_sequence;
+create OUT : ACT, OUT2 : ATL from IN : ATL, IN3 : CWRAP;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper  def: comp : CWRAP!ComparisonWrapper = CWRAP!ComparisonWrapper.allInstances()->first();
+
+helper  def: MIN_SIZE : Integer = 4;
+
+helper context ATL!OclExpression def: isEquality(eqs : Set(String)) : Boolean = false;
+
+helper context ATL!OperatorCallExp def: isEquality(eqs : Set(String)) : Boolean = eqs->includes(self.name);
+
+-- -- The precondition is that it is an equality (checked with isEquality)
+-- -- Returns the values for which the key are the same
+helper context ATL!OperatorCallExp def: isSame(exp : ATL!OclExpression) : ATL!OclExpression = let left : ATL!OclExpression = self.source
+ in let right : ATL!OclExpression = self.argument
+ in if thisModule.comp.isSameExpr(exp, left) then
+	right
+else
+	if thisModule.comp.isSameExpr(exp, right) then
+	left
+else
+	OclUndefined
+endif
+endif;
+
+-- -- @force-declared-return-type
+helper context ATL!OclExpression def: operatorSequence(operator : String, eqs : Set(String)) : Sequence(ATL!OperatorCallExp) = if self.isEquality(eqs) then
+	Sequence {self }
+else
+	Sequence { }
+endif;
+
+-- -- @force-declared-return-type
+helper context ATL!OperatorCallExp def: operatorSequence(operator : String, eqs : Set(String)) : Sequence(ATL!OperatorCallExp) = if self.name = operator and self.argument.isEquality(eqs) then
+	Sequence {self.argument }->union(self.source.operatorSequence(operator, eqs))
+else
+	if self.isEquality(eqs) then
+	Sequence {self }
+else
+	Sequence { }
+endif
+endif;
+
+-- -- @force-declared-return-type
+helper context ATL!OclExpression def: operatorSequenceIndependentArgs(operator : String, eqs : Set(String)) : Sequence(ATL!OclExpression) = if self.isEquality(eqs) then
+	Sequence { }
+else
+	Sequence {self }
+endif;
+
+-- -- @force-declared-return-type
+helper context ATL!OperatorCallExp def: operatorSequenceIndependentArgs(operator : String, eqs : Set(String)) : Sequence(ATL!OclExpression) = if self.name = operator and self.argument.isEquality(eqs) then
+	self.source.operatorSequenceIndependentArgs(operator, eqs)
+else
+	Sequence { }
+endif;
+
+helper context ATL!OperatorCallExp def: operatorSequenceIfSame(operator : String, eqs : Set(String), min_size : Integer) : TupleType(value : ATL!OclExpression, keys : Sequence(ATL!OclExpression), independent : Sequence(ATL!OclExpression)) = let seq : Sequence(ATL!OperatorCallExp) = self.operatorSequence(operator, eqs)
+ in if seq->size() >= min_size then
+	let left : ATL!OclExpression = seq->first().source
+ in let right : ATL!OclExpression = seq->first().argument
+ in let samesLeft : Sequence(ATL!OclExpression) = seq->collect(e | e.isSame(left))->excluding(OclUndefined)
+ in let samesRight : Sequence(ATL!OclExpression) = seq->collect(e | e.isSame(right))->excluding(OclUndefined)
+ in if samesLeft->size() = seq->size() then
+	Tuple {value = left, keys = samesLeft, independent = self.operatorSequenceIndependentArgs(operator, eqs) }
+else
+	if samesRight->size() = seq->size() then
+	Tuple {value = right, keys = samesRight, independent = self.operatorSequenceIndependentArgs(operator, eqs) }
+else
+	OclUndefined
+endif
+endif
+else
+	OclUndefined
+endif;
+
+rule fill( main : ATL!OperatorCallExp, list : Sequence(ATL!OclExpression), operator : String, input : ATL!OperatorCallExp) {
+     to c : ACT!CompositeAction, binary : ATL!OperatorCallExp (
+			operationName <- operator
+		), set_argument : ACT!SetP (
+				propertyName <- 'arguments'
+			), set_source : ACT!SetP (
+					propertyName <- 'source'
+				)
+do {
+   c.source <- input;
+   if ( list->size() = 1 ) {
+   set_source.source <- main;
+
+set_source.value <- list->first();
+
+c.actions <- Sequence {set_source }; }else {
+   set_source.source <- main;
+
+set_source.value <- binary;
+
+set_argument.source <- binary;
+
+set_argument.value <- list->first();
+
+c.actions <- Sequence {set_argument, set_source, thisModule.fill(binary, list->subSequence(2, list->size()), operator, input) }; }
+   c;
+}
+}
+
+rule find_sequence_of_operations_or {
+   from o : ATL!OperatorCallExp( if o.BinaryOperatorCallExp__filter__ then
+													let seq : TupleType(value : ATL!OclExpression, keys : Sequence(ATL!OclExpression), independent : Sequence(ATL!OclExpression)) = o.operatorSequenceIfSame('or', Set {'=' }, thisModule.MIN_SIZE)
+ in seq <> OclUndefined
+												else
+													false
+												endif )
+using {
+   seq : TupleType(value : ATL!OclExpression, keys : Sequence(ATL!OclExpression), independent : Sequence(ATL!OclExpression)) = o.operatorSequenceIfSame('or', Set {'=' }, thisModule.MIN_SIZE);}
+     to c : ACT!CompositeAction (
+						actions <- Sequence {set_elements, set_includes_source, set_includes_arguments }->union(if seq.independent->isEmpty() then
+							Sequence { }
+						else
+							Sequence {set_argument_additional }
+						endif)->including(a)
+					), a : ACT!Replace, includesOp : ATL!CollectionOperationCallExp (
+								operationName <- 'includes'
+							), additional : ATL!OperatorCallExp (
+									operationName <- 'or'
+								), set_argument_additional : ACT!SetP, set_exp : ATL!SetExp, set_elements : ACT!SetP, set_includes_source : ACT!SetP, set_includes_arguments : ACT!SetP
+do {
+   c.source <- o;
+   a.source <- o;
+   if ( seq.independent->isEmpty() ) {
+   a.target <- includesOp; }else {
+   a.target <- additional; }
+   if ( seq.independent->notEmpty() ) {
+   c.actions <- c.actions->prepend(thisModule.fill(additional, seq.independent, 'or', o));
+
+set_argument_additional.propertyName <- 'arguments';
+
+set_argument_additional.source <- additional;
+
+set_argument_additional.value <- includesOp; }
+   set_includes_source.propertyName <- 'source';
+   set_includes_source.source <- includesOp;
+   set_includes_source.value <- set_exp;
+   set_includes_arguments.propertyName <- 'arguments';
+   set_includes_arguments.source <- includesOp;
+   set_includes_arguments.value <- seq.value;
+   set_elements.propertyName <- 'elements';
+   set_elements.source <- set_exp;
+   set_elements.value <- seq.keys;
+}
+}
+
+rule find_sequence_of_operations_and {
+   from o : ATL!OperatorCallExp( if o.BinaryOperatorCallExp__filter__ then
+														let seq : TupleType(value : ATL!OclExpression, keys : Sequence(ATL!OclExpression)) = o.operatorSequenceIfSame('and', Set {'=', '<>' }, 2)
+ in seq <> OclUndefined
+													else
+														false
+													endif )
+     to a : ACT!Replace, true_value : ATL!BooleanExp (
+															booleanSymbol <- false
+														)
+do {
+   a.source <- o;
+   a.target <- true_value;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

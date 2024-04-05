@@ -1,0 +1,160 @@
+-- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path WRAP=/beautyocl.catalogue.atl/metamodels/typing_wrapper.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- -- This simplification identifies a chain of "or" expressions
+-- -- checking the type of same source variable with oclIsKindOf.
+-- -- If the chain covers all the subtypes of a type, it is substituted by the type.
+-- -- <pre>
+-- --    v.oclIsKindOf(A) or v.oclIsKindOf(B) or v.oclIsKindOf(C) => or v.oclIsKindOf(SuperTypeOfABC)
+-- -- </pre>
+-- --
+-- -- The following pre-conditions holds:
+-- -- 		OCL!OperationCallExp.allInstances()->forAll(op | op.name = 'oclIsKindOf' implies self.arguments->size() = 1 )
+-- --
+module simplify_full_type_comparison;
+create OUT : ACT, OUT2 : ATL from IN : ATL, IN2 : WRAP, IN_ECORE : ECORE;
+
+helper context ECORE!EClass def: allSuperClasses : OclAny = self.eAllSuperTypes;
+
+helper context ECORE!EClass def: superClasses : OclAny = self.eSuperTypes;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper context OclAny def: oclAsType(t : ATL!"OclType") : OclAny = self;
+
+helper  def: typ : WRAP!TypWrapper = WRAP!TypWrapper.allInstances()->first();
+
+-- -- helper def : subclasses : Map(TYP!CClass, Set(TYP!CClass)) =
+helper  def: subclassesMap : Map(OclAny, Set(ECORE!EClass)) = ECORE!EClass.allInstances()->iterate(it;tmp:Map(ECORE!EClass, Set(ECORE!EClass)) = Map { } | tmp.including(it, ECORE!EClass.allInstances()->select(maySubclass | maySubclass.superClasses->includes(it))->asSet()));
+
+helper context ECORE!EClass def: subclasses : Set(ECORE!EClass) = thisModule.subclassesMap.get(self);
+
+helper context ECORE!EClass def: allSubclasses : Set(ECORE!EClass) = self.superClasses->collect(c | c.subclasses)->flatten();
+
+helper context ECORE!EClass def: isCoveredBy(types : Set(ECORE!EClass)) : Boolean = types->includes(self) or self.subclasses->forAll(c | c.isCoveredBy(types));
+
+helper  def: findSuperType(param : Set(ATL!"OclType")) : ECORE!EClass = let types : Set(ECORE!EClass) = param->collect(t | thisModule.typ.typeOf(t))->asSet()
+ in let sorted : OclAny = types->collect(c | c.superClasses)->flatten()->asSet()->sortedBy(c | c.allSubclasses->size())
+ in sorted->iterate(it;res:ECORE!EClass = OclUndefined | if res.oclIsUndefined() then
+	if it.isCoveredBy(types) then
+	it
+else
+	OclUndefined
+endif
+else
+	res
+endif);
+
+-- -- @force-declared-return-type
+-- -- @ignore found-in-subtype 
+-- --         because isOrKindOf already checks that it is either BinaryOp or OperationCallExp
+helper context ATL!OperatorCallExp def: orKindOfCheckedTypes : Set(ATL!"OclType") = self.source.orKindOfCheckedTypes->union(self.argument.orKindOfCheckedTypes);
+
+helper context ATL!OperationCallExp def: orKindOfCheckedTypes : Set(ATL!"OclType") = if self.name = 'oclIsKindOf' then
+	Set {self.arguments->first().oclAsType(ATL!"OclType") }
+else
+	Set { }
+endif;
+
+-- -- Needed to avoid runtime problems...
+helper context ATL!OclExpression def: orKindOfCheckedTypes : Set(ATL!"OclType") = Set { };
+
+-- --helper context OCL!OperationCallExp def: isKindOf() : Set(OCL!"OclType") =
+-- --	Set { self.arguments->first().oclAsType(OCL!"OclType") };
+-- -- isOrKindOf
+helper context ATL!OclExpression def: isOrKindOf : Boolean = false;
+
+helper context ATL!OperationCallExp def: isOrKindOf : Boolean = self.name = 'oclIsKindOf';
+
+helper context ATL!OperatorCallExp def: isOrKindOf : Boolean = if self.argument.oclIsUndefined() then
+	false
+else
+	self.name = 'or' and self.source.isOrKindOf and self.argument.isOrKindOf
+endif;
+
+-- --	if self.name = 'or' then
+-- --		self.source.isOrKindOf and self.argument.isOrKindOf
+-- --	else
+-- --		false
+-- --	endif;
+-- -- sameSource
+helper context ATL!OclExpression def: getSameSource(exp : ATL!OclExpression) : ATL!VariableDeclaration = OclUndefined;
+
+helper context ATL!VariableExp def: getSameSource(exp : ATL!OclExpression) : ATL!VariableDeclaration = if exp.oclIsKindOf(ATL!VariableExp) then
+	if self.varDcl = exp.varDcl then
+	self.varDcl
+else
+	OclUndefined
+endif
+else
+	exp.getSameSource(self)
+endif;
+
+helper context ATL!OperationCallExp def: getSameSource(exp : ATL!OclExpression) : ATL!VariableDeclaration = if self.name = 'oclIsKindOf' then
+	self.source.getSameSource(exp)
+else
+	OclUndefined
+endif;
+
+helper context ATL!OperatorCallExp def: getSameSource(exp : ATL!OclExpression) : ATL!VariableDeclaration = self.source.getSameSource(exp);
+
+helper context ATL!OperatorCallExp def: commonVar : ATL!VariableDeclaration = if self.arguments->size() = 1 then
+	self.source.getSameSource(self.argument)
+else
+	OclUndefined
+endif;
+
+helper context ATL!OperatorCallExp def: parentIsNotOrKindOf : Boolean = if self.refImmediateComposite().oclIsKindOf(ATL!OclExpression) then
+	not self.refImmediateComposite().isOrKindOf
+else
+	true
+endif;
+
+rule removeIf {
+   from o : ATL!OperatorCallExp( if o.BinaryOperatorCallExp__filter__ then
+					if o.isOrKindOf and o.commonVar <> OclUndefined and o.parentIsNotOrKindOf then
+					thisModule.findSuperType(o.orKindOfCheckedTypes) <> OclUndefined and thisModule.typ.modelName(o.commonVar) <> OclUndefined
+				else
+					false
+				endif
+				else
+					false
+				endif )
+using {
+   sup : ECORE!EClass = thisModule.findSuperType(o.orKindOfCheckedTypes);}
+     to a : ACT!Replace, op : ATL!OperationCallExp (
+			operationName <- 'oclIsKindOf',
+			source <- vref,
+			arguments <- p
+		), vref : ATL!VariableExp (
+				referredVariable <- o.commonVar
+			), p : ATL!OclModelElement (
+					name <- sup.name,
+					model <- m
+				), m : ATL!OclModel (
+						name <- thisModule.typ.modelName(o.commonVar)
+					)
+do {
+   a.source <- o;
+   a.target <- op;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

@@ -1,0 +1,64 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path CWRAP=/beautyocl.catalogue.atl/metamodels/comparison_wrapper.ecore
+-- -- Deals with cases like:
+-- --    if exp then exp else true endif => true
+-- --    if exp then exp else false endif => exp
+-- --
+module if_same_expr;
+create OUT : ACT, OUT2 : ATL from IN : ATL, IN3 : CWRAP;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper  def: comp : CWRAP!ComparisonWrapper = CWRAP!ComparisonWrapper.allInstances()->first();
+
+helper context ATL!BooleanExp def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+
+helper context ATL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
+rule removeIfThenExprElseTrue {
+   from i : ATL!IfExp( thisModule.comp.isSameExpr(i.condition, i.thenExpression) and i.elseExpression.isBooleanExpr(true) )
+     to a : ACT!Replace, r : ATL!BooleanExp (
+			booleanSymbol <- true
+		)
+do {
+   a.source <- i;
+   a.target <- r;
+}
+}
+
+rule replacleByThen {
+   from i : ATL!IfExp( thisModule.comp.isSameExpr(i.condition, i.thenExpression) and i.elseExpression.isBooleanExpr(false) )
+     to a : ACT!DeleteMoveChildren
+do {
+   a.source <- i;
+   a.children <- i.thenExpression;
+}
+}
+
+rule replacleWhenBranchesEqual {
+   from i : ATL!IfExp( thisModule.comp.isSameExpr(i.thenExpression, i.elseExpression) )
+     to a : ACT!DeleteMoveChildren
+do {
+   a.source <- i;
+   a.children <- i.thenExpression;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

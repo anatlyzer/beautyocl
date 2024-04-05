@@ -1,0 +1,75 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path CWRAP=/beautyocl.catalogue.atl/metamodels/comparison_wrapper.ecore
+module if_fusion;
+create OUT : ACT, OUT2 : ATL from IN : ATL, IN3 : CWRAP;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper  def: comp : CWRAP!ComparisonWrapper = CWRAP!ComparisonWrapper.allInstances()->first();
+
+helper context ATL!BooleanExp def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+
+helper context ATL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
+rule fuseIf {
+   from i : ATL!OperatorCallExp( if i.BinaryOperatorCallExp__filter__ then
+										if i.argument.oclIsUndefined() then
+										false
+									else
+										if i.source.oclIsKindOf(ATL!IfExp) and i.argument.oclIsKindOf(ATL!IfExp) then
+										thisModule.comp.isSameExpr(i.source.condition, i.argument.condition)
+									else
+										false
+									endif
+									endif
+									else
+										false
+									endif )
+     to c : ACT!CompositeAction (
+		actions <- Sequence {r2, r3, s1, s2, s3, s4, mov }
+	), mov : ACT!DeleteMoveChildren, r2 : ACT!Replace, r3 : ACT!Replace, op1 : ATL!OperatorCallExp (
+						operationName <- i.name
+					), op2 : ATL!OperatorCallExp (
+							operationName <- i.name
+						), s1 : ACT!SetP, s2 : ACT!SetP, s3 : ACT!SetP, s4 : ACT!SetP
+do {
+   c.source <- i;
+   mov.source <- i;
+   mov.children <- i.source;
+   r2.source <- i.source.thenExpression;
+   r2.target <- op1;
+   r3.source <- i.source.elseExpression;
+   r3.target <- op2;
+   s1.source <- op1;
+   s1.propertyName <- 'source';
+   s1.value <- i.source.thenExpression;
+   s2.source <- op2;
+   s2.propertyName <- 'source';
+   s2.value <- i.source.elseExpression;
+   s3.source <- op1;
+   s3.propertyName <- 'arguments';
+   s3.value <- i.argument.thenExpression;
+   s4.source <- op2;
+   s4.propertyName <- 'arguments';
+   s4.value <- i.argument.elseExpression;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

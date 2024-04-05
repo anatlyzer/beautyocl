@@ -59,6 +59,6 @@ local.properties
 
 *.asm
 transml.properties
-src/beautyocl.catalogue.atl/adaptations/
+src/beautyocl.catalogue.atl/adaptations/*.asm
 experiments/beautyocl.evaluation.configuration/inv-data/
 experiments/beautyocl.evaluation.configuration/qfx-data/

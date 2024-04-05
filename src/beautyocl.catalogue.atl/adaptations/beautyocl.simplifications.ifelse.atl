@@ -1,0 +1,46 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path OCL2=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+module simplify_if_else;
+create OUT : ACT, OUT2 : OCL2 from IN : ATL;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+-- --helper context OCL!BooleanExp    def: isTrue() : Boolean = self.booleanSymbol;
+-- --helper context OCL!OclExpression def: isTrue() : Boolean = false;
+-- --
+-- --helper context OCL!BooleanExp    def: isFalse() : Boolean = self.booleanSymbol;
+-- --helper context OCL!OclExpression def: isFalse() : Boolean = false;
+helper context ATL!BooleanExp def: isLiteral() : Boolean = true;
+
+helper context ATL!OclExpression def: isLiteral() : Boolean = false;
+
+rule removeIfThen {
+   from o : ATL!IfExp( o.condition.isLiteral() )
+     to a : ACT!DeleteMoveChildren
+do {
+   a.source <- o;
+   a.children <- if o.condition.booleanSymbol then
+		o.thenExpression
+	else
+		o.elseExpression
+	endif;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

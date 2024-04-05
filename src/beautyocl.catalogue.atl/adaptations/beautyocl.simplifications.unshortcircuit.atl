@@ -1,0 +1,236 @@
+-- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- @path CWRAP=/beautyocl.catalogue.atl/metamodels/comparison_wrapper.ecore
+-- @path WRAP=/beautyocl.catalogue.atl/metamodels/typing_wrapper.ecore
+module unshort;
+create OUT : ACT, OUT2 : ATL from IN : ATL, IN2 : WRAP, IN3 : CWRAP, IN_ECORE : ECORE;
+
+helper context ECORE!EClass def: allSuperClasses : OclAny = self.eAllSuperTypes;
+
+helper context ECORE!EClass def: superClasses : OclAny = self.eSuperTypes;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper  def: comp : CWRAP!ComparisonWrapper = CWRAP!ComparisonWrapper.allInstances()->first();
+
+helper  def: typ : WRAP!TypWrapper = WRAP!TypWrapper.allInstances()->first();
+
+helper context OclAny def: oclAsType(t : ATL!"OclType") : OclAny = self;
+
+helper context ATL!BooleanExp def: isBooleanExpr(b : Boolean) : Boolean = self.booleanSymbol = b;
+
+helper context ATL!OclExpression def: isBooleanExpr(b : Boolean) : Boolean = false;
+
+-- -- CHECK FOR <> OclUndefined
+helper context ATL!OclExpression def: hasShortThing() : Boolean = false;
+
+helper context ATL!PropertyCallExp def: hasShortThing() : Boolean = self.source.hasShortThing();
+
+helper context ATL!OperationCallExp def: hasShortThing() : Boolean = if self.name = 'oclIsKindOf' or self.name = 'oclIsUndefined' then
+	true
+else
+	self.source.hasShortThing()
+endif;
+
+helper context ATL!OclExpression def: kindOfType() : TupleType(source : ATL!OclExpression, type : ECORE!EClass) = if self.oclIsKindOf(ATL!OperationCallExp) then
+	if self.name = 'oclIsKindOf' then
+	Tuple {source = self.source, type = thisModule.typ.typeOf(self.arguments->first()).oclAsType(ECORE!EClass) }
+else
+	OclUndefined
+endif
+else
+	OclUndefined
+endif;
+
+-- -- Computes all ocurrences of a given sub-expr in the current expression, and for each of these
+-- -- subexpressions returns its type.
+-- --
+-- -- TODO: Consider more subtypes of Expression!
+helper context ATL!OclExpression def: allUsages(subExpr : ATL!OclExpression) : Set(ECORE!EClass) = Set { };
+
+helper context ATL!PropertyCallExp def: allUsages(subExpr : ATL!OclExpression) : Set(ECORE!EClass) = if thisModule.comp.isSameExpr(self.source, subExpr) then
+	let c : ECORE!EClass = thisModule.typ.accessType(self)
+ in if c <> OclUndefined then
+	Set {c }
+else
+	Set { }
+endif
+else
+	Set { }
+endif;
+
+helper  def: checkUnshortCondition(outerExpP : ATL!OclExpression, inner : ATL!OclExpression) : Boolean = outerExpP.getOperationCalls()->forAll(outerExp | let outer : TupleType(source : ATL!OclExpression, type : ECORE!EClass) = outerExp.kindOfType()
+ in if outer <> OclUndefined then
+	let innerUsages : Set(ECORE!EClass) = inner.allUsages(outer.source)
+ in innerUsages->forAll(c | c.superClasses->includes(outer.type))
+else
+	false
+endif);
+
+helper context ATL!OclExpression def: getOperationCalls() : Set(ATL!OclExpression) = Set { };
+
+helper context ATL!OperationCallExp def: getOperationCalls() : Set(ATL!OclExpression) = if self.name = 'oclIsKindOf' then
+	Set {self }
+else
+	Set { }
+endif;
+
+helper context ATL!PropertyCallExp def: getOperationCalls() : Set(ATL!OclExpression) = self.source.getOperationCalls();
+
+helper context ATL!OperatorCallExp def: getOperationCalls() : Set(ATL!OclExpression) = if self.argument.oclIsUndefined() then
+	self.source.getOperationCalls()
+else
+	self.source.getOperationCalls()->union(self.argument.getOperationCalls())
+endif;
+
+rule unshortCircuit_simple {
+   from i : ATL!IfExp( if thisModule.checkUnshortCondition(i.condition, i.thenExpression) or not i.condition.hasShortThing() then
+					i.elseExpression.isBooleanExpr(true) or i.elseExpression.isBooleanExpr(false)
+				else
+					false
+				endif )
+     to c : ACT!CompositeAction (
+		actions <- Sequence {a, s4, s5 }
+	), a : ACT!Replace, s4 : ACT!SetP, s5 : ACT!SetP, r : ATL!OperatorCallExp (
+						operationName <- if i.elseExpression.isBooleanExpr(true) then
+							'implies'
+						else
+							'and'
+						endif
+					)
+do {
+   c.source <- i;
+   s4.source <- r;
+   s5.source <- r;
+   s4.value <- i.condition;
+   s5.value <- i.thenExpression;
+   s4.propertyName <- 'source';
+   s5.propertyName <- 'arguments';
+   a.source <- i;
+   a.target <- r;
+}
+}
+
+rule unshortCircuit {
+   from i : ATL!IfExp( if i.thenExpression.oclIsKindOf(ATL!IfExp) then
+													if thisModule.checkUnshortCondition(i.condition, i.thenExpression.condition) or not i.condition.hasShortThing() then
+													thisModule.comp.isSameExpr(i.elseExpression, i.thenExpression.elseExpression)
+												else
+													false
+												endif
+												else
+													false
+												endif )
+     to c : ACT!CompositeAction (
+						actions <- Sequence {a, s1, s2, s3, s4, s5 }
+					), a : ACT!Replace, s1 : ACT!SetP, s2 : ACT!SetP, s3 : ACT!SetP, s4 : ACT!SetP, s5 : ACT!SetP, r : ATL!OperatorCallExp (
+													operationName <- 'and'
+												), newIf : ATL!IfExp
+do {
+   c.source <- i;
+   s1.source <- newIf;
+   s2.source <- newIf;
+   s3.source <- newIf;
+   s1.value <- r;
+   s2.value <- i.thenExpression.thenExpression;
+   s3.value <- i.thenExpression.elseExpression;
+   s1.propertyName <- 'condition';
+   s2.propertyName <- 'thenExpression';
+   s3.propertyName <- 'elseExpression';
+   s4.source <- r;
+   s5.source <- r;
+   s4.value <- i.condition;
+   s5.value <- i.thenExpression.condition;
+   s4.propertyName <- 'source';
+   s5.propertyName <- 'arguments';
+   a.source <- i;
+   a.target <- newIf;
+}
+}
+
+rule unshortCircuit_or {
+   from i : ATL!IfExp( if i.elseExpression.oclIsKindOf(ATL!IfExp) then
+																					if thisModule.checkUnshortCondition(i.condition, i.elseExpression.condition) or not i.condition.hasShortThing() then
+																					thisModule.comp.isSameExpr(i.thenExpression, i.elseExpression.thenExpression)
+																				else
+																					false
+																				endif
+																				else
+																					false
+																				endif )
+     to c : ACT!CompositeAction (
+														actions <- Sequence {a, s1, s2, s3, s4, s5 }
+													), a : ACT!Replace, s1 : ACT!SetP, s2 : ACT!SetP, s3 : ACT!SetP, s4 : ACT!SetP, s5 : ACT!SetP, r : ATL!OperatorCallExp (
+																					operationName <- 'or'
+																				), newIf : ATL!IfExp
+do {
+   c.source <- i;
+   s1.source <- newIf;
+   s2.source <- newIf;
+   s3.source <- newIf;
+   s1.value <- r;
+   s2.value <- i.elseExpression.thenExpression;
+   s3.value <- i.elseExpression.elseExpression;
+   s1.propertyName <- 'condition';
+   s2.propertyName <- 'thenExpression';
+   s3.propertyName <- 'elseExpression';
+   s4.source <- r;
+   s5.source <- r;
+   s4.value <- i.condition;
+   s5.value <- i.elseExpression.condition;
+   s4.propertyName <- 'source';
+   s5.propertyName <- 'arguments';
+   a.source <- i;
+   a.target <- newIf;
+}
+}
+
+helper context ATL!IfExp def: simplyEnoughToInline() : Boolean = false;
+
+helper context ATL!LetExp def: simplyEnoughToInline() : Boolean = false;
+
+helper context ATL!OclExpression def: simplyEnoughToInline() : Boolean = true;
+
+rule unshortCircuit_or_other_case {
+   from i : ATL!IfExp( if i.thenExpression.isBooleanExpr(true) and i.elseExpression.simplyEnoughToInline() then
+																									thisModule.checkUnshortCondition(i.condition, i.elseExpression) or not i.condition.hasShortThing()
+																								else
+																									false
+																								endif )
+     to c : ACT!CompositeAction (
+																						actions <- Sequence {s4, s5, a }
+																					), a : ACT!Replace, s4 : ACT!SetP, s5 : ACT!SetP, r : ATL!OperatorCallExp (
+																										operationName <- 'or'
+																									)
+do {
+   c.source <- i;
+   c.rule = 'unshortCircuit_or_other_case';
+   s4.source <- r;
+   s5.source <- r;
+   s4.value <- i.condition;
+   s5.value <- i.elseExpression;
+   s4.propertyName <- 'source';
+   s5.propertyName <- 'arguments';
+   a.source <- i;
+   a.target <- r;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+

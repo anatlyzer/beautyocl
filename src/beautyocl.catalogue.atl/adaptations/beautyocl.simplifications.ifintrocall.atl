@@ -1,0 +1,89 @@
+-- @path ATL=/beautyocl.catalogue.atl/metamodels/merged.ecore
+-- -- @path OCL2=/beautyocl.catalogue.simplifications/metamodels/superimposed.ecore
+-- -- @path ACT=/beautyocl.actions/model/actions.ecore
+-- -- Given:
+-- --  if x then y else z endif > 0 => if x then y > 0 else z > 0
+-- --
+module introduce_call;
+create OUT : ACT, OUT2 : OCL2 from IN : ATL;
+
+helper context ATL!IteratorExp def: iteratorVar : OclAny = self.iterators->first();
+
+helper context ATL!OperatorCallExp def: argument : OclAny = self.arguments->first();
+
+helper context ATL!Iterator def: name : OclAny = self.varName;
+
+helper context ATL!VariableExp def: varDcl : OclAny = self.referredVariable;
+
+helper context ATL!CollectionOperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperatorCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OperationCallExp def: name : OclAny = self.operationName;
+
+helper context ATL!OclExpression def: isComplexInlining() : Boolean = false;
+
+helper context ATL!OperationCallExp def: isComplexInlining() : Boolean = self.arguments->exists(a | a.oclIsKindOf(ATL!IfExp));
+
+helper context ATL!OperatorCallExp def: isComplexInlining() : Boolean = self.source.oclIsKindOf(ATL!IfExp) or self.argument.oclIsKindOf(ATL!IfExp);
+
+rule convert {
+   from o : ATL!PropertyCallExp( not o.oclIsKindOf(ATL!OperatorCallExp) and o.source.oclIsKindOf(ATL!IfExp) and not o.isComplexInlining() )
+     to c1 : ACT!Clone (
+		ignoredProperties <- Sequence {'source' }
+	), c2 : ACT!Clone (
+			ignoredProperties <- Sequence {'source' }
+		), c3 : ACT!Clone, c4 : ACT!Clone, r1 : ACT!Replace, r2 : ACT!Replace, m : ACT!DeleteMoveChildren, comp : ACT!CompositeAction (
+									actions <- Sequence {c3, c4, c1, c2, r1, r2, m }
+								)
+do {
+   c1.source <- o;
+   c2.source <- o;
+   c1.values <- Sequence {c3 };
+   c2.values <- Sequence {c4 };
+   c3.source <- o.source.thenExpression;
+   c4.source <- o.source.elseExpression;
+   r1.source <- o.source.thenExpression;
+   r1.target <- c1;
+   r2.source <- o.source.elseExpression;
+   r2.target <- c2;
+   m.source <- o;
+   m.children <- o.source;
+   comp.source <- o;
+}
+}
+
+rule convertOperator {
+   from o : ATL!OperatorCallExp( if o.BinaryOperatorCallExp__filter__ then
+															o.source.oclIsKindOf(ATL!IfExp) and not o.isComplexInlining()
+														else
+															false
+														endif )
+     to c1 : ACT!Clone (
+									ignoredProperties <- Sequence {'source' }
+								), c2 : ACT!Clone (
+										ignoredProperties <- Sequence {'source' }
+									), c3 : ACT!Clone, c4 : ACT!Clone, r1 : ACT!Replace, r2 : ACT!Replace, m : ACT!DeleteMoveChildren, comp : ACT!CompositeAction (
+																actions <- Sequence {c3, c4, c1, c2, r1, r2, m }
+															)
+do {
+   c1.source <- o;
+   c2.source <- o;
+   c1.values <- Sequence {c3 };
+   c2.values <- Sequence {c4 };
+   c3.source <- o.source.thenExpression;
+   c4.source <- o.source.elseExpression;
+   r1.source <- o.source.thenExpression;
+   r1.target <- c1;
+   r2.source <- o.source.elseExpression;
+   r2.target <- c2;
+   m.source <- o;
+   m.children <- o.source;
+   comp.source <- o;
+}
+}
+
+helper context ATL!OperatorCallExp def: BinaryOperatorCallExp__filter__ : OclAny = self.arguments->notEmpty();
+
+helper context ATL!OperatorCallExp def: UnaryOperatorCallExp__filter__ : OclAny = self.arguments->isEmpty();
+
